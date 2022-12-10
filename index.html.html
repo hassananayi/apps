@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'"> -->
+ 
+  
+    <title>Génération de SSCC</title>
+
+    <style>
+
+      body,html{
+       height: 100%;
+       width: 100%;
+       display: inline-flex;
+       justify-content: center;
+       align-items: center;
+       font-family: 'Courier New', Courier, monospace;
+      }
+
+      .app{
+        display: block;
+        text-align: center;
+      }
+
+      .btn {
+    display: inline-block;
+    font-weight: 400;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    border: 1px solid transparent;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: .25rem;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+      .btn-primary {
+    color: #fff;
+    background-color: #007bff;
+    border-color: #007bff;
+    height: 42px;
+    width: 373px;
+    cursor: pointer;
+}
+
+
+.btn-primary:hover {
+    color: #fff;
+    background-color: #0069d9;
+    border-color: #0062cc;
+}
+
+.btn-primary.focus, .btn-primary:focus {
+    box-shadow: 0 0 0 0.2rem rgb(0 123 255 / 50%);
+}
+
+.btn-primary:not(:disabled):not(.disabled).active, .btn-primary:not(:disabled):not(.disabled):active, .show>.btn-primary.dropdown-toggle {
+    color: #fff;
+    background-color: #0062cc;
+    border-color: #005cbf;
+}
+
+</style>
+  </head>
+  <body>
+
+<div class="app">
+  <h1>Génération de SSCC</h1>
+  <img id="qrcode" src="" height="512">
+  <p id="text"></p>
+
+  <button id="new" class="btn btn-primary">Nouveau</button>
+</div>
+
+<script>
+    
+ var googleAPI = "https://chart.googleapis.com/chart?cht=qr&chs=512&chl="
+ 
+ var sscc = "3045679" + Date.now();
+ var qrcodeURL = googleAPI + sscc
+
+ // set first QR Code on startup
+ document.getElementById("qrcode").setAttribute("src", qrcodeURL)
+ document.getElementById("text").innerHTML ="(00)" + sscc
+
+ // On click update
+document.getElementById("new").addEventListener("click", function(){
+
+  var sscc = "3045679" + Date.now();
+  var qrcodeURL = googleAPI + sscc
+ 
+  // update  QR Code
+  document.getElementById("qrcode").setAttribute("src", qrcodeURL)
+
+  // update text 
+  document.getElementById("text").innerHTML ="(00)" + sscc
+
+})
+
+
+</script>
+ 
+  </body>
+</html>
