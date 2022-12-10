@@ -16,6 +16,7 @@
        font-family: 'Courier New', Courier, monospace;
        position: fixed;
        overflow: hidden;
+       border-top: 8px solid #f44336;
       }
 
       .app{
@@ -47,7 +48,7 @@
     background-color: #007bff;
     border-color: #007bff;
     height: 62px;
-    width: 373px;
+    width: 300px;
     cursor: pointer;
     font-size: 18px;
 }
@@ -74,7 +75,7 @@
   <body>
 
 <div class="app">
-  <h1>Génération de SSCC</h1>
+  <h2>Génération de SSCC</h2>
   <img id="qrcode" src="" height="512">
   <p id="text"></p>
 
@@ -83,7 +84,7 @@
 
 <script>
     
- var googleAPI = "https://chart.googleapis.com/chart?cht=qr&chs=512&chl="
+ var googleAPI = "https://chart.googleapis.com/chart?cht=qr&chs=350&chl="
  
  var sscc = "30456" + Date.now();
  var qrcodeURL = googleAPI + sscc
