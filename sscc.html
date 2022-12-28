@@ -2,19 +2,23 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'"> -->
+ 
+  
     <title>Génération de SSCC</title>
 
     <style>
 
-     body,html{
-        height: 100%;
-        width: 100%;
-        display: inline-flex;
-        justify-content: center;
-        align-items: center;
-        font-family: 'Courier New', Courier, monospace;
-        overflow: hidden;
+      body,html{
+       height: 100%;
+       width: 100%;
+       display: inline-flex;
+       justify-content: center;
+       align-items: center;
+       font-family: 'Courier New', Courier, monospace;
+       position: fixed;
+    overflow: hidden;
       }
 
       .app{
@@ -23,7 +27,7 @@
         padding: 80px;
       }
 
-  .btn {
+      .btn {
     display: inline-block;
     font-weight: 400;
     text-align: center;
@@ -41,14 +45,13 @@
     transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
 }
 
-  .btn-primary {
+      .btn-primary {
     color: #fff;
     background-color: #007bff;
     border-color: #007bff;
-    height: 62px;
-    width: 300px;
+    height: 42px;
+    width: 373px;
     cursor: pointer;
-    font-size: 18px;
 }
 
 
@@ -73,8 +76,8 @@
   <body>
 
 <div class="app">
-  <h2>Génération de SSCC</h2>
-  <img id="qrcode" src="" height="350">
+  <h1>Génération de SSCC</h1>
+  <img id="qrcode" src="" height="512">
   <p id="text"></p>
 
   <button id="new" class="btn btn-primary">Nouveau</button>
@@ -82,9 +85,9 @@
 
 <script>
     
- var googleAPI = "https://chart.googleapis.com/chart?cht=qr&chs=350&chl="
+ var googleAPI = "https://chart.googleapis.com/chart?cht=qr&chs=512&chl="
  
- var sscc = "30456" + Date.now();
+ var sscc = "3045679" + Date.now();
  var qrcodeURL = googleAPI + sscc
 
  // set first QR Code on startup
@@ -94,7 +97,7 @@
  // On click update
 document.getElementById("new").addEventListener("click", function(){
 
-  var sscc = "30456" + Date.now();
+  var sscc = "3045679" + Date.now();
   var qrcodeURL = googleAPI + sscc
  
   // update  QR Code

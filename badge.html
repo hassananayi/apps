@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>Créateur de mot de passe</title>
+    <title>Créateur de badge</title>
 
     <style>
 *, ::after, ::before {
@@ -141,49 +141,52 @@ a.link:hover {
 
 
 .card-icon{
- position: absolute;
- left: 44px;
-    top: 16px;
+  position: absolute;
+    right: 33px;
+    bottom: 28px;
 }
 
 .card-qrcode{
- position: absolute;
- top: 16px;
-  right: 45px;
-  text-align: center;
+  position: absolute;
+    top: 87px;
+    right: 61px;
 }
 
-.scan{
-  margin-top: -18px;
-    color: #c2c2c2;
-    text-transform: uppercase;
+.card-qrcode > h1 {
+    margin: 0;
+    font-size: 32px;
 }
 
-.card-title {
-    position: absolute;
-    bottom: 29px;
-    left: 109px;
-    font-size: 21px;
+span#ShowSurname {
     text-transform: uppercase;
-    word-spacing: 11px;
 }
-.card-id {
-    position: absolute;
-    top: 82px;
-    right: 0;
-    text-transform: uppercase;
-    transform: rotate(270deg); /* W3C */
-    -webkit-transform: rotate(270deg); /* Safari & Chrome */
-    -moz-transform: rotate(270deg); /* Firefox */
-    -ms-transform: rotate(270deg); /* Internet Explorer */
-    -o-transform: rotate(270deg);
+span#ShowName {
+    text-transform: capitalize;
 }
 .card-icon img{
-  height: 140px;
+  height: 32px;
 }
 
 .card-qrcode img{
-  height: 180px;
+  height: 85px;
+}
+
+.box {
+    height: 35px;
+    width: 45px;
+    position: absolute;
+}
+.box.up {
+    background: #374b98;
+    position: absolute;
+    left: 45%;
+}
+
+.box.down {
+    background: #dde4ff;
+    position: absolute;
+    left: 45%;
+    bottom: 0;
 }
 
 .hide{
@@ -202,41 +205,58 @@ a.link:hover {
   </head>
   <body>
     <div id="card" class='card hide'>
-      <div class='card-icon'><img src="./assets/Icon_STEF.png"> </div>
-      <div class='card-qrcode'><img id="qrcode" src=""> <p class="scan">Scannez ici</p> </div>
-      <div class="card-title"><p>mot de passe</p></div>
-      <div class="card-id"><p id="card-uid"></p></div>
+      <span class="box up"></span>
+      <div class='card-qrcode'><h1><span id="ShowSurname"></span><span id="ShowName"></span></h1><img id="qrcode" src="">  </div>
+      <div class='card-icon'><img src="./assets/Logo_STEF.gif"> </div>
+      <span class="box down"></span>
     </div>
 <div id="app" class="app">
-  <h1>Créateur de mot de passe</h1>
-  <p class="mb-4">Cette application permet de créer des mots de passe au format du QR Code. <br><br> <span class="copyright">QR Code Software by Google API</span></p>
+  <h1>Créateur de badge</h1>
+  <p class="mb-4">Cette application permet de créer des badges au format du barcode type Code-128.<br><br><span class="copyright">Barcode Software by TEC-IT</span></p>
+
   <div class="mb-3">
-    <label for="password" class="form-label">Mot de passe*</label>
-    <input type="password" class="form-control" id="password" placeholder="Tapez le mot de passe ici...">
+    <label for="surname" class="form-label">Nom*</label>
+    <input type="text" class="form-control" id="surname" placeholder="nom..." autocomplete="off">
   </div>
+  
+  <div class="mb-3">
+    <label for="name" class="form-label">Prénom</label>
+    <input type="text" class="form-control" id="name" placeholder="prénom..." autocomplete="off">
+  </div>
+
+  <div class="mb-3">
+    <label for="email" class="form-label">Compte*</label>
+    <input type="email" class="form-control" id="email" placeholder="compte..." autocomplete="off" value="STB_xxxx@xdock.de">
+  </div>
+
+
   <button id="create" class="btn btn-primary">Créer</button>
-  <div class="footer"><a href="./badge.html" class="link">Créateur de badge ></a></div>
+  <div class="footer"><a href="./password.html" class="link">Créateur de mot de passe  ></a></div>
+  
+
 </div>
+
 <script>
   
  // On click create
 document.getElementById("create").addEventListener("click", function(){
 
-var password = document.getElementById("password").value;
+// Data
+var surname = document.getElementById("surname").value;
+var name = document.getElementById("name").value;
+var email = document.getElementById("email").value;
 
-// check for password
-if(!password.length > 0){return alert("Veuillez entrer le mot de passe!");}
+// check for requierd filds
+if(!surname.length > 0 || !email.length > 0){return alert("Veuillez entrer Nom et Compte!");}
 
- // create Qr code
- var googleAPI = "https://chart.googleapis.com/chart?cht=qr&chs=512&chl="
- var qrcodeURL = googleAPI + password
+ // create barcode
+ var qrcodeURL = "https://barcode.tec-it.com/barcode.ashx?data=" + email + "&code=&translate-esc=tru";
 
-  // update card-uid 
-  document.getElementById("card-uid").innerHTML ="AG" + Math.random().toString(16).slice(9)
 
-  // update  QR Code
+  // set  data
   document.getElementById("qrcode").setAttribute("src", qrcodeURL)
-
+  document.getElementById("ShowSurname").innerHTML = surname + " ";
+  document.getElementById("ShowName").innerHTML = name;
 
   // hide app
   document.getElementById("app").classList.add("hide");
