@@ -1,0 +1,155 @@
+html,body{
+    font-family: Roboto;
+    display: block;
+    height: 100%;
+    width: 100%;
+ 
+}
+.header{
+    height: 80px;
+    width: 100%;
+    background-color: #2b40f1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: #ffe188;
+    padding: 0 15px;
+    font-size: 25px;
+    font-weight: 400;
+
+}
+
+.logo small{
+    font-size: 14px;
+    margin-left: 20px;
+}
+.main{
+    display: grid;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+}
+
+.main-content{
+    max-width: 500px;
+
+
+}
+
+.form-control{
+    line-height: 3.5;
+    font-size: 1.2rem;
+   border: 1px solid #b3b4b5;
+}
+
+.btn.start{
+    line-height: 2.5;
+}
+
+.main-task{
+    padding: 20px 50px;
+}
+.task-header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+}
+
+
+.task-info {
+    display: flex;
+}
+
+.task-info-item {
+    display: flex;
+    flex-direction: column;
+    margin-right: 30px;
+}
+
+span.task-info-item-title {
+    font-size: 17px;
+    color: #969696;
+    font-weight: 400;
+}
+
+span.task-info-item-value {
+    font-size: 23px;
+    font-weight: 500;
+}
+
+.btn-action{
+    font-size: 17px;
+    line-height: 2.7;
+    margin-left: 10px;
+}
+
+ tr {
+ 
+    height: 60px;
+    vertical-align: middle;
+    font-size: 20px;
+}
+
+th {
+    font-size: 17px;
+    color: #6E6893;
+}
+tr.done{
+    text-decoration: line-through;
+    background-color: #f0f0f0;
+    opacity: 0.5;
+}
+.theader{
+    background-color: #F4F2FF;
+    border-top: 1px solid #D9D5EC;
+    border-bottom: 1px solid #D9D5EC;
+}
+
+ 
+.material-symbols-outlined {
+  font-variation-settings:
+  'FILL' 0,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 48
+}
+ 
+
+.modal-dialog {
+    max-width: 780px;
+  }
+
+  .modal-footer {
+ 
+    flex-wrap: nowrap;
+}
+
+.all_info_content {
+    display: flex;
+    justify-content: center;
+    font-size: 1.3rem;
+}
+
+.all_info_key{
+    font-size: 1rem;
+}
+.all_info_value{
+    margin-left: 10px;
+}
+
+.all_info_value,.all_info_key{
+    margin-bottom: 15px;
+}
+.all_info_keys {
+    display: grid;
+    align-items: center;
+    text-align: right;
+}
+
+.all_info_values {
+    display: grid;
+    align-items: center;
+    text-align: left;
+}
