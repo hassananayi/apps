@@ -66,7 +66,7 @@ for (let i = 0; i < rows.length; i++) {
         document.getElementById("print").innerHTML = "Patienter..."
 
         // load image on browser to fix loding issue
-        document.getElementById("temp").innerHTML += `<img  src="${codeAPI + data_path}">`
+        document.getElementById("temp").innerHTML += `<img  src="${codeAPI + encodeURIComponent(data_path)}">`
         
        if(app_name == "password"){
         document.getElementById("cards").innerHTML += createPassword(name_path,data_path)
@@ -101,7 +101,7 @@ function createPassword(name,password){
 
     let card_uid ="AG" + Math.random().toString(16).slice(9);
     let crete_date = formatDate();
-    let code_img_URL = codeAPI + password
+    let code_img_URL = codeAPI + encodeURIComponent(password)
  
 
     return `        
