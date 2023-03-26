@@ -1,3 +1,8 @@
+//***************************//
+// Xdock personnalisé V 1.3 pour XDock Ver.20230323_hf1
+// Dernière mise à jour le 24 mars 2023
+//***************************//
+
 //--------------------------
 // CSS Styles 
 //--------------------------
@@ -23,6 +28,11 @@ select.form-control.form-control-sm.updateMitarbeiterSelectbox{
      font-size: 19px;
  
  }
+ /* Augmenter la taille du tooltip */
+ .tooltip-mehr {
+    font-size: 20px;
+}
+
  `);
 
 //--------------------------
@@ -71,7 +81,7 @@ let team_1 = [
   "957", //Marc
   "942", //Patrice
   "936", //Saleh
-  "4257", //Salim
+  "1429", //Salim
   "976", //Sebastien
   "979", //Stephan M.
   "934", //Suzie
@@ -89,6 +99,7 @@ let team_1 = [
   "913", //Yamin,
   "937", //julien
   "950", //Pierre New
+  "1428", //yanana
   ]
   
   let team_3 = [
@@ -168,7 +179,25 @@ let team_1 = [
 } // end function coll
 
 // check if the page is "dans lnte" run the function
-if(window.location.href == "https://tf-stb.xdock.de/Taskmanagement/TaskmanagementAmLager"){
+if(window.location.href.includes("https://tf-stb.xdock.de/Taskmanagement/TaskmanagementAmLager")){
   collaborateurs();
 }
 
+
+
+//--------------------------------
+// afficher le nom d'utilisateur
+//--------------------------------
+//data-original-title="Logout STB_XxXx@xdock.de"
+let users = {
+    "stb_mawi":"WILLER Marc",
+    "stb_gesc":"SCHOETTEL Georges",
+    "stb_lede":"DE SOUSA Leandro",
+    "stb_stmu":"MURER Stephan"
+}
+let curent_user = $("i.fal.fa-sign-out").attr("data-original-title").toLowerCase()
+let user_id = curent_user.substring(curent_user.indexOf("stb_") , curent_user.indexOf("@"))
+// check if in arry
+if(users[user_id]){
+    $("i.fal.fa-sign-out").attr("data-original-title",users[user_id])
+}
