@@ -1,6 +1,6 @@
 //***************************//
-// Xdock personnalisé V 1.3 pour XDock Ver.20230323_hf1
-// Dernière mise à jour le 24 mars 2023
+// Xdock personnalisé V 1.3.1 pour XDock Ver.20230323_hf1
+// Dernière mise à jour le 29 mars 2023
 //***************************//
 
 //--------------------------
@@ -100,6 +100,8 @@ let team_1 = [
   "937", //julien
   "950", //Pierre New
   "1428", //yanana
+  "1432", //stb_more
+  "919" //Daniel
   ]
   
   let team_3 = [
