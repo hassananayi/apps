@@ -1,10 +1,10 @@
 //***************************//
-// Xdock personnalisé V 1.3.3 pour XDock Ver.20230323_3
-// Dernière mise à jour le 04 mai 2023
+// Xdock personnalisé V 1.3.4 pour XDock Ver.20230323_3
+// Dernière mise à jour le 05 mai 2023
 //***************************//
 console.log(
-  "Xdock personnalisé V 1.3.3 pour XDock Ver.20230323_3  a été chargé.",
-  "\nDernière mise à jour le 04 mai 2023"
+  "Xdock personnalisé V 1.3.4 pour XDock Ver.20230323_3  a été chargé.",
+  "\nDernière mise à jour le 05 mai 2023"
 );
 //--------------------------
 // CSS Styles
@@ -73,7 +73,6 @@ function collaborateurs() {
     "937", //julien
     "950", //Pierre New
     "1428", //yanana
-    "1432", //stb_more
     "919", //Daniel
   ];
 
@@ -185,32 +184,11 @@ if (users[user_id]) {
 }
 
 //--------------------------------
-// auto logout
+// désactiver auto logout
 //--------------------------------
-
-AUTO_LOGOUT_PAGE_LOAD_DELAY = 60 * 120 * 1000;
-AUTO_LOGOUT_WARNING_TIMEOUT = 60 * 120 * 1000; // 2 hours
-
-jQuery.loadScript = function (url, callback) {
-  jQuery.ajax({
-    url: url,
-    dataType: "script",
-    success: callback,
-    async: true,
-  });
-};
-
-//when don loaded after 40 sec load the injector
-let inject_Interval = setInterval(function () {
-  $.loadScript("/js/auto-logout.js", function () {
-    //Stuff to do after someScript has loaded
-    console.log("Auto logout injector has been loaded.");
-  });
-
+setInterval(function () {
   window.localStorage.setItem(
     "lastUserInteraction",
     Date.now() + 60 * 120 * 1000
   );
-
-  clearInterval(inject_Interval);
-}, 40000);
+}, 5000);
