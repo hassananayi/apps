@@ -1,10 +1,10 @@
 //***************************//
-// Xdock personnalisé V 1.3.4 pour XDock Ver.20230323_3
-// Dernière mise à jour le 05 mai 2023
+// Xdock personnalisé V 1.3.5 pour XDock Ver.20230323_3
+// Dernière mise à jour le 09 mai 2023
 //***************************//
 console.log(
-  "Xdock personnalisé V 1.3.4 pour XDock Ver.20230323_3  a été chargé.",
-  "\nDernière mise à jour le 05 mai 2023"
+  "Xdock personnalisé V 1.3.5 pour XDock Ver.20230323_3  a été chargé.",
+  "\nDernière mise à jour le 09 mai 2023"
 );
 //--------------------------
 // CSS Styles
@@ -189,6 +189,6 @@ if (users[user_id]) {
 setInterval(function () {
   window.localStorage.setItem(
     "lastUserInteraction",
-    Date.now() + 60 * 120 * 1000
+    Date.now() + 60 * 240 * 1000
   );
 }, 5000);
