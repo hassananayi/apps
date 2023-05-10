@@ -1,10 +1,9 @@
 //***************************//
-// Xdock personnalisé V 1.3.5 pour XDock Ver.20230323_3
-// Dernière mise à jour le 09 mai 2023
+// Xdock personnalisé
 //***************************//
 console.log(
-  "Xdock personnalisé V 1.3.5 pour XDock Ver.20230323_3  a été chargé.",
-  "\nDernière mise à jour le 09 mai 2023"
+  "Xdock personnalisé V 1.4.0 pour XDock Ver.20230323_3  a été chargé.",
+  "\nDernière mise à jour le 10 mai 2023"
 );
 //--------------------------
 // CSS Styles
@@ -192,3 +191,81 @@ setInterval(function () {
     Date.now() + 60 * 240 * 1000
   );
 }, 5000);
+
+//--------------------------------
+// Task Manger
+//--------------------------------
+//URLs
+// - /Taskmanagement/TaskSperrenErzwingen  (force block)
+// - /Taskmanagement/TaskFreigeben   (deblock)
+// - /Taskmanagement/TaskPausierenRequest (Pusse)
+// - /Taskmanagement/TaskFortsetzen (task counten)
+
+function task_manger() {
+  let tourStatus = $(".tourStatus").html();
+  let tourID = window.location.href.split("TourId=")[1].substr(0, 6);
+  let iswetour = window.location.href.includes("Wareneingang")
+    ? "True"
+    : "False";
+
+  let Block_btn_html =
+    '<div class="p-2 m-auto "><button id="ha_block_task" class="btn btn-outline-danger">Bloquer la tâche</button></div>';
+  let deblock_btn_html =
+    '<div class="p-2 m-auto "><button id="ha_deblock_task" class="btn btn-outline-primary">Valider la tâche</button></div>';
+
+  // inject btns
+  switch (parseInt(tourStatus)) {
+    case 80:
+      $(".xdock-head-row > .col-4 > .d-flex.flex-row").append(Block_btn_html);
+      break;
+    case 75:
+      $(".xdock-head-row > .col-4 > .d-flex.flex-row").append(Block_btn_html);
+      break;
+    case 44:
+      $(".xdock-head-row > .col-4 > .d-flex.flex-row").append(deblock_btn_html);
+      break;
+
+    default:
+      break;
+  }
+
+  // block task
+  $(document).on("click", "#ha_block_task", function () {
+    $.post(
+      "https://tf-stb.xdock.de/Taskmanagement/TaskSperrenErzwingen",
+      {
+        tourId: parseInt(tourID),
+        isWeTour: iswetour,
+      },
+      function (data) {
+        if (data === true) {
+          window.location.reload();
+        }
+      }
+    );
+  });
+
+  // deblock task
+  $(document).on("click", "#ha_deblock_task", function () {
+    $.post(
+      "https://tf-stb.xdock.de/Taskmanagement/TaskFreigeben",
+      {
+        tourId: tourID,
+        isWeTour: iswetour,
+      },
+      function (data) {
+        if (data === true) {
+          window.location.reload();
+        }
+      }
+    );
+  });
+}
+
+// check if the page is "tour EM or SM" run the function
+if (
+  window.location.href.includes("https://tf-stb.xdock.de/Warenausgang/Tour") ||
+  window.location.href.includes("https://tf-stb.xdock.de/Wareneingang/Tour")
+) {
+  task_manger();
+}
