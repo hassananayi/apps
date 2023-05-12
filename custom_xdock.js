@@ -2,7 +2,7 @@
 // Xdock personnalisé
 //***************************//
 console.log(
-  "Xdock personnalisé V 1.4.1 pour XDock Ver.20230511_3  a été chargé.",
+  "Xdock personnalisé V 1.4.2 pour XDock Ver.20230511_3  a été chargé.",
   "\nDernière mise à jour le 12 mai 2023"
 );
 //--------------------------
@@ -185,16 +185,6 @@ let user_id = curent_user.substring(
 if (users[user_id]) {
   $("i.fal.fa-sign-out").attr("data-original-title", users[user_id]);
 }
-
-//--------------------------------
-// désactiver auto logout
-//--------------------------------
-setInterval(function () {
-  window.localStorage.setItem(
-    "lastUserInteraction",
-    Date.now() + 60 * 240 * 1000
-  );
-}, 5000);
 
 //--------------------------------
 // Task Manger
