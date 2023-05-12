@@ -38,7 +38,6 @@ select.form-control.form-control-sm.updateMitarbeiterSelectbox{
  .tooltip-mehr {
     font-size: 20px;
 }
-
  `);
 
 //--------------------------
