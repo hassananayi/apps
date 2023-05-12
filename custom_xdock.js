@@ -14,7 +14,7 @@ $("<style>").appendTo("head").html(`
 /* Augmenter la taille du texte Remorque /véhicules */
 input#kennzeichenZugmaschine,
 input#kennzeichenAuflieger {
-    font-size: 22px !important;
+    font-size: 21px !important;
     
 }
 button.btn[data-id="spediteurId"] {
