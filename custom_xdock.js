@@ -2,8 +2,8 @@
 // Xdock personnalisé
 //***************************//
 console.log(
-  "Xdock personnalisé V 1.4.0 pour XDock Ver.20230323_3  a été chargé.",
-  "\nDernière mise à jour le 10 mai 2023"
+  "Xdock personnalisé V 1.4.1 pour XDock Ver.20230511_3  a été chargé.",
+  "\nDernière mise à jour le 12 mai 2023"
 );
 //--------------------------
 // CSS Styles
@@ -14,12 +14,16 @@ $("<style>").appendTo("head").html(`
 /* Augmenter la taille du texte Remorque /véhicules */
 input#kennzeichenZugmaschine,
 input#kennzeichenAuflieger {
-    font-size: 20px !important;
+    font-size: 22px !important;
+    
+}
+button.btn[data-id="spediteurId"] {
+  width: 354px;
 }
 
 /* Augmenter la taille du texte de la porte */
 label[for="tor-name"] a {
-    font-size: 20px !important;
+    font-size: 21px !important;
 }
 
 /* Augmenter la taille du les Collaborateurs */
