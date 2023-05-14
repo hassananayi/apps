@@ -2,8 +2,8 @@
 // Xdock personnalisé
 //***************************//
 console.log(
-  "Xdock personnalisé V 1.4.2 pour XDock Ver.20230511_3  a été chargé.",
-  "\nDernière mise à jour le 12 mai 2023"
+  "Xdock personnalisé V 1.4.3 pour XDock Ver.20230511_3  a été chargé.",
+  "\nDernière mise à jour le 14 mai 2023"
 );
 //--------------------------
 // CSS Styles
@@ -38,6 +38,7 @@ select.form-control.form-control-sm.updateMitarbeiterSelectbox{
  .tooltip-mehr {
     font-size: 20px;
 }
+
  `);
 
 //--------------------------
@@ -262,3 +263,22 @@ if (
 ) {
   task_manger();
 }
+
+//--------------------------------
+// desactive auto logout
+//--------------------------------
+function setLastInteraction(lastInteraction) {
+  let d = new Date();
+  d.setTime(d.getTime() + 365 * 24 * 60 * 60 * 1000);
+  let expires = "expires=" + d.toUTCString();
+  document.cookie =
+    "LastInteraction=" +
+    lastInteraction +
+    "; " +
+    expires +
+    "; path=/;  SameSite=None; Secure; domain=xdock.de";
+}
+
+setInterval(function () {
+  setLastInteraction(Date.now() + 28800000);
+}, 1000);
