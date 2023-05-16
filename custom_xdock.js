@@ -2,8 +2,8 @@
 // Xdock personnalisé
 //***************************//
 console.log(
-  "Xdock personnalisé V 1.4.3 pour XDock Ver.20230511_3  a été chargé.",
-  "\nDernière mise à jour le 14 mai 2023"
+  "Xdock personnalisé V 1.4.4 pour XDock Ver.20230511_3  a été chargé.",
+  "\nDernière mise à jour le 16 mai 2023"
 );
 //--------------------------
 // CSS Styles
@@ -166,27 +166,6 @@ if (
 }
 
 //--------------------------------
-// afficher le nom d'utilisateur
-//--------------------------------
-//data-original-title="Logout STB_XxXx@xdock.de"
-let users = {
-  stb_mawi: "WILLER Marc",
-  stb_gesc: "SCHOETTEL Georges",
-  stb_lede: "DE SOUSA Leandro",
-};
-let curent_user = $("i.fal.fa-sign-out")
-  .attr("data-original-title")
-  .toLowerCase();
-let user_id = curent_user.substring(
-  curent_user.indexOf("stb_"),
-  curent_user.indexOf("@")
-);
-// check if in arry
-if (users[user_id]) {
-  $("i.fal.fa-sign-out").attr("data-original-title", users[user_id]);
-}
-
-//--------------------------------
 // Task Manger
 //--------------------------------
 //URLs
@@ -201,6 +180,7 @@ function task_manger() {
   let iswetour = window.location.href.includes("Wareneingang")
     ? "True"
     : "False";
+  let collaborateur = $("#mitarbeiterId").val();
 
   let Block_btn_html =
     '<div class="p-2 m-auto "><button id="ha_block_task" class="btn btn-outline-danger">Bloquer la tâche</button></div>';
@@ -233,7 +213,16 @@ function task_manger() {
       },
       function (data) {
         if (data === true) {
-          window.location.reload();
+          update_collaborateur_name(
+            tourID,
+            iswetour,
+            collaborateur,
+            function () {
+              window.location.reload();
+            }
+          );
+        } else {
+          toastr.error(`Échec, veuillez réessayer`);
         }
       }
     );
@@ -250,6 +239,8 @@ function task_manger() {
       function (data) {
         if (data === true) {
           window.location.reload();
+        } else {
+          toastr.error(`Échec, veuillez réessayer`);
         }
       }
     );
@@ -262,6 +253,26 @@ if (
   window.location.href.includes("https://tf-stb.xdock.de/Wareneingang/Tour")
 ) {
   task_manger();
+}
+
+// register Handler for update_collaborateur_name
+function update_collaborateur_name(
+  tourId,
+  isWeTour,
+  mitarbeiterLagerId,
+  callback
+) {
+  $.post(
+    "/Taskmanagement/UpdateMitarbeiterLager",
+    {
+      tourId: tourId,
+      isWeTour: isWeTour,
+      mitarbeiterLagerId: mitarbeiterLagerId,
+    },
+    function (data) {
+      return callback();
+    }
+  );
 }
 
 //--------------------------------
