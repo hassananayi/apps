@@ -2,8 +2,8 @@
 // Xdock personnalisé
 //***************************//
 console.log(
-  "Xdock personnalisé V 1.4.4 pour XDock Ver.20230511_3  a été chargé.",
-  "\nDernière mise à jour le 16 mai 2023"
+  "Xdock personnalisé V 1.4.5 pour XDock Ver.20230511_3  a été chargé.",
+  "\nDernière mise à jour le 19 mai 2023"
 );
 //--------------------------
 // CSS Styles
@@ -74,7 +74,6 @@ function collaborateurs() {
     "983", //Vincent
     "913", //Yamin,
     "937", //julien
-    "950", //Pierre New
     "1428", //yanana
     "919", //Daniel
   ];
@@ -157,11 +156,7 @@ function collaborateurs() {
 } // end function coll
 
 // check if the page is "dans lnte" run the function
-if (
-  window.location.href.includes(
-    "https://tf-stb.xdock.de/Taskmanagement/TaskmanagementAmLager"
-  )
-) {
+if (window.location.href.includes("/Taskmanagement/TaskmanagementAmLager")) {
   collaborateurs();
 }
 
@@ -181,6 +176,7 @@ function task_manger() {
     ? "True"
     : "False";
   let collaborateur = $("#mitarbeiterId").val();
+  let working = false;
 
   let Block_btn_html =
     '<div class="p-2 m-auto "><button id="ha_block_task" class="btn btn-outline-danger">Bloquer la tâche</button></div>';
@@ -189,13 +185,13 @@ function task_manger() {
 
   // inject btns
   switch (parseInt(tourStatus)) {
-    case 80:
+    case 80: // en cours
       $(".xdock-head-row > .col-4 > .d-flex.flex-row").append(Block_btn_html);
       break;
-    case 75:
+    case 75: // Entrée de marchandises à la porte
       $(".xdock-head-row > .col-4 > .d-flex.flex-row").append(Block_btn_html);
       break;
-    case 44:
+    case 44: // bloque
       $(".xdock-head-row > .col-4 > .d-flex.flex-row").append(deblock_btn_html);
       break;
 
@@ -205,8 +201,11 @@ function task_manger() {
 
   // block task
   $(document).on("click", "#ha_block_task", function () {
+    if (working) return true;
+    working = true;
+
     $.post(
-      "https://tf-stb.xdock.de/Taskmanagement/TaskSperrenErzwingen",
+      "/Taskmanagement/TaskSperrenErzwingen",
       {
         tourId: parseInt(tourID),
         isWeTour: iswetour,
@@ -222,16 +221,30 @@ function task_manger() {
             }
           );
         } else {
-          toastr.error(`Échec, veuillez réessayer`);
+          toastr.error(
+            `Erreur "${data}", <br> Une erreur est survenue lors du blocage.<br>veuillez réessayer`
+          );
+          working = false;
         }
       }
-    );
+    ).fail(function (res) {
+      toastr.error(
+        `Erreur ${res.status}, "${res.statusText}". <br> Une erreur est survenue lors du blocage.<br>
+         Message du serveur "${res.responseText}"`
+      );
+      working = false;
+
+      console.log(res);
+    });
   });
 
   // deblock task
   $(document).on("click", "#ha_deblock_task", function () {
+    if (working) return true;
+    working = true;
+
     $.post(
-      "https://tf-stb.xdock.de/Taskmanagement/TaskFreigeben",
+      "/Taskmanagement/TaskFreigeben",
       {
         tourId: tourID,
         isWeTour: iswetour,
@@ -240,17 +253,26 @@ function task_manger() {
         if (data === true) {
           window.location.reload();
         } else {
-          toastr.error(`Échec, veuillez réessayer`);
+          toastr.error(
+            `Erreur "${data}", <br> Une erreur est survenue lors du déblocage.<br>veuillez réessayer`
+          );
+          working = false;
         }
       }
-    );
+    ).fail(function (res) {
+      toastr.error(
+        `Erreur ${res.status}, "${res.statusText}". <br> Une erreur est survenue lors du déblocage.<br>
+         Message du serveur "${res.responseText}".`
+      );
+      working = false;
+    });
   });
 }
 
 // check if the page is "tour EM or SM" run the function
 if (
-  window.location.href.includes("https://tf-stb.xdock.de/Warenausgang/Tour") ||
-  window.location.href.includes("https://tf-stb.xdock.de/Wareneingang/Tour")
+  window.location.href.includes("/Warenausgang/Tour") ||
+  window.location.href.includes("/Wareneingang/Tour")
 ) {
   task_manger();
 }
@@ -272,24 +294,10 @@ function update_collaborateur_name(
     function (data) {
       return callback();
     }
-  );
+  ).fail(function (res) {
+    toastr.error(
+      `Erreur ${res.status}, "${res.statusText}". <br> Une erreur est survenue lors du changement de nom.
+       Message du serveur "${res.responseText}".`
+    );
+  });
 }
-
-//--------------------------------
-// desactive auto logout
-//--------------------------------
-function setLastInteraction(lastInteraction) {
-  let d = new Date();
-  d.setTime(d.getTime() + 365 * 24 * 60 * 60 * 1000);
-  let expires = "expires=" + d.toUTCString();
-  document.cookie =
-    "LastInteraction=" +
-    lastInteraction +
-    "; " +
-    expires +
-    "; path=/;  SameSite=None; Secure; domain=xdock.de";
-}
-
-setInterval(function () {
-  setLastInteraction(Date.now() + 28800000);
-}, 1000);
