@@ -2,8 +2,8 @@
 // Xdock personnalisé
 //***************************//
 console.log(
-  "Xdock personnalisé V 1.4.5 pour XDock Ver.20230511_3  a été chargé.",
-  "\nDernière mise à jour le 19 mai 2023"
+  "Xdock personnalisé V 1.4.6 pour XDock Ver.20230511_3  a été chargé.",
+  "\nDernière mise à jour le 23 mai 2023"
 );
 //--------------------------
 // CSS Styles
@@ -200,9 +200,11 @@ function task_manger() {
   }
 
   // block task
-  $(document).on("click", "#ha_block_task", function () {
+  $(document).on("click", "#ha_block_task", function (e) {
     if (working) return true;
     working = true;
+
+    let isShiftKeyPreseed = e.shiftKey;
 
     $.post(
       "/Taskmanagement/TaskSperrenErzwingen",
@@ -212,6 +214,7 @@ function task_manger() {
       },
       function (data) {
         if (data === true) {
+          if (isShiftKeyPreseed) return window.location.reload();
           update_collaborateur_name(
             tourID,
             iswetour,
@@ -233,8 +236,6 @@ function task_manger() {
          Message du serveur "${res.responseText}"`
       );
       working = false;
-
-      console.log(res);
     });
   });
 
