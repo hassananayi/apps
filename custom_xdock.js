@@ -2,8 +2,8 @@
 // Xdock personnalisé
 //***************************//
 console.log(
-  "Xdock personnalisé V 1.4.6 pour XDock Ver.20230511_3  a été chargé.",
-  "\nDernière mise à jour le 23 mai 2023"
+  "Xdock personnalisé V 1.4.7 pour XDock Ver.20230511_3  a été chargé.",
+  "\nDernière mise à jour le 26 mai 2023"
 );
 //--------------------------
 // CSS Styles
@@ -204,7 +204,7 @@ function task_manger() {
     if (working) return true;
     working = true;
 
-    let isShiftKeyPreseed = e.shiftKey;
+    let ctrlKey = e.ctrlKey;
 
     $.post(
       "/Taskmanagement/TaskSperrenErzwingen",
@@ -214,7 +214,7 @@ function task_manger() {
       },
       function (data) {
         if (data === true) {
-          if (isShiftKeyPreseed) return window.location.reload();
+          if (ctrlKey) return window.location.reload();
           update_collaborateur_name(
             tourID,
             iswetour,
@@ -302,3 +302,22 @@ function update_collaborateur_name(
     );
   });
 }
+
+//--------------------------------
+// easy way to do
+//--------------------------------
+
+// click on four to select
+$(document).on(
+  "click",
+  "span.d-inline-block.text-truncate.w-100.mightoverflow",
+  function (ev) {
+    if (!ev.ctrlKey) return false;
+
+    console.log($(this).parent().parent().find(".lieferpositionToDelete"));
+
+    $($($(this).parent().parent().find(".lieferpositionToDelete")[0])).trigger(
+      "click"
+    );
+  }
+);
