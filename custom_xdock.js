@@ -2,8 +2,8 @@
 // Xdock personnalisé
 //***************************//
 console.log(
-  "Xdock personnalisé V 1.4.7 pour XDock Ver.20230511_3  a été chargé.",
-  "\nDernière mise à jour le 26 mai 2023"
+  "Xdock personnalisé V 1.4.8 pour XDock Ver.20230511_3  a été chargé.",
+  "\nDernière mise à jour le 02 juin 2023"
 );
 //--------------------------
 // CSS Styles
@@ -37,6 +37,18 @@ select.form-control.form-control-sm.updateMitarbeiterSelectbox{
  /* Augmenter la taille du tooltip */
  .tooltip-mehr {
     font-size: 20px;
+}
+
+
+/* delete palettes btn */
+div#delete_palettes_zone {
+  display: contents;
+}
+
+button#delete_palettes {
+  position: absolute;
+  left: 274px;
+  margin-top: 8px;
 }
 
  `);
@@ -304,7 +316,7 @@ function update_collaborateur_name(
 }
 
 //--------------------------------
-// easy way to do
+// Delete palettes
 //--------------------------------
 
 // click on four to select
@@ -314,10 +326,32 @@ $(document).on(
   function (ev) {
     if (!ev.ctrlKey) return false;
 
-    console.log($(this).parent().parent().find(".lieferpositionToDelete"));
+    //console.log($(this).parent().parent().find(".lieferpositionToDelete"));
 
     $($($(this).parent().parent().find(".lieferpositionToDelete")[0])).trigger(
       "click"
     );
   }
 );
+
+// add btn delete palettes
+
+$(".addlp-button[value='AddLieferposition']").after(
+  `<div id="delete_palettes_zone"></div>`
+);
+
+$(document).on("change", ".lieferpositionToDelete", function (e) {
+  if (!$(".to-be-deleted").length > 0)
+    return $("#delete_palettes_zone").html("");
+
+  $(
+    "#delete_palettes_zone"
+  ).html(`<button id="delete_palettes" class="btn btn-sm btn-outline-danger">
+<span class="fal fa-trash-alt"></span>
+Supprimez les positions sélectionnées
+</button>`);
+});
+
+$(document).on("click", "#delete_palettes", function (e) {
+  $("#deleteSelectedLieferpositions").trigger("click");
+});
