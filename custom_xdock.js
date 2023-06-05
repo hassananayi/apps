@@ -2,8 +2,8 @@
 // Xdock personnalisé
 //***************************//
 console.log(
-  "Xdock personnalisé V 1.4.8 pour XDock Ver.20230511_3  a été chargé.",
-  "\nDernière mise à jour le 02 juin 2023"
+  "Xdock personnalisé V 1.4.9 pour XDock Ver.20230511_3  a été chargé.",
+  "\nDernière mise à jour le 05 juin 2023"
 );
 //--------------------------
 // CSS Styles
@@ -51,7 +51,27 @@ button#delete_palettes {
   margin-top: 8px;
 }
 
+button#copy_palettes {
+  position: absolute;
+  left: 554px;
+  margin-top: 8px;
+}
+
+button#paste_palettes {
+  margin-top: 15px;
+  margin-left: 10px;
+}
+
+
+
  `);
+
+//--------------------------
+// Statics
+//--------------------------
+
+const isSMTour = window.location.href.includes("Warenausgang") ? true : false;
+const isEMTour = window.location.href.includes("Wareneingang") ? true : false;
 
 //--------------------------
 // collaborateurs
@@ -326,32 +346,104 @@ $(document).on(
   function (ev) {
     if (!ev.ctrlKey) return false;
 
-    //console.log($(this).parent().parent().find(".lieferpositionToDelete"));
-
     $($($(this).parent().parent().find(".lieferpositionToDelete")[0])).trigger(
       "click"
     );
   }
 );
 
-// add btn delete palettes
+// add BTNs delete and copy palettes
 
 $(".addlp-button[value='AddLieferposition']").after(
   `<div id="delete_palettes_zone"></div>`
 );
 
+// on selections palettes for delete
 $(document).on("change", ".lieferpositionToDelete", function (e) {
   if (!$(".to-be-deleted").length > 0)
     return $("#delete_palettes_zone").html("");
 
-  $(
-    "#delete_palettes_zone"
-  ).html(`<button id="delete_palettes" class="btn btn-sm btn-outline-danger">
-<span class="fal fa-trash-alt"></span>
-Supprimez les positions sélectionnées
-</button>`);
+  if (isSMTour) {
+    $("#delete_palettes_zone").html(`
+  
+    <button id="delete_palettes" class="btn btn-sm btn-outline-danger">
+  <span class="fal fa-trash"></span>
+  Supprimez les positions sélectionnées
+  </button>
+  
+  <button id="copy_palettes" class="btn btn-sm btn-outline-primary ">
+  <span class="fal fa-copy"></span>
+  Copier les positions
+  </button>
+  
+  
+  `);
+  } else {
+    $("#delete_palettes_zone").html(`
+      <button id="delete_palettes" class="btn btn-sm btn-outline-danger">
+      <span class="fal fa-trash"></span>
+      Supprimez les positions sélectionnées
+      </button>
+  `);
+  }
 });
 
 $(document).on("click", "#delete_palettes", function (e) {
   $("#deleteSelectedLieferpositions").trigger("click");
 });
+
+$(document).on("click", "#copy_palettes", function (e) {
+  copy_palettes_GTINs();
+});
+
+//--------------------------------
+// copy & paste palettes GTINs
+//--------------------------------
+function copy_palettes_GTINs() {
+  const palettes_lpsToDelete = document.querySelectorAll(
+    ".lieferpositionToDelete:checked"
+  );
+  const GTINs = [];
+  for (const lp of palettes_lpsToDelete) {
+    GTINs.push($(lp).parent().parent()[0].cells[3].innerText);
+  }
+  navigator.clipboard.writeText(JSON.stringify(GTINs));
+  toastr.success(`les positions ont été copiés.`);
+}
+
+if (
+  window.location.href.includes("Warenausgang/AddLieferpositionen?waTourId")
+) {
+  $("#submitButton").after(
+    `<div id="delete_palettes_zone">
+    <button id="paste_palettes" class="btn btn-sm btn-outline-primary ">
+    <span class="fal fa-paste"></span>
+    Coller les positions
+    </button>
+    </div>`
+  );
+
+  $(document).on("click", "#paste_palettes", function (e) {
+    e.preventDefault();
+
+    navigator.clipboard.readText().then(function (clipText) {
+      const GTINs = JSON.parse(clipText);
+
+      const palettesAvilebal = document.querySelectorAll(
+        'input[name="lieferposCheckboxes"]'
+      );
+
+      for (const palette of palettesAvilebal) {
+        // check if is id in clipboard
+
+        const paletteGTIN = $(palette).parent().parent().parent().parent()[0]
+          .cells[5].innerText;
+        if (GTINs.includes(paletteGTIN)) {
+          $(palette).trigger("click");
+        }
+      }
+
+      toastr.success(`les positions ont été collées.`);
+    });
+  });
+}
