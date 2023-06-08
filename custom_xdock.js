@@ -1,10 +1,10 @@
 //***************************//
 // Xdock personnalisé
 //***************************//
-console.log(
-  "Xdock personnalisé V 1.4.9 pour XDock Ver.20230511_3  a été chargé.",
-  "\nDernière mise à jour le 05 juin 2023"
+$("footer>.text-muted.text-right").prepend(
+  "<small>XDock personnalisé V 1.5.0 Dernière mise à jour le 07 juin 2023 - </small>"
 );
+
 //--------------------------
 // CSS Styles
 //--------------------------
@@ -336,7 +336,7 @@ function update_collaborateur_name(
 }
 
 //--------------------------------
-// Delete palettes
+// Delete/Count palettes
 //--------------------------------
 
 // click on four to select
@@ -358,10 +358,19 @@ $(".addlp-button[value='AddLieferposition']").after(
   `<div id="delete_palettes_zone"></div>`
 );
 
+let num_palettes_selected = 0;
+
 // on selections palettes for delete
 $(document).on("change", ".lieferpositionToDelete", function (e) {
-  if (!$(".to-be-deleted").length > 0)
-    return $("#delete_palettes_zone").html("");
+  if (!$(".to-be-deleted").length > 0) {
+    $("#delete_palettes_zone").html("");
+    $("tfoot>tr>td[colspan='11']").html("");
+    num_palettes_selected = 0;
+
+    return false;
+  }
+
+  let num_palette_selected_current;
 
   if (isSMTour) {
     $("#delete_palettes_zone").html(`
@@ -378,6 +387,10 @@ $(document).on("change", ".lieferpositionToDelete", function (e) {
   
   
   `);
+
+    num_palette_selected_current = parseInt(
+      $(e.target).parent().parent()[0].cells[13].innerText
+    );
   } else {
     $("#delete_palettes_zone").html(`
       <button id="delete_palettes" class="btn btn-sm btn-outline-danger">
@@ -385,7 +398,24 @@ $(document).on("change", ".lieferpositionToDelete", function (e) {
       Supprimez les positions sélectionnées
       </button>
   `);
+
+    num_palette_selected_current = parseInt(
+      $(e.target).parent().parent()[0].cells[12].innerText
+    );
   }
+
+  // Palettes Counters.
+  // check if checked to count num palettes
+  if ($(e.target).is(":checked")) {
+    num_palettes_selected += num_palette_selected_current;
+  } else {
+    num_palettes_selected -= num_palette_selected_current;
+  }
+
+  // show num palettes selected
+  $("tfoot>tr>td[colspan='11']")
+    .css("text-align", "center")
+    .html("Nombre des palettes sélectionnées:  " + num_palettes_selected);
 });
 
 $(document).on("click", "#delete_palettes", function (e) {
