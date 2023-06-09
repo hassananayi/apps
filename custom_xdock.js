@@ -64,7 +64,7 @@ button#paste_palettes {
 
 
 .addLp-ausgewaehlt {
-  background-color: #b8b8b8 !important;
+  background-color: #ccc !important;
 }
 
 
