@@ -2,7 +2,7 @@
 // Xdock personnalisé
 //***************************//
 $("footer>.text-muted.text-right").prepend(
-  "<small>XDock personnalisé V 1.5.0 Dernière mise à jour le 07 juin 2023 - </small>"
+  "<small>XDock personnalisé V 1.5.1 Dernière mise à jour le 09 juin 2023 - </small>"
 );
 
 //--------------------------
@@ -62,6 +62,10 @@ button#paste_palettes {
   margin-left: 10px;
 }
 
+
+.addLp-ausgewaehlt {
+  background-color: #b8b8b8 !important;
+}
 
 
  `);
