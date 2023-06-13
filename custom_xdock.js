@@ -2,7 +2,7 @@
 // Xdock personnalisé
 //***************************//
 $("footer>.text-muted.text-right").prepend(
-  "<small>XDock personnalisé V 1.5.1 Dernière mise à jour le 09 juin 2023 - </small>"
+  "<small>XDock personnalisé V 1.5.2 Dernière mise à jour le 13 juin 2023 - </small>"
 );
 
 //--------------------------
@@ -481,3 +481,41 @@ if (
     });
   });
 }
+
+//--------------------------------
+// auto kommentar
+//--------------------------------
+$("#kommentarIntern").on("keyup", function (e) {
+  if ($(this).val().includes("&")) {
+    let chois = prompt(
+      `1) Recharge {destination}.\nFaire prochain tâche pour le chargement.\n\n2) Recharge {destination}.\n Chargement plus tard.\n\n3) Recharge {destination}.\nReste à quai, chargement à bientôt.\n\n4) Garder {destination}.\n\n5) Pas d'échange de palettes.\n\n6) Faire l'échange de palettes.`
+    );
+
+    let data = chois.split(" ");
+
+    switch (parseInt(data[0])) {
+      case 1:
+        $(this).val(
+          `Recharge ${data[1]}.\nFaire prochain tâche pour le chargement.`
+        );
+        break;
+      case 2:
+        $(this).val(`Recharge ${data[1]}.\nChargement plus tard.`);
+        break;
+      case 3:
+        $(this).val(
+          `Recharge ${data[1]}.\nReste à quai, chargement à bientôt.`
+        );
+        break;
+      case 4:
+        $(this).val(`Garder ${data[1]}.`);
+        break;
+      case 5:
+        $(this).val(`Pas d'échange de palettes.`);
+        break;
+      case 6:
+        $(this).val(`Faire l'échange de palettes.`);
+        break;
+    }
+  }
+});
