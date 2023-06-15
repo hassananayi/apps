@@ -2,7 +2,7 @@
 // Xdock personnalisé
 //***************************//
 $("footer>.text-muted.text-right").prepend(
-  "<small>XDock personnalisé V 1.5.2 Dernière mise à jour le 13 juin 2023 - </small>"
+  "<small>XDock personnalisé V 1.5.3 Dernière mise à jour le 15 juin 2023 - </small>"
 );
 
 //--------------------------
@@ -483,39 +483,37 @@ if (
 }
 
 //--------------------------------
-// auto kommentar
+// auto comments
 //--------------------------------
 $("#kommentarIntern").on("keyup", function (e) {
-  if ($(this).val().includes("&")) {
-    let chois = prompt(
-      `1) Recharge {destination}.\nFaire prochain tâche pour le chargement.\n\n2) Recharge {destination}.\n Chargement plus tard.\n\n3) Recharge {destination}.\nReste à quai, chargement à bientôt.\n\n4) Garder {destination}.\n\n5) Pas d'échange de palettes.\n\n6) Faire l'échange de palettes.`
-    );
+  let orgnal_value = $(this).val();
 
-    let data = chois.split(" ");
+  if (!$(this).val().includes("&")) return true;
 
-    switch (parseInt(data[0])) {
-      case 1:
-        $(this).val(
-          `Recharge ${data[1]}.\nFaire prochain tâche pour le chargement.`
-        );
-        break;
-      case 2:
-        $(this).val(`Recharge ${data[1]}.\nChargement plus tard.`);
-        break;
-      case 3:
-        $(this).val(
-          `Recharge ${data[1]}.\nReste à quai, chargement à bientôt.`
-        );
-        break;
-      case 4:
-        $(this).val(`Garder ${data[1]}.`);
-        break;
-      case 5:
-        $(this).val(`Pas d'échange de palettes.`);
-        break;
-      case 6:
-        $(this).val(`Faire l'échange de palettes.`);
-        break;
-    }
+  let comments = [
+    "",
+    "1) Recharge {destination}.\nFaire prochaine tâche pour le chargement.",
+    "2) Recharge {destination}.\nChargement plus tard, envoyer au parking.",
+    "3) Recharge {destination}.\nReste à quai, chargement plus tard, laisser porte ouverte.",
+    "4) Garder {destination}, à compléter.",
+    "5) Coupure à quai, à compléter.",
+  ];
+
+  let chois = prompt(comments.slice(1).join("\n\n"));
+
+  let data = chois.split(" ");
+
+  switch (parseInt(data[0])) {
+    case 1:
+    case 2:
+    case 3:
+    case 4:
+      $(this).val(
+        comments[data[0]].substring(3).replace("{destination}", data[1])
+      );
+      break;
+    case 5:
+      $(this).val(comments[data[0]].substring(3));
+      break;
   }
 });
