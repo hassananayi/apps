@@ -2,7 +2,7 @@
 // Xdock personnalisé
 //***************************//
 $("footer>.text-muted.text-right").prepend(
-  "<small>XDock personnalisé V 1.5.3 Dernière mise à jour le 15 juin 2023 - </small>"
+  "<small>XDock personnalisé V 1.6 Dernière mise à jour le 21 juin 2023 - </small>"
 );
 
 //--------------------------
@@ -67,6 +67,10 @@ button#paste_palettes {
   background-color: #ccc !important;
 }
 
+.palettenStatusSmall {
+  font-size: 14px;  
+}
+
 
  `);
 
@@ -96,7 +100,8 @@ function collaborateurs() {
     "929", //Hamadi
     "976", //Sebastien
     "979", //Stephan M.
-    "934", //Suzie
+    "934", //Suzie,
+    "974", // Ryan
   ];
   let team_2 = [
     "", // -
