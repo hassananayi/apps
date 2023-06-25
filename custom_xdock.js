@@ -522,3 +522,16 @@ $("#kommentarIntern").on("keyup", function (e) {
       break;
   }
 });
+
+//--------------------------------
+// Map
+//--------------------------------
+
+if (window.location.href === "https://tf-stb.xdock.de/") {
+  $.get(
+    "https://cdn.jsdelivr.net/gh/hassananayi/apps@main/map.html",
+    function (data, textStatus, jqXHR) {
+      $("#img-zonenuebersicht").replaceWith(data);
+    }
+  );
+}
