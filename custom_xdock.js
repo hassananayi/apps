@@ -1,9 +1,13 @@
 //***************************//
-// Xdock personnalisé
+// XDock PRO
 //***************************//
 $("footer>.text-muted.text-right").prepend(
-  "<small>XDock personnalisé V 1.6 Dernière mise à jour le 21 juin 2023 - </small>"
+  "<small>XDock PRO V 1.07 Dernière mise à jour le 25 juin 2023 - </small>"
 );
+
+if (window.location.pathname == "/") {
+  $("h1").html("XDock PRO");
+}
 
 //--------------------------
 // CSS Styles
@@ -524,14 +528,11 @@ $("#kommentarIntern").on("keyup", function (e) {
 });
 
 //--------------------------------
-// Map
+// Map Add-on
 //--------------------------------
 
-if (window.location.href === "https://tf-stb.xdock.de/") {
-  $.get(
-    "https://cdn.jsdelivr.net/gh/hassananayi/apps@main/map.html",
-    function (data, textStatus, jqXHR) {
-      $("#img-zonenuebersicht").replaceWith(data);
-    }
-  );
-}
+// open map
+$(".xdockLogo").on("click", function (e) {
+  e.preventDefault();
+  window.open("/#map");
+});
