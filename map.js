@@ -1,6 +1,6 @@
 //***************************//
 // Map add-on for XDock PRO
-// V 1.00
+// V 1.01
 //***************************//
 
 $("<style>").appendTo("head").html(`
@@ -21,6 +21,13 @@ $("<style>").appendTo("head").html(`
   .container-fluid.mt-3 {
     display: none !important;
 }
+
+.guide {
+  bottom: 64px !important;
+  left: 68px !important;
+ 
+}
+
 }
 
 
@@ -46,7 +53,7 @@ $("<style>").appendTo("head").html(`
   width: 90%;
   border: 2px solid #929292;
   margin: auto;
-  margin-top: 35px;
+  margin-top: 30px;
 }
 
 .first_color {
@@ -59,8 +66,14 @@ $("<style>").appendTo("head").html(`
 .free {
   background: #2ecc71 !important;
 }
+
 .taken {
-  background: #3498db !important;
+  background: #3498db;
+
+}
+
+.en_cours{
+  background: #e67e22;
 }
 
 .de_hier {
@@ -91,7 +104,7 @@ a.url_edit {
 }
 .M {
   position: absolute;
-  top: 60px;
+  top: 58px;
   left: 110px;
   display: flex;
   justify-content: center;
@@ -142,7 +155,7 @@ a.url_edit {
 .C_B_L {
   position: absolute;
   right: 257px;
-  top: 200px;
+  top: 197px;
 }
 .C_B_L > .top {
   display: flex;
@@ -222,7 +235,7 @@ a.url_edit {
 .A_B_L {
   position: absolute;
   left: 144px;
-  top: 212px;
+  top: 208px;
 }
 .A_B_L > .top {
   display: flex;
@@ -276,6 +289,28 @@ a.url_edit {
   display: flex;
   align-items: center;
   justify-content: space-around;
+}
+
+
+.guide {
+  position: absolute;
+  bottom: 17px;
+  left: 66px;
+  font-size: 10px;
+  color: #292929;
+}
+
+.gud_item {
+  margin-right: 15px;
+  display: flex;
+}
+
+.color {
+  height: 12px;
+  width: 12px;
+  border-radius: 50%;
+  margin-right: 3px;
+  
 }
 
 `);
@@ -693,6 +728,19 @@ let a4 = `
             </div>
         </div>
          
+
+
+        <div  class="guide d-flex">
+        <div class="gud_item"><div class="color free"></div> <span class="title">Libre</span></div>
+        <div class="gud_item"><div class="color taken"></div>  <span class="title">Occupé</span></div>
+        <div class="gud_item"><div class="color blocked"></div> <span class="title">Zone/SM bloqué</span></div>
+        <div class="gud_item"><div class="color en_cours"></div> <span class="title">SM en cours</span></div>
+        <div class="gud_item"><div class="color de_avance"></div> <span class="title">Occupé pour demain</span></div>
+        <div class="gud_item"><div class="color de_hier"></div> <span class="title">SM de hier</span></div>
+        <div class="gud_item"><div class="color first_color"></div> <span class="title">Inconnue</span></div>
+        </div>
+
+
     </div>`;
 
 $("#img-zonenuebersicht").replaceWith(a4);
@@ -722,64 +770,90 @@ $("#selectedDate").on("change", function (e) {
   );
 });
 
-$.get(
-  "/Warenausgang/Tag?sort=ZielortLokationNameASC&selectedDate=" + selected_date,
-  function (data, textStatus, jqXHR) {
-    update_zone_status(data);
-  }
-);
+// When dom ready call data
+$(document).ready(function () {
+  $.get(
+    "/Warenausgang/Tag?sort=ZielortLokationNameASC&selectedDate=" +
+      selected_date,
+    function (data, textStatus, jqXHR) {
+      update_zone_status(data);
+    }
+  );
+});
 
 // Update zones status
-function update_zone_status(data) {
+function update_zone_status(dataServ) {
   let zone_info = [];
+
+  let data = $(dataServ);
   // loop for zone alredy teken
-  $($(data).find("#ZoneBase").find("select > option")).each(function (
-    index,
-    value
-  ) {
-    let zoneID = parseInt($(value).val());
-
+  $(data.find("#ZoneBase>select>option")).each(function (index, value) {
+    let option = $(value);
+    let zoneID = parseInt(option.val());
     // check if is taken
-    if ($(value).hasClass("zone-in-verwendung-auslieferungstermin")) {
-      let ref = $(
-        $(data)
-          .find("[data-selected='" + zoneID + "']")
-          .parent()[0].cells[9]
-      )
-        .find(".mightoverflow")
-        .html()
-        .trim()
-        .substr(0, 3);
+    if (option.hasClass("zone-in-verwendung-auslieferungstermin")) {
+      let tr_children = data
+        .find("[data-selected='" + zoneID + "']")
+        .parent()
+        .children();
+      let ref = tr_children[9].innerText.trim().substr(0, 3);
 
-      zone_info.push({
-        id: zoneID,
-        name: $(value).html(),
-        ref: ref,
-        status: "taken",
-      });
+      if (!ref.length > 0) {
+        ref = tr_children[6].innerText.substring(12);
+      }
+      // check tour status
+      let lpStatus = tr_children[1].innerText;
+
+      switch (parseInt(lpStatus)) {
+        case 80:
+        case 81:
+          zone_info.push({
+            id: zoneID,
+            name: option.html(),
+            ref: ref,
+            status: "en_cours",
+          });
+          break;
+        case 44:
+          zone_info.push({
+            id: zoneID,
+            name: option.html(),
+            ref: ref,
+            status: "blocked",
+          });
+          break;
+        default:
+          zone_info.push({
+            id: zoneID,
+            name: option.html(),
+            ref: ref,
+            status: "taken",
+          });
+          break;
+      }
 
       // check if is tecken for de_hier
-    } else if ($(value).hasClass("zone-in-verwendung-vergangenheit")) {
-      zone_info.push({ id: zoneID, name: $(value).html(), status: "de_hier" });
+    } else if (option.hasClass("zone-in-verwendung-vergangenheit")) {
+      zone_info.push({ id: zoneID, name: option.html(), status: "de_hier" });
       // check if is tecken for de_avance
-    } else if ($(value).hasClass("zone-in-verwendung-zukunft")) {
+    } else if (option.hasClass("zone-in-verwendung-zukunft")) {
       zone_info.push({
         id: zoneID,
-        name: $(value).html(),
+        name: option.html(),
         ref: "",
         status: "de_avance",
       });
-    } else if ($(value).is(":disabled")) {
+    } else if (option.is(":disabled")) {
       zone_info.push({
         id: zoneID,
-        name: $(value).html(),
+        name: option.html(),
         ref: "",
         status: "blocked",
       });
     } else {
       zone_info.push({
         id: zoneID,
-        name: $(value).html(),
+        name: option.html(),
         ref: "",
         status: "free",
       });
@@ -803,6 +877,9 @@ function update_map() {
         break;
       case "taken":
         zone_el.parent().addClass("taken");
+        break;
+      case "en_cours":
+        zone_el.parent().addClass("en_cours");
         break;
       case "de_hier":
         zone_el.parent().addClass("de_hier");
