@@ -2,7 +2,7 @@
 // XDock PRO
 //***************************//
 $("footer>.text-muted.text-right").prepend(
-  "<small>XDock PRO V 1.07 Dernière mise à jour le 25 juin 2023 - </small>"
+  "<small>XDock PRO V 1.08 Dernière mise à jour le 26 juin 2023 - </small>"
 );
 
 if (window.location.pathname == "/") {
@@ -536,3 +536,37 @@ $(".xdockLogo").on("click", function (e) {
   e.preventDefault();
   window.open("/#map");
 });
+
+//--------------------------------
+// Scan SSCC to update
+//--------------------------------
+
+function update_sscc() {
+  $(window).keydown(function (event) {
+    if (event.keyCode == 13) {
+      event.preventDefault();
+      return false;
+    }
+  });
+  // uncress filds size
+  $("<style>").appendTo("head").html(`
+  .form-control-xdock-small {
+    height: 38px;
+    font-size: 15px;
+}
+`);
+
+  let palettes_num = $("tbody>tr").length;
+
+  for (let i = 0; i < palettes_num; i++) {
+    $("#Paletten_" + i + "__Sscc").on("keydown", function (e) {
+      if (e.which == 13) {
+        $(e.target).val($(e.target).val().substring(2));
+      }
+    });
+  }
+}
+
+if (window.location.href.includes("TourLpPaletten")) {
+  update_sscc();
+}
