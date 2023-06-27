@@ -2,7 +2,7 @@
 // XDock PRO
 //***************************//
 $("footer>.text-muted.text-right").prepend(
-  "<small>XDock PRO V 1.08 Dernière mise à jour le 26 juin 2023 - </small>"
+  "<small>XDock PRO V 1.09 Dernière mise à jour le 27 juin 2023 - </small>"
 );
 
 if (window.location.pathname == "/") {
@@ -569,4 +569,57 @@ function update_sscc() {
 
 if (window.location.href.includes("TourLpPaletten")) {
   update_sscc();
+}
+
+//--------------------------------
+// LS numérique
+//--------------------------------
+
+if (window.location.href.includes("Wareneingang/Tag")) {
+  get_LS();
+}
+
+function get_LS() {
+  $('a[href="/XDockLieferscheinEditor/lieferscheinbundle/"')
+    .before(`<a href="#" id="get_ls" style="padding-right: 15px;">
+<i class="fal fa-file-alt docImage" style="font-size: 22px; color: #003278; padding: 0px 3px 0px 3px;"></i> 	
+LS numérique
+</a>`);
+  let ls_working = false;
+  $("#get_ls").on("click", function (e) {
+    if (ls_working) return false;
+    ls_working = true;
+    $(".loading").show();
+
+    let trours = $("#we-table tbody tr");
+
+    trours.each(function (index, tr) {
+      let tr_children = $(tr).children();
+
+      let tourURL = $(tr_children[0]).find("a").attr("href");
+      let LS_list = [];
+      $.get(tourURL, function (data, textStatus, jqXHR) {
+        let dom = $(data);
+
+        let ls = $(dom.find("#kopfdaten").children()[5]).children()[5];
+
+        let bon = $(dom.find(".xdock-head-title a")[2]).attr("href");
+
+        // free up mem
+        dom = null;
+
+        let bon_url = `<a href="${bon}" target="_blank" style="cursor: pointer;">
+            <i class="fal fa-file-alt docImage" style="font-size: 20px; color: #003278; padding-top: 2px;"></i>                      
+            </a>`;
+
+        $(tr_children[10]).html(ls).prepend(bon_url);
+        LS_list.push(ls.innerText);
+      });
+    });
+
+    setTimeout(function () {
+      $(".loading").hide();
+      ls_working = false;
+    }, 40000);
+  });
 }
