@@ -1,6 +1,6 @@
 //***************************//
 // Map add-on for XDock PRO
-// V 1.01
+// V 1.02
 //***************************//
 
 $("<style>").appendTo("head").html(`
@@ -26,6 +26,10 @@ $("<style>").appendTo("head").html(`
   bottom: 64px !important;
   left: 68px !important;
  
+}
+
+.date{
+  display: block !important;
 }
 
 }
@@ -305,6 +309,10 @@ a.url_edit {
   display: flex;
 }
 
+.gud_item .title{
+  margin-right: 4px;
+}
+
 .color {
   height: 12px;
   width: 12px;
@@ -314,6 +322,7 @@ a.url_edit {
 }
 
 `);
+
 let a4 = `
     <div id="a4">
         <div id="map-border"></div>
@@ -731,13 +740,14 @@ let a4 = `
 
 
         <div  class="guide d-flex">
-        <div class="gud_item"><div class="color free"></div> <span class="title">Libre</span></div>
-        <div class="gud_item"><div class="color taken"></div>  <span class="title">Occupé</span></div>
-        <div class="gud_item"><div class="color blocked"></div> <span class="title">Zone/SM bloqué</span></div>
-        <div class="gud_item"><div class="color en_cours"></div> <span class="title">SM en cours</span></div>
-        <div class="gud_item"><div class="color de_avance"></div> <span class="title">Occupé pour demain</span></div>
-        <div class="gud_item"><div class="color de_hier"></div> <span class="title">SM de hier</span></div>
+        <div class="gud_item"><div class="color free"></div> <span class="title">Libre</span>  <span id="total_free"></span></div>
+        <div class="gud_item"><div class="color taken"></div>  <span class="title">Occupé</span>  <span id="total_taken"></span></div>
+        <div class="gud_item"><div class="color blocked"></div> <span class="title">Zone/SM bloqué</span>  <span id="total_blocked"></span></div>
+        <div class="gud_item"><div class="color en_cours"></div> <span class="title">SM en cours</span>  <span id="total_en_cours"></span></div>
+        <div class="gud_item"><div class="color de_avance"></div> <span class="title">Occupé pour demain</span>  <span id="total_de_avance"></span></div>
+        <div class="gud_item"><div class="color de_hier"></div> <span class="title">SM de hier</span>  <span id="total_de_hier"></span></div>
         <div class="gud_item"><div class="color first_color"></div> <span class="title">Inconnue</span></div>
+        <div class="gud_item"> <span class="date d-none"> Date d'impression: <span id="date_of_print"></span></span></div>
         </div>
 
 
@@ -821,6 +831,7 @@ function update_zone_status(dataServ) {
             ref: ref,
             status: "blocked",
           });
+
           break;
         default:
           zone_info.push({
@@ -895,9 +906,25 @@ function update_map() {
 
     zone_el.parent().attr("href", "/Zonen/EditZone/" + zone.id + "");
   });
+
+  // numbers
+  $("#total_en_cours").html("(" + $(".en_cours").not(".color").length + ")");
+  $("#total_free").html("(" + $(".free").not(".color").length + ")");
+  $("#total_taken").html("(" + $(".taken").not(".color").length + ")");
+  $("#total_de_hier").html("(" + $(".de_hier").not(".color").length + ")");
+  $("#total_de_avance").html("(" + $(".de_avance").not(".color").length + ")");
+  $("#total_blocked").html("(" + $(".blocked").not(".color").length + ")");
 }
 
 // remove h1 befor print
 window.addEventListener("beforeprint", (event) => {
   $("h1").parent().remove();
+
+  //set date of print
+  var currentdate = new Date();
+  var options = { hour12: false };
+  var current = currentdate.toLocaleString("fr-FR", options);
+  current = current.replace(/\//g, "-");
+
+  $("#date_of_print").html(current);
 });
