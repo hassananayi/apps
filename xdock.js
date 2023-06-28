@@ -2,7 +2,7 @@
 // XDock PRO
 //***************************//
 $("footer>.text-muted.text-right").prepend(
-  "<small>XDock PRO V 1.10 Dernière mise à jour le 28 juin 2023 - </small>"
+  "<small>XDock PRO V 2.00 Dernière mise à jour le 28 juin 2023 - </small>"
 );
 
 if (window.location.pathname == "/") {
@@ -603,7 +603,9 @@ LS numérique
 
         let ls = $(dom.find("#kopfdaten").children()[5]).children()[5];
 
-        let bon = $(dom.find(".xdock-head-title a")[1]).attr("href");
+        let bon = $(dom.find(".xdock-head-title .docImage").parent()).attr(
+          "href"
+        );
 
         // free up mem
         dom = null;
