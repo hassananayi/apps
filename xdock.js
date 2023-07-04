@@ -2,7 +2,7 @@
 // XDock PRO
 //***************************//
 $("footer>.text-muted.text-right").prepend(
-  "<small>XDock PRO V 2.00 Dernière mise à jour le 28 juin 2023 - </small>"
+  "<small>XDock PRO V 2.01 Dernière mise à jour le 04 juillet 2023 - </small>"
 );
 
 if (window.location.pathname == "/") {
@@ -119,8 +119,11 @@ function collaborateurs() {
     "983", //Vincent
     "913", //Yamin,
     "937", //julien
-    "1428", //yanana
     "919", //Daniel
+    "1463", //BJSCH
+    "912", //bodi
+    "902", //MohamedBe
+    "974", // Ryan
   ];
 
   let team_3 = [
@@ -131,7 +134,6 @@ function collaborateurs() {
     "932", //Houcine
     "1213", //Mike
     "971", //Romain
-    "977", //SeKu
     "913", //Yamin
     "986", //Younes
   ];
