@@ -989,6 +989,9 @@ function get_ref_code(ref) {
     case "Liffré":
       code_vo = "LIF";
       break;
+    case "Lillers":
+      code_vo = "LIL";
+      break;
     case "Lunel":
       code_vo = "LUN";
       break;
