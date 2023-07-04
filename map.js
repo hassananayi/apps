@@ -1,6 +1,6 @@
 //***************************//
 // Map add-on for XDock PRO
-// V 1.02
+// V 1.03
 //***************************//
 
 $("<style>").appendTo("head").html(`
@@ -754,7 +754,8 @@ let a4 = `
     </div>`;
 
 $("#img-zonenuebersicht").replaceWith(a4);
-$("h1").html("XDock PRO");
+$("head>title").html("Carte de l'entrepôt TF-STB");
+
 /* Status
  - free
  - taken
@@ -806,9 +807,11 @@ function update_zone_status(dataServ) {
         .find("[data-selected='" + zoneID + "']")
         .parent()
         .children();
-      let ref = tr_children[9].innerText.trim().substr(0, 3);
+      let ref = get_ref_code(tr_children[4].innerText.trim());
 
-      if (!ref.length > 0) {
+      // let url = $(tr_children[0]).find("a").attr("href");
+
+      if (ref == "GCA?_TEN?") {
         ref = tr_children[6].innerText.substring(12);
       }
       // check tour status
@@ -928,3 +931,131 @@ window.addEventListener("beforeprint", (event) => {
 
   $("#date_of_print").html(current);
 });
+
+function get_ref_code(ref) {
+  let code_vo;
+  switch (ref) {
+    case "Alcalá":
+      code_vo = "ALC";
+      break;
+    case "Arcs-sur-Argens":
+      code_vo = "ASA";
+      break;
+    case "Barbery":
+      code_vo = "BAR";
+      break;
+    case "Barcelona":
+      code_vo = "BCM";
+      break;
+    case "Baziège":
+      code_vo = "BAZ";
+      break;
+    case "Béziers":
+      code_vo = "BEZ";
+      break;
+    case "Carquefou":
+      code_vo = "CAQ";
+      break;
+    case "Cestas":
+      code_vo = "CET";
+      break;
+    case "Chanteloup-Les-Vignes":
+      code_vo = "CLV";
+      break;
+    case "Entzheim":
+      code_vo = "ENT";
+      break;
+    case "Gondreville":
+      code_vo = "GON";
+      break;
+    case "Gran Canaria":
+      code_vo = "GCA?_TEN?";
+      break;
+    case "Granada":
+      code_vo = "GRN";
+      break;
+    case "Guingamp":
+      code_vo = "GUI";
+      break;
+    case "Honguemare-Guenouville":
+      code_vo = "HON";
+      break;
+    case "La Chapelle D'Armentières":
+      code_vo = "LCA";
+      break;
+    case "Le Coudray-Montceaux":
+      code_vo = "LCM";
+      break;
+    case "Liffré":
+      code_vo = "LIF";
+      break;
+    case "Lunel":
+      code_vo = "LUN";
+      break;
+    case "Málaga":
+      code_vo = "MLG";
+      break;
+    case "Meaux":
+      code_vo = "MEA";
+      break;
+    case "Montchanin":
+      code_vo = "MON";
+      break;
+    case "Montoy Flanville":
+      code_vo = "MFV";
+      break;
+    case "Murcia":
+      code_vo = "MUR";
+      break;
+    case "Narón":
+      code_vo = "NAR";
+      break;
+    case "Palmela":
+      code_vo = "PAL";
+      break;
+    case "Pontcharra":
+      code_vo = "PCH";
+      break;
+    case "Provence":
+      code_vo = "PRO";
+      break;
+    case "Sailly-lez-Cambrai":
+      code_vo = "SLC";
+      break;
+    case "Saint Quentin Fallavier":
+      code_vo = "SQF";
+      break;
+    case "Santo Tirso":
+      code_vo = "SAN";
+      break;
+    case "Sevilla":
+      code_vo = "SEV";
+      break;
+    case "Sintra":
+      code_vo = "SIN";
+      break;
+    case "Sorigny":
+      code_vo = "SOR";
+      break;
+    case "Tenerife":
+      code_vo = "GCA?_TEN?";
+      break;
+    case "Torres Novas":
+      code_vo = "TON";
+      break;
+    case "Valencia":
+      code_vo = "VLC";
+      break;
+    case "Vars":
+      code_vo = "VAR";
+      break;
+    case "Vitoria":
+      code_vo = "VIT";
+      break;
+    default:
+      code_vo = "???";
+      break;
+  }
+
+  return code_vo;
+}
