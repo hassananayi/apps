@@ -945,7 +945,7 @@ function get_ref_code(ref) {
       code_vo = "BAR";
       break;
     case "Barcelona":
-      code_vo = "BCM";
+      code_vo = "BCN";
       break;
     case "Baziège":
       code_vo = "BAZ";
