@@ -502,18 +502,11 @@ function info_DoubleStock(num) {
   let standard = 33 - num / 2;
   let total = 33 + num / 2;
 
-  return `-----------------------
-  [ Attention ] 
- -----------------------
-Cet tournée contient toutes les palettes  "Double stock". Veuillez ne pas enlever ou déplacer ces palettes.
- 
-Nombre de palettes total:  ${total} palettes.
- 
+  return `Nombre de palettes total:  ${total} palettes.
+
 Emplacements :  33
-Double stock: ${num}
 Palettes standard: ${standard}
- 
-Supprimez ce commentaire lorsqu'il la tournée est terminé.`;
+Double stock: ${num}`;
 }
 
 $("#kommentarIntern").on("keyup", function (e) {
@@ -528,7 +521,7 @@ $("#kommentarIntern").on("keyup", function (e) {
     "3) Recharge {destination}.\nReste à quai, chargement plus tard, laisser porte ouverte.",
     "4) Garder {destination}, à compléter.",
     "5) Coupure à quai, à compléter.",
-    "6) Attention Double stock!",
+    "6) Calculateur des palettes {Double stock}",
   ];
 
   let chois = prompt(comments.slice(1).join("\n\n"));
