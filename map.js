@@ -1,6 +1,6 @@
 //***************************//
 // Map add-on for XDock PRO
-// V 1.03
+// V 1.05
 //***************************//
 
 $("<style>").appendTo("head").html(`
@@ -818,8 +818,15 @@ function update_zone_status(dataServ) {
       let lpStatus = tr_children[1].innerText;
 
       switch (parseInt(lpStatus)) {
-        case 80:
         case 81:
+          zone_info.push({
+            id: zoneID,
+            name: option.html(),
+            ref: "",
+            status: "free",
+          });
+          break;
+        case 80:
           zone_info.push({
             id: zoneID,
             name: option.html(),
