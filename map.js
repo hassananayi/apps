@@ -783,9 +783,9 @@ $("#selectedDate").on("change", function (e) {
 
 // When dom ready call data
 $(document).ready(function () {
+  //sort: ZielortLokationNameASC
   $.get(
-    "/Warenausgang/Tag?sort=ZielortLokationNameASC&selectedDate=" +
-      selected_date,
+    "/Warenausgang/Tag?sort=StatusASC&selectedDate=" + selected_date,
     function (data, textStatus, jqXHR) {
       update_zone_status(data);
     }
@@ -819,13 +819,6 @@ function update_zone_status(dataServ) {
 
       switch (parseInt(lpStatus)) {
         case 81:
-          zone_info.push({
-            id: zoneID,
-            name: option.html(),
-            ref: "",
-            status: "free",
-          });
-          break;
         case 80:
           zone_info.push({
             id: zoneID,
