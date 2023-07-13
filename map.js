@@ -1,6 +1,6 @@
 //***************************//
 // Map add-on for XDock PRO
-// V 1.06
+// V 1.07
 //***************************//
 
 $("<style>").appendTo("head").html(`
@@ -812,7 +812,7 @@ function update_zone_status(dataServ) {
       // let url = $(tr_children[0]).find("a").attr("href");
 
       if (ref == "GCA?_TEN?") {
-        ref = tr_children[6].innerText.substring(12);
+        ref = tr_children[6].innerText.trim().substring(11, 15);
       }
       // check tour status
       let lpStatus = tr_children[1].innerText;
