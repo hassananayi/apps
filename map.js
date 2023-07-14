@@ -950,6 +950,9 @@ function get_ref_code(ref) {
     case "Baziège":
       code_vo = "BAZ";
       break;
+    case "Beaucaire":
+      code_vo = "LUN";
+      break;
     case "Béziers":
       code_vo = "BEZ";
       break;
