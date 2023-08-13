@@ -1,8 +1,9 @@
 //***************************//
 // XDock PRO
+// Dernière mise à jour le 15 juillet 2023
 //***************************//
 $("footer>.text-muted.text-right").prepend(
-  "<small>XDock PRO V 2.02 Dernière mise à jour le 10 juillet 2023 - </small>"
+  "<small>XDock PRO V 2.03 Dernière mise à jour le 11/08/2023 - </small>"
 );
 
 if (window.location.pathname == "/") {
@@ -76,6 +77,42 @@ button#paste_palettes {
 }
 
 
+/* Tor planer */
+
+.torplaner-main > nav {
+  display: none;
+}
+
+.schnellauswahl {
+  width: 1400px;
+  margin: 0 auto !important;
+  padding-bottom: 30px;
+}
+
+.torplaner-main {
+  width: 1400px !important;
+  margin: 0 auto;
+}
+
+.schnellauswahl button {
+  width: 114px;
+  height: 42px;
+  padding: 0 20px 0 20px;
+}
+
+.schnellauswahl button:hover{
+  opacity: 0.6
+}
+.schnellauswahl button.abwaehlen {
+  width: 220px;
+}
+
+.schnellauswahl button.dummy {
+  width: 133px;
+}
+
+.
+
  `);
 
 //--------------------------
@@ -105,25 +142,24 @@ function collaborateurs() {
     "976", //Sebastien
     "979", //Stephan M.
     "934", //Suzie,
-    "974", // Ryan
+    "970", // Regis
+    "902", // Amin
   ];
   let team_2 = [
     "", // -
     "917", // Christophe
     "923", //Eric
     "926", //Georges
-    "929", //Hamadi
-    "932", //Houcine
-    "952", //Kenan
     "944", //Lucas
-    "983", //Vincent
     "913", //Yamin,
     "937", //julien
-    "919", //Daniel
     "1463", //BJSCH
     "912", //bodi
     "902", //MohamedBe
-    "974", // Ryan
+    "902", // Amin
+    "1536", //Mohamed Bellaredj
+    "1534", //Ali
+    "970", // Regis
   ];
 
   let team_3 = [
@@ -136,6 +172,7 @@ function collaborateurs() {
     "971", //Romain
     "913", //Yamin
     "986", //Younes
+    "970", // Regis
   ];
 
   // check current_team
@@ -521,7 +558,8 @@ $("#kommentarIntern").on("keyup", function (e) {
     "3) Recharge {destination}.\nReste à quai, chargement plus tard, laisser porte ouverte.",
     "4) Garder {destination}, à compléter.",
     "5) Coupure à quai, à compléter.",
-    "6) Calculateur des palettes {Double stock}",
+    "6) Echange Palettes",
+    "7) Pas d'échange Palettes",
   ];
 
   let chois = prompt(comments.slice(1).join("\n\n"));
@@ -538,10 +576,9 @@ $("#kommentarIntern").on("keyup", function (e) {
       );
       break;
     case 5:
-      $(this).val(comments[data[0]].substring(3));
-      break;
     case 6:
-      $(this).val(info_DoubleStock(parseInt(data[1])));
+    case 7:
+      $(this).val(comments[data[0]].substring(3));
       break;
   }
 });
