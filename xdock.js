@@ -3,7 +3,7 @@
 // Dernière mise à jour le 15 juillet 2023
 //***************************//
 $("footer>.text-muted.text-right").prepend(
-  "<small>XDock PRO V 2.03 Dernière mise à jour le 11/08/2023 - </small>"
+  "<small>XDock PRO V 2.04 Dernière mise à jour le 14/08/2023 - </small>"
 );
 
 if (window.location.pathname == "/") {
@@ -479,7 +479,7 @@ $(document).on("click", "#copy_palettes", function (e) {
 });
 
 //--------------------------------
-// copy & paste palettes GTINs
+// copy & paste palettes GTINs/EM ID
 //--------------------------------
 function copy_palettes_GTINs() {
   const palettes_lpsToDelete = document.querySelectorAll(
@@ -509,19 +509,19 @@ if (
     e.preventDefault();
 
     navigator.clipboard.readText().then(function (clipText) {
-      const GTINs = JSON.parse(clipText);
+      // gtins or EM ID
+      const clipData = JSON.parse(clipText);
 
-      const palettesAvilebal = document.querySelectorAll(
-        'input[name="lieferposCheckboxes"]'
-      );
+      const palettesAvilebal = document.querySelectorAll(".datatableRow");
 
       for (const palette of palettesAvilebal) {
         // check if is id in clipboard
 
-        const paletteGTIN = $(palette).parent().parent().parent().parent()[0]
-          .cells[5].innerText;
-        if (GTINs.includes(paletteGTIN)) {
-          $(palette).trigger("click");
+        const paletteGTIN = $(palette)[0].cells[5].innerText;
+        const paletteEM = $(palette)[0].cells[15].innerText.trim();
+
+        if (clipData.includes(paletteGTIN) || clipData.includes(paletteEM)) {
+          $(palette).find('input[name="lieferposCheckboxes"]').trigger("click");
         }
       }
 
@@ -530,21 +530,24 @@ if (
   });
 }
 
+//Copy EM ID For auto select
+if (isEMTour) {
+  // create copy EM ID Btn
+  $($("#kopfdaten").children()[3]).append(
+    '<small class="pt-3"><a href="#" id="copy_em_id">Copier EM ID</a></small>'
+  );
+  $("#copy_em_id").on("click", function () {
+    let EM_ID = [];
+    let tourID = window.location.href.split("TourId=")[1].substr(0, 6);
+    EM_ID.push(tourID);
+    navigator.clipboard.writeText(JSON.stringify(EM_ID));
+    toastr.success(`EM ID ont été copiés.`);
+  });
+}
+
 //--------------------------------
 // auto comments
 //--------------------------------
-
-function info_DoubleStock(num) {
-  let DoubleStock = num;
-  let standard = 33 - num / 2;
-  let total = 33 + num / 2;
-
-  return `Nombre de palettes total:  ${total} palettes.
-
-Emplacements :  33
-Palettes standard: ${standard}
-Double stock: ${num}`;
-}
 
 $("#kommentarIntern").on("keyup", function (e) {
   let orgnal_value = $(this).val();
