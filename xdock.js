@@ -1,9 +1,9 @@
 //***************************//
 // XDock PRO
-// Dernière mise à jour le 15 juillet 2023
+// Dernière mise à jour le  18/08/2023
 //***************************//
 $("footer>.text-muted.text-right").prepend(
-  "<small>XDock PRO V 2.04 Dernière mise à jour le 14/08/2023 - </small>"
+  "<small>XDock PRO V 2.05 Dernière mise à jour le 18/08/2023 - </small>"
 );
 
 if (window.location.pathname == "/") {
@@ -530,39 +530,102 @@ if (
   });
 }
 
-//Copy EM ID For auto select
+//--------------------------------
+// Actions additionelles
+//--------------------------------
+
 if (isEMTour) {
-  // create copy EM ID Btn
+  let status = $(".tourStatus").html();
+  // create Btn
+
+  let task_disabled = parseInt(status) == 75 ? "" : "disabled";
+
   $($("#kopfdaten").children()[3]).append(
-    '<small class="pt-3"><a href="#" id="copy_em_id">Copier EM ID</a></small>'
+    `
+    <div class="pt-3 dropdown">
+      <a  href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+          <i class="fal fa-chevron-right" aria-hidden="true"></i>
+          Actions additionnelles
+      </a>
+      <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <div style="font-size: 12px; font-weight: bold; margin-left: 15px;" class="">Tâches:</div>
+          <button class="dropdown-item" ${task_disabled} onclick="passe_encours()">Passe la tâche "En cours"</button>
+          <button class="dropdown-item" ${task_disabled} onclick="terminer_automatique()">Terminer automatique</button>
+          <hr>
+          <div style="font-size: 12px; font-weight: bold; margin-left: 15px;" class="">Entrée de marchandises:</div>
+              <button class="dropdown-item" onclick="copy_em_id()">Copier EM ID</button>
+              <button class="dropdown-item" onclick="fill_empty_LS()">Remplir tous les "Nº LS" vides avec "X"</button>
+              <button class="dropdown-item" onclick="select_all_positions()">Sélectionner tout les positions</button>
+              <button class="dropdown-item" onclick="voir_les_sscc()">Voir toutes les SSCC</button>
+              
+              <hr>
+              <div style="font-size: 12px; font-weight: bold; margin-left: 15px;" class="">Autres:</div>
+              <button class="dropdown-item" onclick="auto_comments()">Commentaires</button>
+      </div>
+  </div
+`
   );
-  $("#copy_em_id").on("click", function () {
-    let EM_ID = [];
-    let tourID = window.location.href.split("TourId=")[1].substr(0, 6);
-    EM_ID.push(tourID);
-    navigator.clipboard.writeText(JSON.stringify(EM_ID));
-    toastr.success(`EM ID ont été copiés.`);
-  });
+}
+
+// fucations Tâches
+function passe_encours() {
+  $("#startausgabeEntladeanweisung").trigger("click"); // Start
+  $("#saveBtn").trigger("click"); // Save
+}
+
+function terminer_automatique() {
+  $("#startausgabeEntladeanweisung").trigger("click"); // Start
+  $("#stopfertigstellungEntladeanweisung").trigger("click"); // End
+  $("#saveBtn").trigger("click"); //  Save
+}
+
+// fucations Entrée de marchandises
+function copy_em_id() {
+  let EM_ID = [];
+  let tourID = window.location.href.split("TourId=")[1].substr(0, 6);
+  EM_ID.push(tourID);
+  navigator.clipboard.writeText(JSON.stringify(EM_ID));
+  toastr.success(`EM ID ont été copiés.`);
+}
+
+function voir_les_sscc() {
+  $(".palettenAufklappen").trigger("click");
+}
+function select_all_positions() {
+  $(".lieferpositionToDelete").trigger("click");
+  é;
+}
+
+function fill_empty_LS() {
+  $(".lieferschein-nummer")
+    .not("[readonly]")
+    .each(function (indexInArray, valueOfElement) {
+      let el = $(valueOfElement);
+      if (el.val().length > 0) return true;
+      el.val("X");
+    });
 }
 
 //--------------------------------
 // auto comments
 //--------------------------------
 
-$("#kommentarIntern").on("keyup", function (e) {
-  let orgnal_value = $(this).val();
-
-  if (!$(this).val().includes("&")) return true;
+function auto_comments() {
+  let kommentarIntern = $("#kommentarIntern");
+  let old_value = $("#kommentarIntern").val();
 
   let comments = [
     "",
-    "1) Recharge {destination}.\nFaire prochaine tâche pour le chargement.",
-    "2) Recharge {destination}.\nChargement plus tard, envoyer au parking.",
-    "3) Recharge {destination}.\nReste à quai, chargement plus tard, laisser porte ouverte.",
-    "4) Garder {destination}, à compléter.",
+    "1) Recharge {CHANGEABLE}.\nFaire prochaine tâche pour le chargement.",
+    "2) Recharge {CHANGEABLE}.\nChargement plus tard, envoyer au parking.",
+    "3) Recharge {CHANGEABLE}.\nReste à quai, chargement plus tard, laisser porte ouverte.",
+    "4) Garder {CHANGEABLE}, à compléter.",
     "5) Coupure à quai, à compléter.",
     "6) Echange Palettes",
     "7) Pas d'échange Palettes",
+    "8) ATTENTION CMR A {CHANGEABLE} PALETTES",
+    "9) EN COUPURE A {CHANGEABLE}",
+    "10)FIN DE COUPURE {CHANGEABLE}",
   ];
 
   let chois = prompt(comments.slice(1).join("\n\n"));
@@ -574,17 +637,22 @@ $("#kommentarIntern").on("keyup", function (e) {
     case 2:
     case 3:
     case 4:
-      $(this).val(
-        comments[data[0]].substring(3).replace("{destination}", data[1])
+    case 8:
+    case 9:
+    case 10:
+      kommentarIntern.val(
+        comments[data[0]].substring(3).replace("{CHANGEABLE}", data[1]) +
+          "\n" +
+          old_value
       );
       break;
     case 5:
     case 6:
     case 7:
-      $(this).val(comments[data[0]].substring(3));
+      kommentarIntern.val(comments[data[0]].substring(3) + "\n" + old_value);
       break;
   }
-});
+}
 
 //--------------------------------
 // Map Add-on
@@ -684,3 +752,15 @@ LS numérique
     }, 40000);
   });
 }
+
+//--------------------------------
+// Add Apps to menu
+//--------------------------------
+
+$('[href="/Artikel/Artikel"]').after(`
+<hr>
+<div style="font-size: 12px; font-weight: bold; margin-left: 15px;" class="">XDock PRO:</div>
+<a class="dropdown-item" href="/#map">Carte de l'entrepôt</a>
+<a class="dropdown-item" href="https://tf-stb.github.io/badge/" target="_blank">Créateur de badge </a>
+
+`);
