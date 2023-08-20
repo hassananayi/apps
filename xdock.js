@@ -545,7 +545,7 @@ if (isEMTour) {
     <div class="pt-3 dropdown">
       <a  href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
           <i class="fal fa-chevron-right" aria-hidden="true"></i>
-          Actions additionnelles
+          Outils supplémentaires
       </a>
       <div class="dropdown-menu" aria-labelledby="navbarDropdown">
           <div style="font-size: 12px; font-weight: bold; margin-left: 15px;" class="">Tâches:</div>
@@ -757,10 +757,9 @@ LS numérique
 // Add Apps to menu
 //--------------------------------
 
-$('[href="/Artikel/Artikel"]').after(`
+$('.navbar [href="/Artikel/Artikel"]').after(`
 <hr>
 <div style="font-size: 12px; font-weight: bold; margin-left: 15px;" class="">XDock PRO:</div>
 <a class="dropdown-item" href="/#map">Carte de l'entrepôt</a>
 <a class="dropdown-item" href="https://tf-stb.github.io/badge/" target="_blank">Créateur de badge </a>
-
 `);
