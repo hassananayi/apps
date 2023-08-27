@@ -1,9 +1,9 @@
 //***************************//
 // XDock PRO
-// Dernière mise à jour le  18/08/2023
+// Dernière mise à jour le  27/08/2023
 //***************************//
 $("footer>.text-muted.text-right").prepend(
-  "<small>XDock PRO V 2.05 Dernière mise à jour le 18/08/2023 - </small>"
+  "<small>XDock PRO Ver 2.06_20230827 - </small>"
 );
 
 if (window.location.pathname == "/") {
@@ -557,7 +557,7 @@ if (isEMTour) {
               <button class="dropdown-item" onclick="fill_empty_LS()">Remplir tous les "Nº LS" vides avec "X"</button>
               <button class="dropdown-item" onclick="select_all_positions()">Sélectionner tout les positions</button>
               <button class="dropdown-item" onclick="voir_les_sscc()">Voir toutes les SSCC</button>
-              
+              <button class="dropdown-item" onclick="check_avance()">Vérifier l'avance</button>       
               <hr>
               <div style="font-size: 12px; font-weight: bold; margin-left: 15px;" class="">Autres:</div>
               <button class="dropdown-item" onclick="auto_comments()">Commentaires</button>
@@ -763,3 +763,60 @@ $('.navbar [href="/Artikel/Artikel"]').after(`
 <a class="dropdown-item" href="/#map">Carte de l'entrepôt</a>
 <a class="dropdown-item" href="https://tf-stb.github.io/badge/" target="_blank">Créateur de badge </a>
 `);
+
+//--------------------------------
+// Vérifier l'avance
+//--------------------------------
+
+function check_avance() {
+  let camions_de_jours = [];
+  let palettes_avance = 0;
+  let palette_not_anavce = 0;
+  $.get(
+    "/Warenausgang/Tag?sort=StatusASC&selectedDate=" + $("#selectedDate").val(),
+    function (data, textStatus, jqXHR) {
+      $(data)
+        .find("#table-container tbody>tr")
+        .each(function (key, value) {
+          let klstb = value.cells[6].innerText.trim().replace(" ...", "");
+
+          camions_de_jours.push(klstb);
+        });
+
+      // check now
+
+      $("#table-WeTourLieferpositionen tbody>tr[data-welpid]").each(function (
+        key,
+        value
+      ) {
+        let ref = value.cells[5].innerText;
+        if (camions_de_jours.includes(ref)) {
+          $(value.cells[18]).html("Aujourd'hui");
+          palette_not_anavce += parseInt(value.cells[12].innerText.trim());
+        } else {
+          $(value.cells[18]).html(
+            `<span style="font-weight: bold; color: red;">Avance</span>`
+          );
+          palettes_avance += parseInt(value.cells[12].innerText.trim());
+        }
+      });
+
+      // show notifaction
+      if (palettes_avance == 0) {
+        toastr.success(`il n'y a pas marchandises en avance.`);
+      } else if (palettes_avance > palette_not_anavce) {
+        toastr.error(
+          `${palettes_avance} sur ${
+            palette_not_anavce + palettes_avance
+          } palettes en avance.`
+        );
+      } else {
+        toastr.warning(
+          `${palettes_avance} sur ${
+            palette_not_anavce + palettes_avance
+          } palettes en avance.`
+        );
+      }
+    }
+  );
+}
