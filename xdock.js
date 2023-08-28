@@ -1,9 +1,9 @@
 //***************************//
 // XDock PRO
-// Dernière mise à jour le  27/08/2023
+// Dernière mise à jour le  28/08/2023
 //***************************//
 $("footer>.text-muted.text-right").prepend(
-  "<small>XDock PRO Ver 2.06_20230827 - </small>"
+  "<small>XDock PRO Ver 2.07_20230828 - </small>"
 );
 
 if (window.location.pathname == "/") {
@@ -111,7 +111,9 @@ button#paste_palettes {
   width: 133px;
 }
 
-.
+.mr-10{
+  margin-right:10px;
+}
 
  `);
 
@@ -553,14 +555,19 @@ if (isEMTour) {
           <button class="dropdown-item" ${task_disabled} onclick="terminer_automatique()">Terminer automatique</button>
           <hr>
           <div style="font-size: 12px; font-weight: bold; margin-left: 15px;" class="">Entrée de marchandises:</div>
-              <button class="dropdown-item" onclick="copy_em_id()">Copier EM ID</button>
-              <button class="dropdown-item" onclick="fill_empty_LS()">Remplir tous les "Nº LS" vides avec "X"</button>
-              <button class="dropdown-item" onclick="select_all_positions()">Sélectionner tout les positions</button>
-              <button class="dropdown-item" onclick="voir_les_sscc()">Voir toutes les SSCC</button>
-              <button class="dropdown-item" onclick="check_avance()">Vérifier l'avance</button>       
+              <button class="dropdown-item" onclick="copy_em_id()"><span class="fal fa-copy  mr-10"></span> Copier EM ID</button>
+              <button class="dropdown-item" onclick="fill_empty_LS()"><span class="fal fa-file-alt docImage  mr-10"></span>  Remplir tous les "Nº LS" vides avec "X"</button>
+              <hr>
+              <button class="dropdown-item" onclick="voir_les_sscc()"><span class="fal fa-barcode  mr-10"></span> Voir toutes les SSCC</button>
+              <button class="dropdown-item" onclick="check_avance()"><span class="fal fa-calendar-alt  mr-10"></span> Vérifier l'avance</button>
+              <hr>
+              <button class="dropdown-item" onclick="select_all_positions()"><span class="fal fa-check  mr-10"></span> Sélectionner tout les positions</button>
+              <button class="dropdown-item" id="removeSM"><span class="fal fa-trash  mr-10"></span>  Supprimer SM des positions sélectionnées</button> 
+        
+            
               <hr>
               <div style="font-size: 12px; font-weight: bold; margin-left: 15px;" class="">Autres:</div>
-              <button class="dropdown-item" onclick="auto_comments()">Commentaires</button>
+              <button class="dropdown-item" onclick="auto_comments()"><span class="fal fa-comments mr-10"></span> Commentaires</button>
       </div>
   </div
 `
@@ -820,3 +827,103 @@ function check_avance() {
     }
   );
 }
+
+//--------------------------------
+// Remove Tournée SM From palettes
+//--------------------------------
+
+// remove SM from palete on EM
+
+$(document).on("click", "#removeSM", function (e) {
+  let selected_palettes = $(".to-be-deleted");
+  let removed = 0;
+
+  // show notfication errer if no pal selected
+  if (!selected_palettes.length > 0)
+    return toastr.error(`Aucune positions sélectionnée.`);
+  if (!e.ctrlKey)
+    return toastr.info(
+      `Veuillez rester appuyé sur CTRL pour confirmer la suppression.`
+    );
+
+  // Show loding...
+  $("body").append(`
+  <div id="removeSM_modal" class="modal" tabindex="-1" role="dialog" style="background: rgb(0 0 0 / 45%);">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Suppression Tournée SM des positions sélectionnées</h4>
+      </div>
+      <div class="modal-body d-flex justify-content-center">
+        <div class="d-flex justify-content-center">
+          <span id="loaderTube" class="">
+            <div
+              class="loader"
+              style="padding-left: 0px; width: 50px; height: 50px"
+            ></div>
+            <span>
+              <em>Veuillez patienter...</em> <br />
+              <div  style="font-weight: bold;text-align: center;margin: 15px;" id="removed_counter"></div>
+            </span>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+  `);
+
+  $("#removeSM_modal").show();
+  $("body").addClass("modal-open");
+  selected_palettes.each(function (key, value) {
+    let palette = value;
+
+    let palette_ID_URL = $(palette.cells[4]).find("a").attr("href");
+    let SM_URL = $(palette.cells[19]).find("a").attr("href");
+    let waTourId = SM_URL.split("?waTourId=")[1];
+
+    // get Palete ID on SM to delete
+
+    $.get(SM_URL, function (data) {
+      let palette_ID_on_SM = $(data)
+        .find(`[href="${palette_ID_URL}"]`)
+        .parent()
+        .parent()
+        .find(".lieferpositionToDelete")
+        .val();
+
+      const ids = [];
+      ids.push(palette_ID_on_SM);
+
+      $.post(
+        "/Warenausgang/RemoveLieferpositionsFromWaTour?waTourId=" + waTourId,
+        {
+          lieferpositionToDelete: ids,
+        },
+        function (data) {
+          if (data === true) {
+            removed += 1;
+            // update counter
+            $("#removed_counter").html(
+              `${removed}/${selected_palettes.length} positions`
+            );
+
+            // reload if all done
+            if (removed == selected_palettes.length) {
+              location.reload(true);
+            }
+          } else {
+            toastr.error(
+              `Erreur lors de la suppression des palettes. essayer à nouveau.`
+            );
+          }
+        }
+      );
+    }).fail(function (res) {
+      toastr.error(
+        `Erreur ${res.status}, "${res.statusText}". <br> Erreur lors de la suppression des palettes. essayer à nouveau.
+         Message du serveur "${res.responseText}".`
+      );
+    });
+  });
+});
