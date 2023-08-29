@@ -2,9 +2,7 @@
 // XDock PRO
 // Dernière mise à jour le  28/08/2023
 //***************************//
-$("footer>.text-muted.text-right").prepend(
-  "<small>XDock PRO Ver 2.07_20230828 - </small>"
-);
+$("footer>.text-muted.text-right").prepend("<small>XDock PRO Ver 2.07_20230828 - </small>");
 
 if (window.location.pathname == "/") {
   $("h1").html("XDock PRO");
@@ -217,18 +215,10 @@ function collaborateurs() {
     $("body").append(`<div class="d-flex">
   <span class='ml-3'>Modifier la liste des collaborateurs</span>
   <select id="edit_names_list"  class="form-control form-control-sm ml-3" data-style="xdock-selectbox xdock-selectboxWidth120">
-      <option ${
-        current_team === 0 ? "selected" : ""
-      }  value="0">Tous les prénoms</option>
-      <option ${
-        current_team === 1 ? "selected" : ""
-      }  value="1">Équipe du matin</option>
-      <option ${
-        current_team === 2 ? "selected" : ""
-      }  value="2">L'équipe de l'après-midi</option>
-      <option ${
-        current_team === 3 ? "selected" : ""
-      }  value="3">L'équipe de nuit</option>
+      <option ${current_team === 0 ? "selected" : ""}  value="0">Tous les prénoms</option>
+      <option ${current_team === 1 ? "selected" : ""}  value="1">Équipe du matin</option>
+      <option ${current_team === 2 ? "selected" : ""}  value="2">L'équipe de l'après-midi</option>
+      <option ${current_team === 3 ? "selected" : ""}  value="3">L'équipe de nuit</option>
   </select></div>`);
 
     // lisent to change
@@ -258,16 +248,12 @@ if (window.location.href.includes("/Taskmanagement/TaskmanagementAmLager")) {
 function task_manger() {
   let tourStatus = $(".tourStatus").html();
   let tourID = window.location.href.split("TourId=")[1].substr(0, 6);
-  let iswetour = window.location.href.includes("Wareneingang")
-    ? "True"
-    : "False";
+  let iswetour = window.location.href.includes("Wareneingang") ? "True" : "False";
   let collaborateur = $("#mitarbeiterId").val();
   let working = false;
 
-  let Block_btn_html =
-    '<div class="p-2 m-auto "><button id="ha_block_task" class="btn btn-outline-danger">Bloquer la tâche</button></div>';
-  let deblock_btn_html =
-    '<div class="p-2 m-auto "><button id="ha_deblock_task" class="btn btn-outline-primary">Valider la tâche</button></div>';
+  let Block_btn_html = '<div class="p-2 m-auto "><button id="ha_block_task" class="btn btn-outline-danger">Bloquer la tâche</button></div>';
+  let deblock_btn_html = '<div class="p-2 m-auto "><button id="ha_deblock_task" class="btn btn-outline-primary">Valider la tâche</button></div>';
 
   // inject btns
   switch (parseInt(tourStatus)) {
@@ -301,18 +287,11 @@ function task_manger() {
       function (data) {
         if (data === true) {
           if (ctrlKey) return window.location.reload();
-          update_collaborateur_name(
-            tourID,
-            iswetour,
-            collaborateur,
-            function () {
-              window.location.reload();
-            }
-          );
+          update_collaborateur_name(tourID, iswetour, collaborateur, function () {
+            window.location.reload();
+          });
         } else {
-          toastr.error(
-            `Erreur "${data}", <br> Une erreur est survenue lors du blocage.<br>veuillez réessayer`
-          );
+          toastr.error(`Erreur "${data}", <br> Une erreur est survenue lors du blocage.<br>veuillez réessayer`);
           working = false;
         }
       }
@@ -340,9 +319,7 @@ function task_manger() {
         if (data === true) {
           window.location.reload();
         } else {
-          toastr.error(
-            `Erreur "${data}", <br> Une erreur est survenue lors du déblocage.<br>veuillez réessayer`
-          );
+          toastr.error(`Erreur "${data}", <br> Une erreur est survenue lors du déblocage.<br>veuillez réessayer`);
           working = false;
         }
       }
@@ -357,20 +334,12 @@ function task_manger() {
 }
 
 // check if the page is "tour EM or SM" run the function
-if (
-  window.location.href.includes("/Warenausgang/Tour") ||
-  window.location.href.includes("/Wareneingang/Tour")
-) {
+if (window.location.href.includes("/Warenausgang/Tour") || window.location.href.includes("/Wareneingang/Tour")) {
   task_manger();
 }
 
 // register Handler for update_collaborateur_name
-function update_collaborateur_name(
-  tourId,
-  isWeTour,
-  mitarbeiterLagerId,
-  callback
-) {
+function update_collaborateur_name(tourId, isWeTour, mitarbeiterLagerId, callback) {
   $.post(
     "/Taskmanagement/UpdateMitarbeiterLager",
     {
@@ -394,23 +363,15 @@ function update_collaborateur_name(
 //--------------------------------
 
 // click on four to select
-$(document).on(
-  "click",
-  "span.d-inline-block.text-truncate.w-100.mightoverflow",
-  function (ev) {
-    if (!ev.ctrlKey) return false;
+$(document).on("click", "span.d-inline-block.text-truncate.w-100.mightoverflow", function (ev) {
+  if (!ev.ctrlKey) return false;
 
-    $($($(this).parent().parent().find(".lieferpositionToDelete")[0])).trigger(
-      "click"
-    );
-  }
-);
+  $($($(this).parent().parent().find(".lieferpositionToDelete")[0])).trigger("click");
+});
 
 // add BTNs delete and copy palettes
 
-$(".addlp-button[value='AddLieferposition']").after(
-  `<div id="delete_palettes_zone"></div>`
-);
+$(".addlp-button[value='AddLieferposition']").after(`<div id="delete_palettes_zone"></div>`);
 
 let num_palettes_selected = 0;
 
@@ -442,9 +403,7 @@ $(document).on("change", ".lieferpositionToDelete", function (e) {
   
   `);
 
-    num_palette_selected_current = parseInt(
-      $(e.target).parent().parent()[0].cells[13].innerText
-    );
+    num_palette_selected_current = parseInt($(e.target).parent().parent()[0].cells[13].innerText);
   } else {
     $("#delete_palettes_zone").html(`
       <button id="delete_palettes" class="btn btn-sm btn-outline-danger">
@@ -453,9 +412,7 @@ $(document).on("change", ".lieferpositionToDelete", function (e) {
       </button>
   `);
 
-    num_palette_selected_current = parseInt(
-      $(e.target).parent().parent()[0].cells[12].innerText
-    );
+    num_palette_selected_current = parseInt($(e.target).parent().parent()[0].cells[12].innerText);
   }
 
   // Palettes Counters.
@@ -484,9 +441,7 @@ $(document).on("click", "#copy_palettes", function (e) {
 // copy & paste palettes GTINs/EM ID
 //--------------------------------
 function copy_palettes_GTINs() {
-  const palettes_lpsToDelete = document.querySelectorAll(
-    ".lieferpositionToDelete:checked"
-  );
+  const palettes_lpsToDelete = document.querySelectorAll(".lieferpositionToDelete:checked");
   const GTINs = [];
   for (const lp of palettes_lpsToDelete) {
     GTINs.push($(lp).parent().parent()[0].cells[3].innerText);
@@ -495,9 +450,7 @@ function copy_palettes_GTINs() {
   toastr.success(`les positions ont été copiés.`);
 }
 
-if (
-  window.location.href.includes("Warenausgang/AddLieferpositionen?waTourId")
-) {
+if (window.location.href.includes("Warenausgang/AddLieferpositionen?waTourId")) {
   $("#submitButton").after(
     `<div id="delete_palettes_zone">
     <button id="paste_palettes" class="btn btn-sm btn-outline-primary ">
@@ -533,7 +486,7 @@ if (
 }
 
 //--------------------------------
-// Actions additionelles
+// Outils supplémentaires
 //--------------------------------
 
 if (isEMTour) {
@@ -563,8 +516,6 @@ if (isEMTour) {
               <hr>
               <button class="dropdown-item" onclick="select_all_positions()"><span class="fal fa-check  mr-10"></span> Sélectionner tout les positions</button>
               <button class="dropdown-item" id="removeSM"><span class="fal fa-trash  mr-10"></span>  Supprimer SM des positions sélectionnées</button> 
-        
-            
               <hr>
               <div style="font-size: 12px; font-weight: bold; margin-left: 15px;" class="">Autres:</div>
               <button class="dropdown-item" onclick="auto_comments()"><span class="fal fa-comments mr-10"></span> Commentaires</button>
@@ -647,11 +598,7 @@ function auto_comments() {
     case 8:
     case 9:
     case 10:
-      kommentarIntern.val(
-        comments[data[0]].substring(3).replace("{CHANGEABLE}", data[1]) +
-          "\n" +
-          old_value
-      );
+      kommentarIntern.val(comments[data[0]].substring(3).replace("{CHANGEABLE}", data[1]) + "\n" + old_value);
       break;
     case 5:
     case 6:
@@ -714,8 +661,7 @@ if (window.location.href.includes("Wareneingang/Tag")) {
 }
 
 function get_LS() {
-  $('a[href="/XDockLieferscheinEditor/lieferscheinbundle/"')
-    .before(`<a href="#" id="get_ls" style="padding-right: 15px;">
+  $('a[href="/XDockLieferscheinEditor/lieferscheinbundle/"').before(`<a href="#" id="get_ls" style="padding-right: 15px;">
 <i class="fal fa-file-alt docImage" style="font-size: 22px; color: #003278; padding: 0px 3px 0px 3px;"></i> 	
 LS numérique
 </a>`);
@@ -737,9 +683,7 @@ LS numérique
 
         let ls = $(dom.find("#kopfdaten").children()[5]).children()[5];
 
-        let bon = $(dom.find(".xdock-head-title .docImage").parent()).attr(
-          "href"
-        );
+        let bon = $(dom.find(".xdock-head-title .docImage").parent()).attr("href");
 
         // free up mem
         dom = null;
@@ -779,53 +723,37 @@ function check_avance() {
   let camions_de_jours = [];
   let palettes_avance = 0;
   let palette_not_anavce = 0;
-  $.get(
-    "/Warenausgang/Tag?sort=StatusASC&selectedDate=" + $("#selectedDate").val(),
-    function (data, textStatus, jqXHR) {
-      $(data)
-        .find("#table-container tbody>tr")
-        .each(function (key, value) {
-          let klstb = value.cells[6].innerText.trim().replace(" ...", "");
+  $.get("/Warenausgang/Tag?sort=StatusASC&selectedDate=" + $("#selectedDate").val(), function (data, textStatus, jqXHR) {
+    $(data)
+      .find("#table-container tbody>tr")
+      .each(function (key, value) {
+        let klstb = value.cells[6].innerText.trim().replace(" ...", "");
 
-          camions_de_jours.push(klstb);
-        });
-
-      // check now
-
-      $("#table-WeTourLieferpositionen tbody>tr[data-welpid]").each(function (
-        key,
-        value
-      ) {
-        let ref = value.cells[5].innerText;
-        if (camions_de_jours.includes(ref)) {
-          $(value.cells[18]).html("Aujourd'hui");
-          palette_not_anavce += parseInt(value.cells[12].innerText.trim());
-        } else {
-          $(value.cells[18]).html(
-            `<span style="font-weight: bold; color: red;">Avance</span>`
-          );
-          palettes_avance += parseInt(value.cells[12].innerText.trim());
-        }
+        camions_de_jours.push(klstb);
       });
 
-      // show notifaction
-      if (palettes_avance == 0) {
-        toastr.success(`il n'y a pas marchandises en avance.`);
-      } else if (palettes_avance > palette_not_anavce) {
-        toastr.error(
-          `${palettes_avance} sur ${
-            palette_not_anavce + palettes_avance
-          } palettes en avance.`
-        );
+    // check now
+
+    $("#table-WeTourLieferpositionen tbody>tr[data-welpid]").each(function (key, value) {
+      let ref = value.cells[5].innerText;
+      if (camions_de_jours.includes(ref)) {
+        $(value.cells[18]).html("Aujourd'hui");
+        palette_not_anavce += parseInt(value.cells[12].innerText.trim());
       } else {
-        toastr.warning(
-          `${palettes_avance} sur ${
-            palette_not_anavce + palettes_avance
-          } palettes en avance.`
-        );
+        $(value.cells[18]).html(`<span style="font-weight: bold; color: red;">Avance</span>`);
+        palettes_avance += parseInt(value.cells[12].innerText.trim());
       }
+    });
+
+    // show notifaction
+    if (palettes_avance == 0) {
+      toastr.success(`il n'y a pas marchandises en avance.`);
+    } else if (palettes_avance > palette_not_anavce) {
+      toastr.error(`${palettes_avance} sur ${palette_not_anavce + palettes_avance} palettes en avance.`);
+    } else {
+      toastr.warning(`${palettes_avance} sur ${palette_not_anavce + palettes_avance} palettes en avance.`);
     }
-  );
+  });
 }
 
 //--------------------------------
@@ -839,12 +767,8 @@ $(document).on("click", "#removeSM", function (e) {
   let removed = 0;
 
   // show notfication errer if no pal selected
-  if (!selected_palettes.length > 0)
-    return toastr.error(`Aucune positions sélectionnée.`);
-  if (!e.ctrlKey)
-    return toastr.info(
-      `Veuillez rester appuyé sur CTRL pour confirmer la suppression.`
-    );
+  if (!selected_palettes.length > 0) return toastr.error(`Aucune positions sélectionnée.`);
+  if (!e.ctrlKey) return toastr.info(`Veuillez rester appuyé sur CTRL pour confirmer la suppression.`);
 
   // Show loding...
   $("body").append(`
@@ -878,47 +802,44 @@ $(document).on("click", "#removeSM", function (e) {
   selected_palettes.each(function (key, value) {
     let palette = value;
 
+    // check if there is SM
+    if (!palette.cells[19].innerText.length > 0) {
+      toastr.warning(`Aucun SM trouvé pour certaines positions.`);
+      removed += 1;
+
+      // update counter
+      $("#removed_counter").html(`${removed}/${selected_palettes.length} positions`);
+
+      // reload if all done
+      if (removed == selected_palettes.length) return location.reload(true);
+
+      return true;
+    }
+
     let palette_ID_URL = $(palette.cells[4]).find("a").attr("href");
     let SM_URL = $(palette.cells[19]).find("a").attr("href");
     let waTourId = SM_URL.split("?waTourId=")[1];
 
     // get Palete ID on SM to delete
-
     $.get(SM_URL, function (data) {
-      let palette_ID_on_SM = $(data)
-        .find(`[href="${palette_ID_URL}"]`)
-        .parent()
-        .parent()
-        .find(".lieferpositionToDelete")
-        .val();
+      let palette_ID_on_SM = $(data).find(`[href="${palette_ID_URL}"]`).parent().parent().find(".lieferpositionToDelete").val();
 
       const ids = [];
       ids.push(palette_ID_on_SM);
 
-      $.post(
-        "/Warenausgang/RemoveLieferpositionsFromWaTour?waTourId=" + waTourId,
-        {
-          lieferpositionToDelete: ids,
-        },
-        function (data) {
-          if (data === true) {
-            removed += 1;
-            // update counter
-            $("#removed_counter").html(
-              `${removed}/${selected_palettes.length} positions`
-            );
+      // Send requst to delete the palette
+      $.post("/Warenausgang/RemoveLieferpositionsFromWaTour?waTourId=" + waTourId, { lieferpositionToDelete: ids }, function (data) {
+        if (data === true) {
+          removed += 1;
+          // update counter
+          $("#removed_counter").html(`${removed}/${selected_palettes.length} positions`);
 
-            // reload if all done
-            if (removed == selected_palettes.length) {
-              location.reload(true);
-            }
-          } else {
-            toastr.error(
-              `Erreur lors de la suppression des palettes. essayer à nouveau.`
-            );
-          }
+          // reload if all done
+          if (removed == selected_palettes.length) return location.reload(true);
+        } else {
+          toastr.error(`Erreur lors de la suppression des palettes. essayer à nouveau.`);
         }
-      );
+      });
     }).fail(function (res) {
       toastr.error(
         `Erreur ${res.status}, "${res.statusText}". <br> Erreur lors de la suppression des palettes. essayer à nouveau.
