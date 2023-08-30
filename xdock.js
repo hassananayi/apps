@@ -1,8 +1,8 @@
 //***************************//
 // XDock PRO
-// Dernière mise à jour le  28/08/2023
+// Dernière mise à jour le  30/08/2023
 //***************************//
-$("footer>.text-muted.text-right").prepend("<small>XDock PRO Ver 2.07_20230828 - </small>");
+$("footer>.text-muted.text-right").prepend("<small>XDock PRO Ver 2.08_20230830 - </small>");
 
 if (window.location.pathname == "/") {
   $("h1").html("XDock PRO");
@@ -511,7 +511,7 @@ if (isEMTour) {
               <button class="dropdown-item" onclick="copy_em_id()"><span class="fal fa-copy  mr-10"></span> Copier EM ID</button>
               <button class="dropdown-item" onclick="fill_empty_LS()"><span class="fal fa-file-alt docImage  mr-10"></span>  Remplir tous les "Nº LS" vides avec "X"</button>
               <hr>
-              <button class="dropdown-item" onclick="voir_les_sscc()"><span class="fal fa-barcode  mr-10"></span> Voir toutes les SSCC</button>
+              <button class="dropdown-item" onclick="check_all_sscc()"><span class="fal fa-barcode  mr-10"></span> Vérifier toutes les SSCC</button>
               <button class="dropdown-item" onclick="check_avance()"><span class="fal fa-calendar-alt  mr-10"></span> Vérifier l'avance</button>
               <hr>
               <button class="dropdown-item" onclick="select_all_positions()"><span class="fal fa-check  mr-10"></span> Sélectionner tout les positions</button>
@@ -546,9 +546,41 @@ function copy_em_id() {
   toastr.success(`EM ID ont été copiés.`);
 }
 
-function voir_les_sscc() {
+//--------------------------------
+// Vérifier tous les SSCC
+//--------------------------------
+
+function check_all_sscc() {
+  let AllPals = $(".xdock-tourlp-paletten-table tbody>tr");
+  let SSCC_not_found = 0;
+  let SSCC_found = 0;
+  // check All SSCC
+  AllPals.each(function (key, value) {
+    // Non SSCC trouve
+
+    let pal = $(value.cells[11]);
+    if (pal.find("a").length == 0) {
+      pal.html("<span style='font-size: 21px;color: red;font-weight: 600;'>SSCC NON TROUVÉ</span>");
+      SSCC_not_found += 1;
+    } else {
+      SSCC_found += 1;
+    }
+  });
+
+  // Show notfication
+
+  if (SSCC_not_found > 0) {
+    toastr.error(`${SSCC_not_found} SSCC Non trouvés.`);
+  } else {
+    toastr.success(`${SSCC_found}/${AllPals.length} SSCC trouvés.`);
+  }
+
   $(".palettenAufklappen").trigger("click");
 }
+
+//--------------------------------
+// Select all positions
+//--------------------------------
 function select_all_positions() {
   $(".lieferpositionToDelete").trigger("click");
   é;
@@ -723,6 +755,9 @@ function check_avance() {
   let camions_de_jours = [];
   let palettes_avance = 0;
   let palette_not_anavce = 0;
+  let kommentarIntern = $("#kommentarIntern");
+  let old_kommentarIntern_value = $("#kommentarIntern").val();
+
   $.get("/Warenausgang/Tag?sort=StatusASC&selectedDate=" + $("#selectedDate").val(), function (data, textStatus, jqXHR) {
     $(data)
       .find("#table-container tbody>tr")
