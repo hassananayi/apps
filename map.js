@@ -772,24 +772,17 @@ $("#selectedDate").on("change", function (e) {
   $("#a4").replaceWith(a4);
 
   // load new date
-  $.get(
-    "/Warenausgang/Tag?sort=ZielortLokationNameASC&selectedDate=" +
-      $(e.target).val(),
-    function (data, textStatus, jqXHR) {
-      update_zone_status(data);
-    }
-  );
+  $.get("/Warenausgang/Tag?sort=ZielortLokationNameASC&selectedDate=" + $(e.target).val(), function (data, textStatus, jqXHR) {
+    update_zone_status(data);
+  });
 });
 
 // When dom ready call data
 $(document).ready(function () {
   //sort: ZielortLokationNameASC
-  $.get(
-    "/Warenausgang/Tag?sort=StatusASC&selectedDate=" + selected_date,
-    function (data, textStatus, jqXHR) {
-      update_zone_status(data);
-    }
-  );
+  $.get("/Warenausgang/Tag?sort=StatusASC&selectedDate=" + selected_date, function (data, textStatus, jqXHR) {
+    update_zone_status(data);
+  });
 });
 
 // Update zones status
@@ -1023,6 +1016,8 @@ function get_ref_code(ref) {
       code_vo = "PCH";
       break;
     case "Provence":
+    case "ROUSSET":
+    case "Rousset":
       code_vo = "PRO";
       break;
     case "Sailly-lez-Cambrai":
