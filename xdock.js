@@ -1,8 +1,8 @@
 //***************************//
 // XDock PRO
-// Dernière mise à jour le  30/08/2023
+// Dernière mise à jour le  21/09/2023
 //***************************//
-$("footer>.text-muted.text-right").prepend("<small>XDock PRO Ver 2.08_20230830 - </small>");
+$("footer>.text-muted.text-right").prepend("<small>XDock PRO Ver 2.09_20230921 - </small>");
 
 if (window.location.pathname == "/") {
   $("h1").html("XDock PRO");
@@ -743,6 +743,7 @@ LS numérique
 $('.navbar [href="/Artikel/Artikel"]').after(`
 <hr>
 <div style="font-size: 12px; font-weight: bold; margin-left: 15px;" class="">XDock PRO:</div>
+<a class="dropdown-item" href="/#portes">Gestion des portes</a>
 <a class="dropdown-item" href="/#map">Carte de l'entrepôt</a>
 <a class="dropdown-item" href="https://tf-stb.github.io/badge/" target="_blank">Créateur de badge </a>
 `);
