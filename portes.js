@@ -253,3 +253,8 @@ $(document).ready(function () {
     $("#total_blocked").html("(" + $(".blocked").not(".color").length + ")");
   });
 });
+
+// refrech page every 60s
+setTimeout(function () {
+  window.location.reload(1);
+}, 6000);
