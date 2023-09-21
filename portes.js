@@ -257,4 +257,4 @@ $(document).ready(function () {
 // refrech page every 60s
 setTimeout(function () {
   window.location.reload(1);
-}, 6000);
+}, 60000);
