@@ -743,8 +743,8 @@ LS numérique
 $('.navbar [href="/Artikel/Artikel"]').after(`
 <hr>
 <div style="font-size: 12px; font-weight: bold; margin-left: 15px;" class="">XDock PRO:</div>
-<a class="dropdown-item" href="/#portes">Gestion des portes</a>
-<a class="dropdown-item" href="/#map">Carte de l'entrepôt</a>
+<a class="dropdown-item" href="/#portes" target="_blank">Gestion des portes</a>
+<a class="dropdown-item" href="/#map" target="_blank">Carte de l'entrepôt</a>
 <a class="dropdown-item" href="https://tf-stb.github.io/badge/" target="_blank">Créateur de badge </a>
 `);
 
