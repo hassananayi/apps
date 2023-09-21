@@ -146,12 +146,10 @@ span.window {
   background: #f1c40f;
 }
 
-
- 
-
 span.porte_num {
-  background: white;
+  background: #ffffff6e;
   padding: 3px 5px 3px 5px;
+  border-radius: 4px;
 }
 `);
 
