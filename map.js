@@ -1,6 +1,6 @@
 //***************************//
 // Map add-on for XDock PRO
-// V 1.07
+// V 1.08
 //***************************//
 
 $("<style>").appendTo("head").html(`
@@ -18,7 +18,7 @@ $("<style>").appendTo("head").html(`
     zoom:100% !important;
   }
 
-  .container-fluid.mt-3 {
+  .container-fluid.mt-3,#xdock_pro_page_header {
     display: none !important;
 }
 
@@ -754,7 +754,16 @@ let a4 = `
     </div>`;
 
 $("#img-zonenuebersicht").replaceWith(a4);
-$("head>title").html("Carte de l'entrepôt TF-STB");
+$("head>title").html("Carte de l'entrepôt TF-STB :: XDock PRO");
+
+// Set page header
+$("h1").parent().replaceWith(`<div id="xdock_pro_page_header" class="row d-flex align-items-center h-100 xdock-head-row">
+<div class="col-6 h-100 xdock-head-title">
+    <h1>
+       XDock PRO <span class="fa fa-caret-right navArrow"></span> Carte de l'entrepôt
+    </h1>
+</div>
+</div>`);
 
 /* Status
  - free
@@ -766,6 +775,7 @@ $("head>title").html("Carte de l'entrepôt TF-STB");
 
 let updated_zones;
 let selected_date = $("#selectedDate").val();
+let LastModified;
 
 $("#selectedDate").on("change", function (e) {
   // reset map
@@ -788,7 +798,6 @@ $(document).ready(function () {
 // Update zones status
 function update_zone_status(dataServ) {
   let zone_info = [];
-
   let data = $(dataServ);
   // loop for zone alredy teken
   $(data.find("#ZoneBase>select>option")).each(function (index, value) {
@@ -869,9 +878,12 @@ function update_zone_status(dataServ) {
 
   updated_zones = zone_info;
 
+  // update map
   update_map();
 
-  // console.log(updated_zones);
+  //check last modifed
+
+  chek_LastModified(data.find("#concurrencyCheckUrl").attr("href"));
 }
 
 function update_map() {
@@ -1059,4 +1071,15 @@ function get_ref_code(ref) {
   }
 
   return code_vo;
+}
+
+function chek_LastModified(LastModified) {
+  // end req every 5s
+  setInterval(function () {
+    $.get(LastModified, function (data, textStatus, jqXHR) {
+      if (!data) {
+        window.location.reload(1);
+      }
+    });
+  }, 5000);
 }
