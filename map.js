@@ -1,6 +1,6 @@
 //***************************//
 // Map add-on for XDock PRO
-// V 1.08
+// V 1.09
 //***************************//
 
 $("<style>").appendTo("head").html(`
@@ -82,6 +82,10 @@ $("<style>").appendTo("head").html(`
 
 .de_hier {
   background: #34495e !important;
+ 
+}
+a.de_hier > div[id]{
+  color: #fff !important;
 }
 
 .de_avance {
@@ -319,6 +323,11 @@ a.url_edit {
   border-radius: 50%;
   margin-right: 3px;
   
+}
+
+#show_avance,#show_SM_hier{
+  cursor: pointer;
+  text-decoration: underline;
 }
 
 `);
@@ -744,8 +753,8 @@ let a4 = `
         <div class="gud_item"><div class="color taken"></div>  <span class="title">Occupé</span>  <span id="total_taken"></span></div>
         <div class="gud_item"><div class="color blocked"></div> <span class="title">Zone/SM bloqué</span>  <span id="total_blocked"></span></div>
         <div class="gud_item"><div class="color en_cours"></div> <span class="title">SM en cours</span>  <span id="total_en_cours"></span></div>
-        <div class="gud_item"><div class="color de_avance"></div> <span class="title">Occupé pour demain</span>  <span id="total_de_avance"></span></div>
-        <div class="gud_item"><div class="color de_hier"></div> <span class="title">SM de hier</span>  <span id="total_de_hier"></span></div>
+        <div class="gud_item" id="show_avance"><div class="color de_avance"></div> <span class="title">Occupé pour demain</span>  <span id="total_de_avance"></span></div>
+        <div class="gud_item" id="show_SM_hier"><div class="color de_hier"></div> <span class="title">SM de hier</span>  <span id="total_de_hier"></span></div>
         <div class="gud_item"><div class="color first_color"></div> <span class="title">Inconnue</span></div>
         <div class="gud_item"> <span class="date d-none"> Date d'impression: <span id="date_of_print"></span></span></div>
         </div>
@@ -922,6 +931,18 @@ function update_map() {
   $("#total_de_hier").html("(" + $(".de_hier").not(".color").length + ")");
   $("#total_de_avance").html("(" + $(".de_avance").not(".color").length + ")");
   $("#total_blocked").html("(" + $(".blocked").not(".color").length + ")");
+
+  // shoi notfithion info
+
+  if ($(".de_avance").not(".color").length > 0) {
+    toastr.info(`Cliquer sur "Occupé pour demain" pour afficher les 
+    référence.`);
+  }
+
+  if ($(".de_hier").not(".color").length > 0) {
+    toastr.info(`Cliquer sur "SM de hier" pour afficher les 
+    référence.`);
+  }
 }
 
 // remove h1 befor print
@@ -1082,4 +1103,70 @@ function chek_LastModified(LastModified) {
       }
     });
   }, 5000);
+}
+
+// update avance info
+function load_other_day(selectedDate) {
+  $.get("/Warenausgang/Tag?sort=StatusASC&selectedDate=" + switchDate(selectedDate), function (dataServ, textStatus, jqXHR) {
+    let zone_info = [];
+    let data = $(dataServ);
+    // loop for zone alredy teken
+    $(data.find("#ZoneBase>select>option")).each(function (index, value) {
+      let option = $(value);
+      let zoneID = parseInt(option.val());
+      // check if is taken
+      if (option.hasClass("zone-in-verwendung-auslieferungstermin")) {
+        let tr_children = data
+          .find("[data-selected='" + zoneID + "']")
+          .parent()
+          .children();
+        let ref = get_ref_code(tr_children[4].innerText.trim());
+
+        // let url = $(tr_children[0]).find("a").attr("href");
+
+        if (ref == "GCA?_TEN?") {
+          ref = tr_children[6].innerText.trim().substring(11, 15);
+        }
+
+        zone_info.push({
+          id: zoneID,
+          name: option.html(),
+          ref: ref,
+          status: "taken",
+        });
+      }
+    });
+
+    zone_info.map((zone) => {
+      let zone_el = $("#" + zone.name);
+      zone_el.html(zone.ref);
+    });
+  });
+}
+
+$(document).on("click", "#show_avance", function () {
+  load_other_day("next");
+});
+
+$(document).on("click", "#show_SM_hier", function () {
+  load_other_day("back");
+});
+
+function switchDate(dayIN) {
+  let d = new Date();
+
+  if (dayIN == "next") {
+    d.setDate(d.getDate() + 1);
+  } else {
+    d.setDate(d.getDate() - 1);
+  }
+
+  let month = "" + (d.getMonth() + 1);
+  let day = "" + d.getDate();
+  let year = d.getFullYear();
+
+  if (month.length < 2) month = "0" + month;
+  if (day.length < 2) day = "0" + day;
+
+  return [year, month, day].join("-");
 }
