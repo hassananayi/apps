@@ -1,6 +1,7 @@
 //***************************//
 // Map add-on for XDock PRO
-// V 1.09
+// V 2.00
+// Dernière mise à jour le  07/10/2023
 //***************************//
 
 $("<style>").appendTo("head").html(`
@@ -931,18 +932,6 @@ function update_map() {
   $("#total_de_hier").html("(" + $(".de_hier").not(".color").length + ")");
   $("#total_de_avance").html("(" + $(".de_avance").not(".color").length + ")");
   $("#total_blocked").html("(" + $(".blocked").not(".color").length + ")");
-
-  // shoi notfithion info
-
-  if ($(".de_avance").not(".color").length > 0) {
-    toastr.info(`Cliquer sur "Occupé pour demain" pour afficher les 
-    référence.`);
-  }
-
-  if ($(".de_hier").not(".color").length > 0) {
-    toastr.info(`Cliquer sur "SM de hier" pour afficher les 
-    référence.`);
-  }
 }
 
 // remove h1 befor print
