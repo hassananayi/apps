@@ -1,8 +1,8 @@
 //***************************//
 // XDock PRO
-// Dernière mise à jour le  21/09/2023
+// Dernière mise à jour le  07/10/2023
 //***************************//
-$("footer>.text-muted.text-right").prepend("<small>XDock PRO Ver 2.09_20230921 - </small>");
+$("footer>.text-muted.text-right").prepend("<small>XDock PRO Ver 3.00_20231007 - </small>");
 
 if (window.location.pathname == "/") {
   $("h1").html("XDock PRO");
@@ -16,7 +16,7 @@ $("<style>").appendTo("head").html(`
 /* From JS */
 /* Augmenter la taille du texte Remorque /véhicules */
 input#kennzeichenZugmaschine,
-input#kennzeichenAuflieger {
+input#kennzeichenAuflieger,input#tel {
     font-size: 21px !important;
     
 }
@@ -121,120 +121,6 @@ button#paste_palettes {
 
 const isSMTour = window.location.href.includes("Warenausgang") ? true : false;
 const isEMTour = window.location.href.includes("Wareneingang") ? true : false;
-
-//--------------------------
-// collaborateurs
-//--------------------------
-
-function collaborateurs() {
-  let team_1 = [
-    "", // -
-    "900", // Abdel
-    "945", //Chris
-    "928", //Gregory
-    "941", //Hassan
-    "951", //Kevin
-    "953", //Leandro
-    "957", //Marc
-    "942", //Patrice
-    "936", //Saleh
-    "929", //Hamadi
-    "976", //Sebastien
-    "979", //Stephan M.
-    "934", //Suzie,
-    "970", // Regis
-    "902", // Amin
-  ];
-  let team_2 = [
-    "", // -
-    "917", // Christophe
-    "923", //Eric
-    "926", //Georges
-    "944", //Lucas
-    "913", //Yamin,
-    "937", //julien
-    "1463", //BJSCH
-    "912", //bodi
-    "902", //MohamedBe
-    "902", // Amin
-    "1536", //Mohamed Bellaredj
-    "1534", //Ali
-    "970", // Regis
-  ];
-
-  let team_3 = [
-    "", // -
-    "902", // Alban
-    "919", //Daniel
-    "921", //David T.
-    "932", //Houcine
-    "1213", //Mike
-    "971", //Romain
-    "913", //Yamin
-    "986", //Younes
-    "970", // Regis
-  ];
-
-  // check current_team
-  switch (parseInt(localStorage.getItem("current_team"))) {
-    case 0:
-      add_select_team(0);
-      break;
-    case 1:
-      add_select_team(1);
-      inject_code(team_1);
-      break;
-
-    case 2:
-      add_select_team(2);
-      inject_code(team_2);
-      break;
-
-    case 3:
-      add_select_team(3);
-      inject_code(team_3);
-      break;
-    default:
-      add_select_team(0);
-      localStorage.setItem("current_team", 0);
-      break;
-  }
-
-  function inject_code(team_list) {
-    $("select.updateMitarbeiterSelectbox > option").each(function () {
-      if ($(this).is(":selected")) return true;
-
-      if ($.inArray($(this).val(), team_list) === -1) {
-        $(this).remove();
-      }
-    });
-  }
-
-  // add to dom select names
-  function add_select_team(current_team) {
-    $("body").append(`<div class="d-flex">
-  <span class='ml-3'>Modifier la liste des collaborateurs</span>
-  <select id="edit_names_list"  class="form-control form-control-sm ml-3" data-style="xdock-selectbox xdock-selectboxWidth120">
-      <option ${current_team === 0 ? "selected" : ""}  value="0">Tous les prénoms</option>
-      <option ${current_team === 1 ? "selected" : ""}  value="1">Équipe du matin</option>
-      <option ${current_team === 2 ? "selected" : ""}  value="2">L'équipe de l'après-midi</option>
-      <option ${current_team === 3 ? "selected" : ""}  value="3">L'équipe de nuit</option>
-  </select></div>`);
-
-    // lisent to change
-    $(document).on("change", "#edit_names_list", function (el) {
-      // set to storge
-      localStorage.setItem("current_team", $(this).val());
-      // reload the page
-      window.location.reload();
-    });
-  }
-} // end function coll
-
-// check if the page is "dans lnte" run the function
-if (window.location.href.includes("/Taskmanagement/TaskmanagementAmLager")) {
-  collaborateurs();
-}
 
 //--------------------------------
 // Task Manger
@@ -756,8 +642,6 @@ function check_avance() {
   let camions_de_jours = [];
   let palettes_avance = 0;
   let palette_not_anavce = 0;
-  let kommentarIntern = $("#kommentarIntern");
-  let old_kommentarIntern_value = $("#kommentarIntern").val();
 
   $.get("/Warenausgang/Tag?sort=StatusASC&selectedDate=" + $("#selectedDate").val(), function (data, textStatus, jqXHR) {
     $(data)
@@ -884,3 +768,26 @@ $(document).on("click", "#removeSM", function (e) {
     });
   });
 });
+
+//--------------------------------
+// check palettes zone de pré-livraison
+//--------------------------------
+
+function check_palettes_on_prelivraison() {
+  if (!$("#table-WaTourLieferpositionen")[0].innerHTML.includes("Vorlieferzone")) return false;
+  $("#kommentarIntern").parent()
+    .prepend(`<div class="alert alert-danger" role="alert"><span class="fa fa-exclamation-triangle" style="font-size: 16px; color: red"></span> Attention il reste encore quelques palettes dans la zone de pré-livraison. <a href="#" id="check_palettes_zone_preliv">voir les SSCC</a>
+</div>`);
+
+  // check btn
+  $("#check_palettes_zone_preliv").click(function () {
+    $("tbody tr").each(function (index, val) {
+      if ($(val)[0].innerHTML.includes("Vorlieferzone")) {
+        console.log($(val).removeClass("d-none"));
+      }
+    });
+  });
+}
+if (isSMTour) {
+  check_palettes_on_prelivraison();
+}
