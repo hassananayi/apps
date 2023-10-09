@@ -774,6 +774,8 @@ $(document).on("click", "#removeSM", function (e) {
 //--------------------------------
 
 function check_palettes_on_prelivraison() {
+    // check first if ther is zone
+  if (parseInt(document.getElementById("zoneId").value) == 0) return false;
   if (!$("#table-WaTourLieferpositionen")[0].innerHTML.includes("Vorlieferzone")) return false;
   $("#kommentarIntern").parent()
     .prepend(`<div class="alert alert-danger" role="alert"><span class="fa fa-exclamation-triangle" style="font-size: 16px; color: red"></span> Attention il reste encore quelques palettes dans la zone de pré-livraison. <a href="#" id="check_palettes_zone_preliv">voir les SSCC</a>
