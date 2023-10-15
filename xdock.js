@@ -1,8 +1,8 @@
 //***************************//
 // XDock PRO
-// Dernière mise à jour le  07/10/2023
+// Dernière mise à jour le  15/10/2023
 //***************************//
-$("footer>.text-muted.text-right").prepend("<small>XDock PRO Ver 3.00_20231007 - </small>");
+$("footer>.text-muted.text-right").prepend("<small>XDock PRO Ver 3.01_20231015 - </small>");
 
 if (window.location.pathname == "/") {
   $("h1").html("XDock PRO");
@@ -111,6 +111,10 @@ button#paste_palettes {
 
 .mr-10{
   margin-right:10px;
+}
+
+.xdock-tourlp-paletten-table img{
+  height: 90px;
 }
 
  `);
@@ -774,9 +778,9 @@ $(document).on("click", "#removeSM", function (e) {
 //--------------------------------
 
 function check_palettes_on_prelivraison() {
-    // check first if ther is zone
+  // check first if ther is zone
   if (parseInt(document.getElementById("zoneId").value) == 0) return false;
-  if (!$("#table-WaTourLieferpositionen")[0].innerHTML.includes("Vorlieferzone")) return false;
+  if (!document.body.innerHTML.includes("Vorlieferzone")) return false;
   $("#kommentarIntern").parent()
     .prepend(`<div class="alert alert-danger" role="alert"><span class="fa fa-exclamation-triangle" style="font-size: 16px; color: red"></span> Attention il reste encore quelques palettes dans la zone de pré-livraison. <a href="#" id="check_palettes_zone_preliv">voir les SSCC</a>
 </div>`);
@@ -785,11 +789,11 @@ function check_palettes_on_prelivraison() {
   $("#check_palettes_zone_preliv").click(function () {
     $("tbody tr").each(function (index, val) {
       if ($(val)[0].innerHTML.includes("Vorlieferzone")) {
-        console.log($(val).removeClass("d-none"));
+        $(val).removeClass("d-none");
       }
     });
   });
 }
-if (isSMTour) {
+if (window.location.href.includes("waTourId=")) {
   check_palettes_on_prelivraison();
 }
