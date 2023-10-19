@@ -114,7 +114,7 @@ button#paste_palettes {
 }
 
 .xdock-tourlp-paletten-table img{
-  height: 90px;
+  height: 75px;
 }
 
  `);
