@@ -1,8 +1,8 @@
 //***************************//
 // XDock PRO
-// Dernière mise à jour le  15/10/2023
+// Dernière mise à jour le  21/10/2023
 //***************************//
-$("footer>.text-muted.text-right").prepend("<small>XDock PRO Ver 3.01_20231015 - </small>");
+$("footer>.text-muted.text-right").prepend("<small>XDock PRO Ver 3.02_20231021 - </small>");
 
 if (window.location.pathname == "/") {
   $("h1").html("XDock PRO");
@@ -147,7 +147,8 @@ function task_manger() {
 
   // inject btns
   switch (parseInt(tourStatus)) {
-    case 80: // en cours
+    case 80: 
+    case 81: 
       $(".xdock-head-row > .col-4 > .d-flex.flex-row").append(Block_btn_html);
       break;
     case 75: // Entrée de marchandises à la porte
