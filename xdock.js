@@ -795,6 +795,28 @@ function check_palettes_on_prelivraison() {
     });
   });
 }
+
+
+//--------------------------------
+// check if livraison Samedi or lundi
+//--------------------------------
+
+function check_livraison_day() {
+  const livraisonDate = new Date($("#anlieferdatum").val());
+  if (livraisonDate.getDay() === 6) {
+    // Samedi
+    $("#zeitfensternummer").after(`<div class="badge badge-pill mt-3" style="background-color: #d5d5d5">
+    <i class="fas fa-shipping-fast"></i> Livraison Samedi</div>  `);
+  } else if (livraisonDate.getDay() == 1) {
+    // lundi
+    $("#zeitfensternummer").after(`<div class="badge badge-pill mt-3" style="background-color: #d5d5d5">
+    <i class="fas fa-truck"></i> Livraison Lundi</div>  `);
+  } else {
+    return false;
+  }
+}
+
 if (window.location.href.includes("waTourId=")) {
   check_palettes_on_prelivraison();
+  check_livraison_day();
 }
