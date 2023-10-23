@@ -1,8 +1,8 @@
 //***************************//
 // XDock PRO
-// Dernière mise à jour le  21/10/2023
+// Dernière mise à jour le  23/10/2023
 //***************************//
-$("footer>.text-muted.text-right").prepend("<small>XDock PRO Ver 3.02_20231021 - </small>");
+$("footer>.text-muted.text-right").prepend("<small>XDock PRO Ver 3.03_20231023 - </small>");
 
 if (window.location.pathname == "/") {
   $("h1").html("XDock PRO");
@@ -147,8 +147,8 @@ function task_manger() {
 
   // inject btns
   switch (parseInt(tourStatus)) {
-    case 80: 
-    case 81: 
+    case 80:
+    case 81:
       $(".xdock-head-row > .col-4 > .d-flex.flex-row").append(Block_btn_html);
       break;
     case 75: // Entrée de marchandises à la porte
@@ -795,7 +795,6 @@ function check_palettes_on_prelivraison() {
     });
   });
 }
-
 
 //--------------------------------
 // check if livraison Samedi or lundi
