@@ -1,8 +1,8 @@
 //***************************//
 // XDock PRO
-// Dernière mise à jour le  23/10/2023
+// Dernière mise à jour le  24/10/2023
 //***************************//
-$("footer>.text-muted.text-right").prepend("<small>XDock PRO Ver 3.03_20231023 - </small>");
+$("footer>.text-muted.text-right").prepend("<small>XDock PRO Ver 3.04_20231024 - </small>");
 
 if (window.location.pathname == "/") {
   $("h1").html("XDock PRO");
@@ -117,6 +117,10 @@ button#paste_palettes {
   height: 75px;
 }
 
+
+.badge-liv{
+  background-color: #d5d5d5;
+}
  `);
 
 //--------------------------
@@ -801,17 +805,35 @@ function check_palettes_on_prelivraison() {
 //--------------------------------
 
 function check_livraison_day() {
-  const livraisonDate = new Date($("#anlieferdatum").val());
-  if (livraisonDate.getDay() === 6) {
-    // Samedi
-    $("#zeitfensternummer").after(`<div class="badge badge-pill mt-3" style="background-color: #d5d5d5">
-    <i class="fas fa-shipping-fast"></i> Livraison Samedi</div>  `);
-  } else if (livraisonDate.getDay() == 1) {
-    // lundi
-    $("#zeitfensternummer").after(`<div class="badge badge-pill mt-3" style="background-color: #d5d5d5">
-    <i class="fas fa-truck"></i> Livraison Lundi</div>  `);
-  } else {
-    return false;
+  const dep = new Date($("#auslieferungstermin").val());
+  const livraison = new Date($("#anlieferdatum").val());
+
+  switch (dep.getDay()) {
+    case 1:
+      $("#zeitfensternummer").after(`<div class="badge badge-pill mt-3 badge-liv"><i class="fas fa-truck"></i> Départ Lundi</div>`);
+      break;
+    case 2:
+      $("#zeitfensternummer").after(`<div class="badge badge-pill mt-3 badge-liv"><i class="fas fa-truck"></i> Départ Mardi</div>`);
+      break;
+    case 3:
+      $("#zeitfensternummer").after(`<div class="badge badge-pill mt-3 badge-liv"><i class="fas fa-truck"></i> Départ Mercredi</div>`);
+      break;
+
+    case 4:
+      $("#zeitfensternummer").after(`<div class="badge badge-pill mt-3 badge-liv"><i class="fas fa-truck"></i> Départ Jeudi</div>`);
+      break;
+
+    case 5:
+      if (livraison.getDay() === 6) {
+        // Samedi
+        $("#zeitfensternummer").after(`<div class="badge badge-pill mt-3 badge-liv" ><i class="fas fa-shipping-fast"></i> Livraison Samedi</div>`);
+      } else if (livraison.getDay() == 1) {
+        // lundi
+        $("#zeitfensternummer").after(`<div class="badge badge-pill mt-3 badge-liv"><i class="fas fa-truck"></i> Livraison Lundi</div>`);
+      } else {
+        return false;
+      }
+      break;
   }
 }
 
