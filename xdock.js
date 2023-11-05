@@ -1,8 +1,8 @@
 //***************************//
 // XDock PRO
-// Dernière mise à jour le  24/10/2023
+// Dernière mise à jour le  05/11/2023
 //***************************//
-$("footer>.text-muted.text-right").prepend("<small>XDock PRO Ver 3.04_20231024 - </small>");
+$("footer>.text-muted.text-right").prepend("<small>XDock PRO Ver 3.05_20231105 - </small>");
 
 if (window.location.pathname == "/") {
   $("h1").html("XDock PRO");
@@ -388,7 +388,7 @@ if (isEMTour) {
   let status = $(".tourStatus").html();
   // create Btn
 
-  let task_disabled = parseInt(status) == 75 ? "" : "disabled";
+  //let task_disabled = parseInt(status) == 75 ? "" : "disabled";
 
   $($("#kopfdaten").children()[3]).append(
     `
@@ -399,8 +399,8 @@ if (isEMTour) {
       </a>
       <div class="dropdown-menu" aria-labelledby="navbarDropdown">
           <div style="font-size: 12px; font-weight: bold; margin-left: 15px;" class="">Tâches:</div>
-          <button class="dropdown-item" ${task_disabled} onclick="passe_encours()">Passe la tâche "En cours"</button>
-          <button class="dropdown-item" ${task_disabled} onclick="terminer_automatique()">Terminer automatique</button>
+          <button class="dropdown-item" disabled >Passe la tâche "En cours"</button>
+          <button class="dropdown-item" disabled >Terminer automatique</button>
           <hr>
           <div style="font-size: 12px; font-weight: bold; margin-left: 15px;" class="">Entrée de marchandises:</div>
               <button class="dropdown-item" onclick="copy_em_id()"><span class="fal fa-copy  mr-10"></span> Copier EM ID</button>
@@ -408,6 +408,8 @@ if (isEMTour) {
               <hr>
               <button class="dropdown-item" onclick="check_all_sscc()"><span class="fal fa-barcode  mr-10"></span> Vérifier toutes les SSCC</button>
               <button class="dropdown-item" onclick="check_avance()"><span class="fal fa-calendar-alt  mr-10"></span> Vérifier l'avance</button>
+              <hr>
+              <button class="dropdown-item" onclick="palettes_summary()"><span class="fal fa-chart-bar  mr-10"></span> Résumé des palettes</button>
               <hr>
               <button class="dropdown-item" onclick="select_all_positions()"><span class="fal fa-check  mr-10"></span> Sélectionner tout les positions</button>
               <button class="dropdown-item" id="removeSM"><span class="fal fa-trash  mr-10"></span>  Supprimer SM des positions sélectionnées</button> 
@@ -418,18 +420,6 @@ if (isEMTour) {
   </div
 `
   );
-}
-
-// fucations Tâches
-function passe_encours() {
-  $("#startausgabeEntladeanweisung").trigger("click"); // Start
-  $("#saveBtn").trigger("click"); // Save
-}
-
-function terminer_automatique() {
-  $("#startausgabeEntladeanweisung").trigger("click"); // Start
-  $("#stopfertigstellungEntladeanweisung").trigger("click"); // End
-  $("#saveBtn").trigger("click"); //  Save
 }
 
 // fucations Entrée de marchandises
@@ -808,36 +798,109 @@ function check_livraison_day() {
   const dep = new Date($("#auslieferungstermin").val());
   const livraison = new Date($("#anlieferdatum").val());
 
-  switch (dep.getDay()) {
-    case 1:
-      $("#zeitfensternummer").after(`<div class="badge badge-pill mt-3 badge-liv"><i class="fas fa-truck"></i> Départ Lundi</div>`);
-      break;
-    case 2:
-      $("#zeitfensternummer").after(`<div class="badge badge-pill mt-3 badge-liv"><i class="fas fa-truck"></i> Départ Mardi</div>`);
-      break;
-    case 3:
-      $("#zeitfensternummer").after(`<div class="badge badge-pill mt-3 badge-liv"><i class="fas fa-truck"></i> Départ Mercredi</div>`);
-      break;
+  // Define a map for day labels.
+  const dayLabels = {
+    1: "Départ Lundi",
+    2: "Départ Mardi",
+    3: "Départ Mercredi",
+    4: "Départ Jeudi",
+  };
 
-    case 4:
-      $("#zeitfensternummer").after(`<div class="badge badge-pill mt-3 badge-liv"><i class="fas fa-truck"></i> Départ Jeudi</div>`);
-      break;
+  // Helper function to add a badge to the DOM.
+  function addBadge(label, icon) {
+    $("#zeitfensternummer").after(`<div class="badge badge-pill mt-3 badge-liv"><i class="${icon}"></i> ${label}</div>`);
+  }
 
-    case 5:
-      if (livraison.getDay() === 6) {
-        // Samedi
-        $("#zeitfensternummer").after(`<div class="badge badge-pill mt-3 badge-liv" ><i class="fas fa-shipping-fast"></i> Livraison Samedi</div>`);
-      } else if (livraison.getDay() == 1) {
-        // lundi
-        $("#zeitfensternummer").after(`<div class="badge badge-pill mt-3 badge-liv"><i class="fas fa-truck"></i> Livraison Lundi</div>`);
-      } else {
-        return false;
-      }
-      break;
+  // Check the day of the week for "dep" date.
+  if (dep.getDay() in dayLabels) {
+    addBadge(dayLabels[dep.getDay()], "fas fa-truck");
+  }
+
+  // Check the day of the week for "livraison" date.
+  if (dep.getDay() === 5) {
+    if (livraison.getDay() === 6) {
+      // Samedi
+      addBadge("Livraison Samedi", "fas fa-shipping-fast");
+    } else if (livraison.getDay() === 1) {
+      // Lundi
+      addBadge("Livraison Lundi", "fas fa-truck");
+    }
   }
 }
 
 if (window.location.href.includes("waTourId=")) {
   check_palettes_on_prelivraison();
   check_livraison_day();
+}
+//--------------------------------
+// check palettes summary
+//--------------------------------
+
+function palettes_summary() {
+  let data = [];
+  $("#table-WeTourLieferpositionen tbody>tr[data-welpid]").each(function (key, value) {
+    let ref = value.cells[5].innerText;
+    let palettes_unm = parseInt(value.cells[12].innerText);
+    let zone = value.cells[17].innerText;
+    let sm = value.cells[19].innerHTML;
+    data.push({ ref: ref, palettes: palettes_unm, zone: zone, sm: sm });
+  });
+
+  // Create an object to store the summary
+  const summary = {};
+
+  // Iterate through the data and calculate the summary
+  data.forEach((item) => {
+    if (!summary[item.ref]) {
+      summary[item.ref] = { palettes: 0, zone: item.zone, sm: item.sm };
+    }
+    summary[item.ref].palettes += item.palettes;
+  });
+
+  // Convert the summary object into an array of key-value pairs
+  const summaryArray = Object.entries(summary);
+
+  // Sort the array based on palettes (descending order)
+  summaryArray.sort((a, b) => b[1].palettes - a[1].palettes);
+
+  // Convert the sorted array back into an object if needed
+  const sortedSummary = Object.fromEntries(summaryArray);
+
+  let html = `<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Référence</th>
+      <th scope="col">PAL</th>
+      <th scope="col">Zone</th>
+      <th scope="col">Tournée SM</th>
+    </tr>
+  </thead>
+  <tbody>{tbody}</tbody>
+</table>`;
+
+  let tbody = "";
+  let i = 1;
+  $.map(sortedSummary, function (Value, index) {
+    tbody += `<tr>
+     <th scope="row">${i}</th>
+     <td>${index}</td>
+     <td>${Value.palettes}</td>
+     <td>${Value.zone}</td>
+     <td>${Value.sm}</td>
+   </tr>`;
+
+    i++;
+  });
+
+  let newHTML = html.replace("{tbody}", tbody);
+
+  // setup the model
+  let barcode_modal = $("#barcode_modal");
+  barcode_modal.find(".modal-dialog").addClass("modal-dialog-scrollable");
+  barcode_modal.find(".modal-title").html("Résumé des palettes");
+  barcode_modal.find(".modal-body").html(newHTML);
+
+  let barcodeModal = new bootstrap.Modal(document.getElementById("barcode_modal"), {});
+  barcodeModal.show(); // you can try comment this code, because bootstrap maybe open modal
 }
