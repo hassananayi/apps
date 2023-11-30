@@ -1,8 +1,8 @@
 //***************************//
 // XDock PRO
-// Dernière mise à jour le  05/11/2023
+// Dernière mise à jour le  30/11/2023
 //***************************//
-$("footer>.text-muted.text-right").prepend("<small>XDock PRO Ver 3.05_20231105 - </small>");
+$("footer>.text-muted.text-right").prepend("<small>XDock PRO Ver 3.06_20231130- </small>");
 
 if (window.location.pathname == "/") {
   $("h1").html("XDock PRO");
@@ -121,6 +121,14 @@ button#paste_palettes {
 .badge-liv{
   background-color: #d5d5d5;
 }
+
+#plettes_selected_count {
+  position: absolute;
+  left: 808px;
+  margin-top: 12px;
+  font-weight: bold;
+}
+
  `);
 
 //--------------------------
@@ -274,7 +282,7 @@ let num_palettes_selected = 0;
 $(document).on("change", ".lieferpositionToDelete", function (e) {
   if (!$(".to-be-deleted").length > 0) {
     $("#delete_palettes_zone").html("");
-    $("tfoot>tr>td[colspan='11']").html("");
+    $("#plettes_selected_count").html("");
     num_palettes_selected = 0;
 
     return false;
@@ -298,7 +306,7 @@ $(document).on("change", ".lieferpositionToDelete", function (e) {
   
   `);
 
-    num_palette_selected_current = parseInt($(e.target).parent().parent()[0].cells[13].innerText);
+    num_palette_selected_current = parseInt($(e.target).parent().parent()[0].cells[14].innerText);
   } else {
     $("#delete_palettes_zone").html(`
       <button id="delete_palettes" class="btn btn-sm btn-outline-danger">
@@ -307,7 +315,7 @@ $(document).on("change", ".lieferpositionToDelete", function (e) {
       </button>
   `);
 
-    num_palette_selected_current = parseInt($(e.target).parent().parent()[0].cells[12].innerText);
+    num_palette_selected_current = parseInt($(e.target).parent().parent()[0].cells[13].innerText);
   }
 
   // Palettes Counters.
@@ -319,9 +327,7 @@ $(document).on("change", ".lieferpositionToDelete", function (e) {
   }
 
   // show num palettes selected
-  $("tfoot>tr>td[colspan='11']")
-    .css("text-align", "center")
-    .html("Nombre des palettes sélectionnées:  " + num_palettes_selected);
+  $("#delete_palettes_zone").append("<span id='plettes_selected_count'> Nombre des palettes sélectionnées:  " + num_palettes_selected + "<span>");
 });
 
 $(document).on("click", "#delete_palettes", function (e) {
@@ -368,7 +374,7 @@ if (window.location.href.includes("Warenausgang/AddLieferpositionen?waTourId")) 
         // check if is id in clipboard
 
         const paletteGTIN = $(palette)[0].cells[5].innerText;
-        const paletteEM = $(palette)[0].cells[15].innerText.trim();
+        const paletteEM = $(palette)[0].cells[16].innerText.trim();
 
         if (clipData.includes(paletteGTIN) || clipData.includes(paletteEM)) {
           $(palette).find('input[name="lieferposCheckboxes"]').trigger("click");
@@ -656,10 +662,10 @@ function check_avance() {
     $("#table-WeTourLieferpositionen tbody>tr[data-welpid]").each(function (key, value) {
       let ref = value.cells[5].innerText;
       if (camions_de_jours.includes(ref)) {
-        $(value.cells[18]).html("Aujourd'hui");
+        $(value.cells[19]).html("Aujourd'hui");
         palette_not_anavce += parseInt(value.cells[12].innerText.trim());
       } else {
-        $(value.cells[18]).html(`<span style="font-weight: bold; color: red;">Avance</span>`);
+        $(value.cells[19]).html(`<span style="font-weight: bold; color: red;">Avance</span>`);
         palettes_avance += parseInt(value.cells[12].innerText.trim());
       }
     });
@@ -720,9 +726,8 @@ $(document).on("click", "#removeSM", function (e) {
   $("body").addClass("modal-open");
   selected_palettes.each(function (key, value) {
     let palette = value;
-
     // check if there is SM
-    if (!palette.cells[19].innerText.length > 0) {
+    if (!palette.cells[20].innerText.length > 0) {
       toastr.warning(`Aucun SM trouvé pour certaines positions.`);
       removed += 1;
 
@@ -841,8 +846,8 @@ function palettes_summary() {
   $("#table-WeTourLieferpositionen tbody>tr[data-welpid]").each(function (key, value) {
     let ref = value.cells[5].innerText;
     let palettes_unm = parseInt(value.cells[12].innerText);
-    let zone = value.cells[17].innerText;
-    let sm = value.cells[19].innerHTML;
+    let zone = value.cells[18].innerText;
+    let sm = value.cells[20].innerHTML;
     data.push({ ref: ref, palettes: palettes_unm, zone: zone, sm: sm });
   });
 
