@@ -1,8 +1,8 @@
 //***************************//
 // XDock PRO
-// Dernière mise à jour le  30/11/2023
+// Dernière mise à jour le  09/12/2023
 //***************************//
-$("footer>.text-muted.text-right").prepend("<small>XDock PRO Ver 3.06_20231130- </small>");
+$("footer>.text-muted.text-right").prepend("<small>XDock PRO Ver 3.07_20231209- </small>");
 
 if (window.location.pathname == "/") {
   $("h1").html("XDock PRO");
@@ -741,7 +741,7 @@ $(document).on("click", "#removeSM", function (e) {
     }
 
     let palette_ID_URL = $(palette.cells[4]).find("a").attr("href");
-    let SM_URL = $(palette.cells[19]).find("a").attr("href");
+    let SM_URL = $(palette.cells[20]).find("a").attr("href");
     let waTourId = SM_URL.split("?waTourId=")[1];
 
     // get Palete ID on SM to delete
