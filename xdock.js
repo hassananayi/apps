@@ -1,8 +1,8 @@
 //***************************//
 // XDock PRO
-// Dernière mise à jour le  09/12/2023
+// Dernière mise à jour le  14/12/2023
 //***************************//
-$("footer>.text-muted.text-right").prepend("<small>XDock PRO Ver 3.07_20231209- </small>");
+$("footer>.text-muted.text-right").prepend("<small>XDock PRO Ver 3.08_20231214- </small>");
 
 if (window.location.pathname == "/") {
   $("h1").html("XDock PRO");
@@ -908,4 +908,97 @@ function palettes_summary() {
 
   let barcodeModal = new bootstrap.Modal(document.getElementById("barcode_modal"), {});
   barcodeModal.show(); // you can try comment this code, because bootstrap maybe open modal
+}
+
+//--------------------------------
+// AI ask
+//--------------------------------
+
+$(document).ready(function () {
+  $('form[action="/Warenausgang/Tag"]').submit(function (event) {
+    // Prevent the default form submission
+    event.preventDefault();
+
+    // Get the input value
+    var inputValue = $("#searchDT").val();
+    let today = $("#selectedDate").val();
+
+    // Check if the input value starts with '#'
+    if (inputValue.startsWith("#")) {
+      switch (inputValue.toLowerCase()) {
+        case "#":
+          alert(`[ #ls ] -> Affichées les camions des Livraison Samedi\n [ #zonage ] -> Afficher uniquement les premiers camions`);
+          break;
+        case "#ls":
+          // $("#searchDT").val(getNextSaturday($("#selectedDate").val()));
+          window.location.href = `/Warenausgang/Tag?sort=ZielortLokationNameASC&selecteddate=${today}&search=${getNextSaturday(today)}`;
+          break;
+        case "#zonage":
+          removeDuplicateCells();
+          setTimeout(function () {
+            $(".loading").hide();
+          }, 400);
+          break;
+      }
+      // If you want to submit the form programmatically, uncomment the line below
+      // $(this).unbind("submit").submit();
+    } else {
+      //alert("Input does not start with '#'. Please enter a valid value.");
+      $(this).unbind("submit").submit();
+    }
+
+    setTimeout(function () {
+      $(".loading").hide();
+    }, 400);
+  });
+});
+
+function getNextSaturday(dateString) {
+  // Convert the input string to a Date object
+  var givenDate = new Date(dateString);
+
+  // Calculate the day of the week (0 for Sunday, 1 for Monday, ..., 6 for Saturday)
+  var dayOfWeek = givenDate.getDay();
+
+  // Calculate the difference between the current day and Saturday
+  var daysUntilSaturday = 6 - dayOfWeek;
+
+  // Adjust the difference if the given date is already a Saturday
+  daysUntilSaturday = daysUntilSaturday < 0 ? 7 + daysUntilSaturday : daysUntilSaturday;
+
+  // Calculate the next Saturday date
+  var nextSaturday = new Date(givenDate);
+  nextSaturday.setDate(givenDate.getDate() + daysUntilSaturday);
+
+  // Format the result as 'DDMMYY'
+  var formattedNextSaturday =
+    ("0" + nextSaturday.getDate()).slice(-2) + ("0" + (nextSaturday.getMonth() + 1)).slice(-2) + nextSaturday.getFullYear().toString().substr(-2);
+
+  return formattedNextSaturday;
+}
+
+function removeDuplicateCells() {
+  // Get the tbody element
+  var tbody = document.querySelector("#wa-table>tbody"); // Replace with your actual tbody id
+
+  // Create an object to store unique values
+  var uniqueValues = {};
+
+  // Iterate through each row in the tbody
+  for (var i = 0; i < tbody.rows.length; i++) {
+    var row = tbody.rows[i];
+
+    // Get the content of the fifth cell (index 4)
+    var cellValue = row.cells[6].textContent.trim();
+
+    // Check if the cell value is already in the uniqueValues object
+    if (uniqueValues[cellValue] || cellValue == "") {
+      // Remove the duplicate row
+      tbody.deleteRow(i);
+      i--; // Adjust the index after removing a row
+    } else {
+      // Add the cell value to the uniqueValues object
+      uniqueValues[cellValue] = true;
+    }
+  }
 }
