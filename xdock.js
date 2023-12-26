@@ -171,7 +171,7 @@ function task_manger() {
 
     default:
       // fix bloked en cours in defrent status
-      if ($("#ausgabeEntladeanweisung").prop("readonly") || $("#ausgabeLadeanweisung").prop("readonly")) {
+      if ($("#tel").prop("readonly")) {
         // The input is readonly
         $(".xdock-head-row > .col-4 > .d-flex.flex-row").append(Block_btn_html);
       }
