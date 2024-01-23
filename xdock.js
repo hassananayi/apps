@@ -1,6 +1,6 @@
 //***************************//
 // XDock PRO
-// Dernière mise à jour le  26/12/2023
+// Dernière mise à jour le  23/01/2024
 //***************************//
 $("footer>.text-muted.text-right").prepend("<small>XDock PRO Ver 4.00_2024-01-23- </small>");
 
@@ -1005,4 +1005,33 @@ function removeDuplicateCells() {
       uniqueValues[cellValue] = true;
     }
   }
+}
+
+//--------------------------------
+// control Delete Btn
+//--------------------------------
+
+// if the EM or SM en status 80,50 block delete btn
+if (isEMTour || isSMTour) {
+  controlDeleteBtn();
+}
+
+function controlDeleteBtn() {
+  if (parseInt($(".tourStatus").html().trim()) == 80) {
+    return $("tr").find(".lieferpositionToDelete").replaceWith("<i class='fas fa-exclamation-triangle' style='font-size:13px;color:red'></i>");
+  }
+
+  $.each($(".lpStatus"), function (indexInArray, valueOfElement) {
+    let platetStatus = $(valueOfElement);
+    switch (parseInt(platetStatus.html().trim())) {
+      case 80:
+      case 50:
+        platetStatus
+          .parent()
+          .parent()
+          .find(".lieferpositionToDelete")
+          .replaceWith("<i class='fas fa-exclamation-triangle' style='font-size:13px;color:red'></i>");
+        break;
+    }
+  });
 }
