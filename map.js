@@ -1,7 +1,7 @@
 //***************************//
 // Map add-on for XDock PRO
-// V 2.00
-// Dernière mise à jour le  07/10/2023
+// V 2.01
+// Dernière mise à jour le  23/01/2024
 //***************************//
 
 $("<style>").appendTo("head").html(`
@@ -819,12 +819,12 @@ function update_zone_status(dataServ) {
         .find("[data-selected='" + zoneID + "']")
         .parent()
         .children();
-      let ref = get_ref_code(tr_children[4].innerText.trim());
+      let ref = get_ref_code(tr_children[6].innerText.trim());
 
       // let url = $(tr_children[0]).find("a").attr("href");
 
       if (ref == "GCA?_TEN?") {
-        ref = tr_children[6].innerText.trim().substring(11, 15);
+        ref = tr_children[8].innerText.trim().substring(11, 15);
       }
       // check tour status
       let lpStatus = tr_children[1].innerText;
@@ -1109,12 +1109,12 @@ function load_other_day(selectedDate) {
           .find("[data-selected='" + zoneID + "']")
           .parent()
           .children();
-        let ref = get_ref_code(tr_children[4].innerText.trim());
+        let ref = get_ref_code(tr_children[6].innerText.trim());
 
         // let url = $(tr_children[0]).find("a").attr("href");
 
         if (ref == "GCA?_TEN?") {
-          ref = tr_children[6].innerText.trim().substring(11, 15);
+          ref = tr_children[8].innerText.trim().substring(11, 15);
         }
 
         zone_info.push({
