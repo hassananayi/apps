@@ -2,7 +2,7 @@
 // XDock PRO
 // Dernière mise à jour le  26/12/2023
 //***************************//
-$("footer>.text-muted.text-right").prepend("<small>XDock PRO Ver 3.09_20231226- </small>");
+$("footer>.text-muted.text-right").prepend("<small>XDock PRO Ver 4.00_2024-01-23- </small>");
 
 if (window.location.pathname == "/") {
   $("h1").html("XDock PRO");
@@ -470,7 +470,7 @@ function check_all_sscc() {
     toastr.success(`${SSCC_found}/${AllPals.length} SSCC trouvés.`);
   }
 
-  $(".palettenAufklappen").trigger("click");
+  $(".palettenTableSelectorClass").removeClass("d-none");
 }
 
 //--------------------------------
@@ -656,7 +656,7 @@ function check_avance() {
     $(data)
       .find("#table-container tbody>tr")
       .each(function (key, value) {
-        let klstb = value.cells[6].innerText.trim().replace(" ...", "");
+        let klstb = value.cells[8].innerText.trim().replace(" ...", "");
 
         camions_de_jours.push(klstb);
       });
