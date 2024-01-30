@@ -1,7 +1,7 @@
 //***************************//
 // Map add-on for XDock PRO
 // V 2.01
-// Dernière mise à jour le  23/01/2024
+// Dernière mise à jour le  30/01/2024
 //***************************//
 
 $("<style>").appendTo("head").html(`
@@ -782,9 +782,14 @@ $("h1").parent().replaceWith(`<div id="xdock_pro_page_header" class="row d-flex 
  - de_hier
  - de_avance
 */
+let selected_date;
+if (window.location.href.includes("?selectedDate")) {
+  selected_date = window.location.href.split("?selectedDate=")[1];
+} else {
+  let selected_date = $("#selectedDate").val();
+}
 
 let updated_zones;
-let selected_date = $("#selectedDate").val();
 let LastModified;
 
 $("#selectedDate").on("change", function (e) {
@@ -795,6 +800,9 @@ $("#selectedDate").on("change", function (e) {
   $.get("/Warenausgang/Tag?sort=ZielortLokationNameASC&selectedDate=" + $(e.target).val(), function (data, textStatus, jqXHR) {
     update_zone_status(data);
   });
+
+  // update url
+  window.location.href = window.location.href + "?selectedDate=" + $("#selectedDate").val();
 });
 
 // When dom ready call data
@@ -1009,6 +1017,9 @@ function get_ref_code(ref) {
       break;
     case "Lillers":
       code_vo = "LIL";
+      break;
+    case "Saint Augustin":
+      code_vo = "SAI";
       break;
     case "Lunel":
       code_vo = "LUN";
