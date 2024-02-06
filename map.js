@@ -1,7 +1,7 @@
 //***************************//
 // Map add-on for XDock PRO
-// V 2.01
-// Dernière mise à jour le  30/01/2024
+// V 2.02
+// Dernière mise à jour le  06/02/2024
 //***************************//
 
 $("<style>").appendTo("head").html(`
@@ -85,8 +85,13 @@ $("<style>").appendTo("head").html(`
   background: #34495e !important;
  
 }
-a.de_hier > div[id]{
+a.de_hier > div[id],a.blocked > div[id]{
   color: #fff !important;
+}
+a.blocked > div[id]{
+  color: #fff !important;
+  text-align: center;
+  font-size: 11px;
 }
 
 .de_avance {
@@ -331,6 +336,10 @@ a.url_edit {
   text-decoration: underline;
 }
 
+
+.zoneL{
+  text-wrap: nowrap;
+}
 `);
 
 let a4 = `
@@ -338,10 +347,13 @@ let a4 = `
         <div id="map-border"></div>
         <!-- Zone M -->
         <div class="M">
+        
             <a class="zoneM first_color" zone="M1" target="_blank">
                 <div class="zone_M_name">M1</div>
                 <div id="M1"></div>
+            
             </a>
+
             <a class="zoneM sec_color" zone="M2"  target="_blank">
                 <div class="zone_M_name">M2</div>
                 <div id="M2"></div>
@@ -773,6 +785,10 @@ $("h1").parent().replaceWith(`<div id="xdock_pro_page_header" class="row d-flex 
        XDock PRO <span class="fa fa-caret-right navArrow"></span> Carte de l'entrepôt
     </h1>
 </div>
+<div class="col-6 text-right">
+ 
+<button class="btn btn-sm btn-outline-primary" style="height: 50%;" id="zones_preliv"  ><span class="fa fa-boxes mr-10"></span>Zones de pré-livraison</button>
+</div>
 </div>`);
 
 /* Status
@@ -1170,3 +1186,54 @@ function switchDate(dayIN) {
 
   return [year, month, day].join("-");
 }
+
+// Zones de pre-livraison
+$(document).on("click", "#zones_preliv", function () {
+  let all_zones_bloked = $(".blocked").not(".color");
+
+  $.each(all_zones_bloked, function (indexInArray, valueOfElement) {
+    let zoneEL = $(valueOfElement);
+    let zoneName = zoneEL.attr("zone");
+
+    $.get(zoneEL.attr("href"), function (dataServ, textStatus, jqXHR) {
+      let content = $(dataServ).find("#sperrgrundTextArea").val();
+
+      switch (true) {
+        case content.toLowerCase().includes("livraison lundi"):
+          $("#" + zoneName).html("Livraison Lundi");
+          break;
+        case content.toLowerCase().includes("lundi"):
+          $("#" + zoneName).html("Lundi");
+          break;
+        case content.toLowerCase().includes("mardi"):
+          $("#" + zoneName).html("Mardi");
+          break;
+        case content.toLowerCase().includes("mercredi"):
+          $("#" + zoneName).html("Mercredi");
+          break;
+        case content.toLowerCase().includes("jeudi"):
+          $("#" + zoneName).html("Jeudi");
+          break;
+        case content.toLowerCase().includes("vendredi"):
+          $("#" + zoneName).html("Vendredi");
+          break;
+        case content.toLowerCase().includes("samedi"):
+          $("#" + zoneName).html("Livraison samedi");
+          break;
+        case content.toLowerCase().includes("alsace"):
+          $("#" + zoneName).html("Alsace Lait");
+          break;
+        case content.toLowerCase().includes("pv"):
+        case content.toLowerCase().includes("palettes vides"):
+          $("#" + zoneName).html("Pallets Vides");
+          break;
+        case content.toLowerCase().includes("passage"):
+          $("#" + zoneName).html("Passage");
+          break;
+
+        default:
+          $("#" + zoneName).html("???");
+      }
+    });
+  });
+});
