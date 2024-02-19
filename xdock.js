@@ -1,8 +1,8 @@
 //***************************//
 // XDock PRO
-// Dernière mise à jour le  23/01/2024
+// Dernière mise à jour le  19/02/2024
 //***************************//
-$("footer>.text-muted.text-right").prepend("<small>XDock PRO Ver 4.00_2024-01-23- </small>");
+$("footer>.text-muted.text-right").prepend("<small>XDock PRO Ver 4.01_2024-02-19- </small>");
 
 if (window.location.pathname == "/") {
   $("h1").html("XDock PRO");
@@ -135,8 +135,8 @@ button#paste_palettes {
 // Statics
 //--------------------------
 
-const isSMTour = window.location.href.includes("Warenausgang") ? true : false;
-const isEMTour = window.location.href.includes("Wareneingang") ? true : false;
+const isSMTour = window.location.href.includes("Warenausgang/Tour") ? true : false;
+const isEMTour = window.location.href.includes("Wareneingang/Tour") ? true : false;
 
 //--------------------------------
 // Task Manger
@@ -586,7 +586,6 @@ if (window.location.href.includes("TourLpPaletten")) {
 if (window.location.href.includes("Wareneingang/Tag")) {
   get_LS();
 }
-
 function get_LS() {
   $('a[href="/XDockLieferscheinEditor/lieferscheinbundle/"').before(`<a href="#" id="get_ls" style="padding-right: 15px;">
 <i class="fal fa-file-alt docImage" style="font-size: 22px; color: #003278; padding: 0px 3px 0px 3px;"></i> 	
@@ -596,38 +595,31 @@ LS numérique
   $("#get_ls").on("click", function (e) {
     if (ls_working) return false;
     ls_working = true;
-    $(".loading").show();
 
     let trours = $("#we-table tbody tr");
 
     trours.each(function (index, tr) {
       let tr_children = $(tr).children();
 
-      let tourURL = $(tr_children[0]).find("a").attr("href");
+      let tourURL = $(tr_children[0]).find("a")[0].innerText;
       let LS_list = [];
-      $.get(tourURL, function (data, textStatus, jqXHR) {
-        let dom = $(data);
+      $.get("/Wareneingang/Tour?sort=LieferantStrASC&weTourId=" + tourURL, function (data, textStatus, jqXHR) {
+        var labelContent = data.substring(data.indexOf("rique:"));
 
-        let ls = $(dom.find("#kopfdaten").children()[5]).children()[5];
+        var labelText = labelContent.substring(6, labelContent.indexOf("</label>"));
 
-        let bon = $(dom.find(".xdock-head-title .docImage").parent()).attr("href");
-
-        // free up mem
-        dom = null;
+        let bon_urlContent = data.substring(data.indexOf("/XDockLieferscheinEditor/?lieferscheinmappe="));
+        let bon = bon_urlContent.substring(0, bon_urlContent.indexOf('"'));
+        let ls = " LS numérique:" + labelText;
 
         let bon_url = `<a href="${bon}" target="_blank" style="cursor: pointer;">
-            <i class="fal fa-file-alt docImage" style="font-size: 20px; color: #003278; padding-top: 2px;"></i>                      
-            </a>`;
+        <i class="fal fa-file-alt docImage" style="font-size: 20px; color: #003278; padding-top: 2px;"></i>                      
+        </a>`;
 
         $(tr_children[10]).html(ls).prepend(bon_url);
         LS_list.push(ls.innerText);
       });
     });
-
-    setTimeout(function () {
-      $(".loading").hide();
-      ls_working = false;
-    }, 40000);
   });
 }
 
@@ -915,99 +907,6 @@ function palettes_summary() {
 }
 
 //--------------------------------
-// AI ask
-//--------------------------------
-
-$(document).ready(function () {
-  $('form[action="/Warenausgang/Tag"]').submit(function (event) {
-    // Prevent the default form submission
-    event.preventDefault();
-
-    // Get the input value
-    var inputValue = $("#searchDT").val();
-    let today = $("#selectedDate").val();
-
-    // Check if the input value starts with '#'
-    if (inputValue.startsWith("#")) {
-      switch (inputValue.toLowerCase()) {
-        case "#":
-          alert(`[ #ls ] -> Affichées les camions des Livraison Samedi\n [ #zonage ] -> Afficher uniquement les premiers camions`);
-          break;
-        case "#ls":
-          // $("#searchDT").val(getNextSaturday($("#selectedDate").val()));
-          window.location.href = `/Warenausgang/Tag?sort=ZielortLokationNameASC&selecteddate=${today}&search=${getNextSaturday(today)}`;
-          break;
-        case "#zonage":
-          removeDuplicateCells();
-          setTimeout(function () {
-            $(".loading").hide();
-          }, 400);
-          break;
-      }
-      // If you want to submit the form programmatically, uncomment the line below
-      // $(this).unbind("submit").submit();
-    } else {
-      //alert("Input does not start with '#'. Please enter a valid value.");
-      $(this).unbind("submit").submit();
-    }
-
-    setTimeout(function () {
-      $(".loading").hide();
-    }, 400);
-  });
-});
-
-function getNextSaturday(dateString) {
-  // Convert the input string to a Date object
-  var givenDate = new Date(dateString);
-
-  // Calculate the day of the week (0 for Sunday, 1 for Monday, ..., 6 for Saturday)
-  var dayOfWeek = givenDate.getDay();
-
-  // Calculate the difference between the current day and Saturday
-  var daysUntilSaturday = 6 - dayOfWeek;
-
-  // Adjust the difference if the given date is already a Saturday
-  daysUntilSaturday = daysUntilSaturday < 0 ? 7 + daysUntilSaturday : daysUntilSaturday;
-
-  // Calculate the next Saturday date
-  var nextSaturday = new Date(givenDate);
-  nextSaturday.setDate(givenDate.getDate() + daysUntilSaturday);
-
-  // Format the result as 'DDMMYY'
-  var formattedNextSaturday =
-    ("0" + nextSaturday.getDate()).slice(-2) + ("0" + (nextSaturday.getMonth() + 1)).slice(-2) + nextSaturday.getFullYear().toString().substr(-2);
-
-  return formattedNextSaturday;
-}
-
-function removeDuplicateCells() {
-  // Get the tbody element
-  var tbody = document.querySelector("#wa-table>tbody"); // Replace with your actual tbody id
-
-  // Create an object to store unique values
-  var uniqueValues = {};
-
-  // Iterate through each row in the tbody
-  for (var i = 0; i < tbody.rows.length; i++) {
-    var row = tbody.rows[i];
-
-    // Get the content of the fifth cell (index 4)
-    var cellValue = row.cells[6].textContent.trim();
-
-    // Check if the cell value is already in the uniqueValues object
-    if (uniqueValues[cellValue] || cellValue == "") {
-      // Remove the duplicate row
-      tbody.deleteRow(i);
-      i--; // Adjust the index after removing a row
-    } else {
-      // Add the cell value to the uniqueValues object
-      uniqueValues[cellValue] = true;
-    }
-  }
-}
-
-//--------------------------------
 // control Delete Btn
 //--------------------------------
 
@@ -1034,4 +933,61 @@ function controlDeleteBtn() {
         break;
     }
   });
+}
+
+//--------------------------------
+// Afficher Tournées EM "En cours"
+//--------------------------------
+
+function afficher_EM_encours() {
+  let allEM = [];
+  //$('#mitarbeiterId option:contains("Kevin")').val();
+
+  $.each($(".btn-weTour"), function (indexInArray, valueOfElement) {
+    allEM.push(valueOfElement.innerText.trim());
+  });
+
+  let uniqueEM = [...new Set(allEM)];
+
+  $.get("/Taskmanagement/TaskmanagementInArbeit?sort=StartzeitASC", function (data) {
+    let allEMEncours = [];
+    let dataServ = $(data);
+    $.each(dataServ.find(".btn-weTour"), function (indexInArray, valueOfElement) {
+      allEMEncours.push(valueOfElement.innerText.trim());
+    });
+
+    let uniqueEMencours = [...new Set(allEMEncours)];
+
+    // Merge both arrays and convert to Set to get unique values
+    let allUniqueValues = new Set([...allEM, ...uniqueEMencours]);
+
+    // Filter the values that are present in both arrays
+    let newArray = Array.from(allUniqueValues).filter((value) => allEM.includes(value) && uniqueEMencours.includes(value));
+    $.each(newArray, function (indexInArray, valueOfElement) {
+      window.open("/Wareneingang/Tour?sort=LieferantStrASC&weTourId=" + valueOfElement, "_blank");
+    });
+  });
+}
+
+//--------------------------------
+// Outils supplémentaires SM
+//--------------------------------
+
+if (isSMTour) {
+  $($("#kopfdaten").children()[3]).append(
+    `
+    <div class="pt-3 dropdown">
+      <a  href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+          <i class="fal fa-chevron-right" aria-hidden="true"></i>
+          Outils supplémentaires
+      </a>
+      <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+
+          <div style="font-size: 12px; font-weight: bold; margin-left: 15px;" class="">Entrée de marchandises:</div>
+              <button class="dropdown-item" onclick="afficher_EM_encours()"><span class="fal fa-copy  mr-10"></span> Afficher Tournées EM "En cours"</button>
+
+      </div>
+  </div
+`
+  );
 }
