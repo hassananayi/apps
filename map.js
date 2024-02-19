@@ -1,7 +1,7 @@
 //***************************//
 // Map add-on for XDock PRO
-// V 2.02
-// Dernière mise à jour le  06/02/2024
+// V 2.03
+// Dernière mise à jour le  19/02/2024
 //***************************//
 
 $("<style>").appendTo("head").html(`
@@ -1041,6 +1041,7 @@ function get_ref_code(ref) {
       code_vo = "LUN";
       break;
     case "Málaga":
+    case "Malaga":
       code_vo = "MLG";
       break;
     case "Meaux":
@@ -1225,10 +1226,16 @@ $(document).on("click", "#zones_preliv", function () {
           break;
         case content.toLowerCase().includes("pv"):
         case content.toLowerCase().includes("palettes vides"):
-          $("#" + zoneName).html("Pallets Vides");
+          $("#" + zoneName).html("Palettes Vides");
           break;
         case content.toLowerCase().includes("passage"):
           $("#" + zoneName).html("Passage");
+          break;
+        case content.toLowerCase().includes("travaux"):
+          $("#" + zoneName).html("Travaux");
+          break;
+        case content.toLowerCase().includes("mix"):
+          $("#" + zoneName).html("Mix");
           break;
 
         default:
