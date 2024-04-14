@@ -1,7 +1,7 @@
 //***************************//
 // Map add-on for XDock PRO
-// V 2.03
-// Dernière mise à jour le  19/02/2024
+// V 2.04
+// Dernière mise à jour le  14/04/2024
 //***************************//
 
 $("<style>").appendTo("head").html(`
@@ -1017,6 +1017,7 @@ function get_ref_code(ref) {
       code_vo = "GRN";
       break;
     case "Guingamp":
+    case "CHÂTELAUDREN-PLOUAGAT":
       code_vo = "GUI";
       break;
     case "Honguemare-Guenouville":
@@ -1236,6 +1237,9 @@ $(document).on("click", "#zones_preliv", function () {
           break;
         case content.toLowerCase().includes("mix"):
           $("#" + zoneName).html("Mix");
+          break;
+        case content.toLowerCase().includes("stock"):
+          $("#" + zoneName).html("Stock");
           break;
 
         default:
