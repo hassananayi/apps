@@ -1,7 +1,7 @@
 //***************************//
 // Map add-on for XDock PRO
-// V 2.04
-// Dernière mise à jour le  14/04/2024
+// V 2.05
+// Dernière mise à jour le  01/05/2024
 //***************************//
 
 $("<style>").appendTo("head").html(`
@@ -1065,6 +1065,9 @@ function get_ref_code(ref) {
       break;
     case "Pontcharra":
       code_vo = "PCH";
+      break;
+    case "Plouagat":
+      code_vo = "PLO";
       break;
     case "Provence":
     case "ROUSSET":
