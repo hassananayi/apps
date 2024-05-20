@@ -1,7 +1,7 @@
 //***************************//
 // Map add-on for XDock PRO
-// V 2.05
-// Dernière mise à jour le  01/05/2024
+// V 2.06
+// Dernière mise à jour le  20/05/2024
 //***************************//
 
 $("<style>").appendTo("head").html(`
@@ -24,8 +24,9 @@ $("<style>").appendTo("head").html(`
 }
 
 .guide {
-  bottom: 64px !important;
-  left: 68px !important;
+  bottom: 70px !important;
+  left: 73px !important;
+  zoom:90%;
  
 }
 
@@ -339,6 +340,10 @@ a.url_edit {
 
 .zoneL{
   text-wrap: nowrap;
+}
+
+.rlq{
+  border: 1px solid #c0392b;
 }
 `);
 
@@ -720,9 +725,9 @@ let a4 = `
                         <div class="zone_long_left_name">A1</div>
                         <div id="A1"></div>
                     </a>
-                    <div class="zone_long first_color" zone="L1">
+                    <div class="zone_long first_color" zone="A0">
                         <div class="zone_long_left_name"></div>
-                        <div id="LI_1"></div>
+                        <div id="A0"></div>
                     </div>
                     <a class="zone_long l1 sec_color" zone="L1" target="_blank">
                         <div class="zone_long_left_name l1_name">L1</div>
@@ -762,13 +767,13 @@ let a4 = `
 
 
         <div  class="guide d-flex">
-        <div class="gud_item"><div class="color free"></div> <span class="title">Libre</span>  <span id="total_free"></span></div>
-        <div class="gud_item"><div class="color taken"></div>  <span class="title">Occupé</span>  <span id="total_taken"></span></div>
-        <div class="gud_item"><div class="color blocked"></div> <span class="title">Zone/SM bloqué</span>  <span id="total_blocked"></span></div>
+        <div class="gud_item"><div class="color free"></div> <span class="title">Zones libres</span>  <span id="total_free"></span></div>
+        <div class="gud_item"><div class="color taken"></div>  <span class="title">Zones occupées</span>  <span id="total_taken"></span></div>
+        <div class="gud_item"><div class="color blocked"></div> <span class="title">Zones bloquées</span>  <span id="total_blocked"></span></div>
         <div class="gud_item"><div class="color en_cours"></div> <span class="title">SM en cours</span>  <span id="total_en_cours"></span></div>
-        <div class="gud_item" id="show_avance"><div class="color de_avance"></div> <span class="title">Occupé pour demain</span>  <span id="total_de_avance"></span></div>
-        <div class="gud_item" id="show_SM_hier"><div class="color de_hier"></div> <span class="title">SM de hier</span>  <span id="total_de_hier"></span></div>
-        <div class="gud_item"><div class="color first_color"></div> <span class="title">Inconnue</span></div>
+        <div class="gud_item" id="show_avance"><div class="color de_avance"></div> <span class="title">Marchandises en avance</span>  <span id="total_de_avance"></span></div>
+        <div class="gud_item" id="show_SM_hier"><div class="color de_hier"></div> <span class="title">Reliquats</span>  <span id="total_de_hier"></span></div>
+        <div class="gud_item"><div class="color first_color"></div> <span class="title">Données inconnues</span></div>
         <div class="gud_item"> <span class="date d-none"> Date d'impression: <span id="date_of_print"></span></span></div>
         </div>
 
@@ -782,12 +787,14 @@ $("head>title").html("Carte de l'entrepôt TF-STB :: XDock PRO");
 $("h1").parent().replaceWith(`<div id="xdock_pro_page_header" class="row d-flex align-items-center h-100 xdock-head-row">
 <div class="col-6 h-100 xdock-head-title">
     <h1>
-       XDock PRO <span class="fa fa-caret-right navArrow"></span> Carte de l'entrepôt
+       XDock PRO <span class="fa fa-caret-right navArrow"></span> Carte de l'entrepôt   
     </h1>
 </div>
 <div class="col-6 text-right">
- 
+<button class="btn btn-sm btn-outline-primary mr-10" style="height: 50%;" id="double_stock"  ><span class="fas fa-sticky-note	 mr-10"></span>Double stock (cartons)</button>
 <button class="btn btn-sm btn-outline-primary" style="height: 50%;" id="zones_preliv"  ><span class="fa fa-boxes mr-10"></span>Zones de pré-livraison</button>
+
+ 
 </div>
 </div>`);
 
@@ -802,7 +809,7 @@ let selected_date;
 if (window.location.href.includes("?selectedDate")) {
   selected_date = window.location.href.split("?selectedDate=")[1];
 } else {
-  let selected_date = $("#selectedDate").val();
+  selected_date = $("#selectedDate").val();
 }
 
 let updated_zones;
@@ -914,10 +921,6 @@ function update_zone_status(dataServ) {
 
   // update map
   update_map();
-
-  //check last modifed
-
-  chek_LastModified(data.find("#concurrencyCheckUrl").attr("href"));
 }
 
 function update_map() {
@@ -1098,6 +1101,9 @@ function get_ref_code(ref) {
     case "Torres Novas":
       code_vo = "TON";
       break;
+    case "Tarragona":
+      code_vo = "TRG";
+      break;
     case "Valencia":
       code_vo = "VLC";
       break;
@@ -1113,17 +1119,6 @@ function get_ref_code(ref) {
   }
 
   return code_vo;
-}
-
-function chek_LastModified(LastModified) {
-  // end req every 5s
-  setInterval(function () {
-    $.get(LastModified, function (data, textStatus, jqXHR) {
-      if (!data) {
-        window.location.reload(1);
-      }
-    });
-  }, 5000);
 }
 
 // update avance info
@@ -1149,18 +1144,8 @@ function load_other_day(selectedDate) {
           ref = tr_children[8].innerText.trim().substring(11, 15);
         }
 
-        zone_info.push({
-          id: zoneID,
-          name: option.html(),
-          ref: ref,
-          status: "taken",
-        });
+        $("#" + option.html()).append(ref);
       }
-    });
-
-    zone_info.map((zone) => {
-      let zone_el = $("#" + zone.name);
-      zone_el.html(zone.ref);
     });
   });
 }
@@ -1192,7 +1177,10 @@ function switchDate(dayIN) {
   return [year, month, day].join("-");
 }
 
+//***************************//
 // Zones de pre-livraison
+//***************************//
+
 $(document).on("click", "#zones_preliv", function () {
   let all_zones_bloked = $(".blocked").not(".color");
 
@@ -1247,6 +1235,51 @@ $(document).on("click", "#zones_preliv", function () {
 
         default:
           $("#" + zoneName).html("???");
+      }
+    });
+  });
+});
+
+//***************************//
+// Nomber de cartons
+//***************************//
+let cartons_ok = false;
+$(document).on("click", "#double_stock", function () {
+  if (cartons_ok) return true;
+  cartons_ok = true;
+  $.get("/Warenausgang/Tag?sort=StatusASC&selectedDate=" + selected_date, function (servdata) {
+    let data = $(servdata);
+
+    $(data.find("#ZoneBase>select>option")).each(function (index, value) {
+      let option = $(value);
+      let zoneID = parseInt(option.val());
+
+      if (option.hasClass("zone-in-verwendung-auslieferungstermin")) {
+        let tr_children = data
+          .find("[data-selected='" + zoneID + "']")
+          .parent()
+          .children();
+
+        // number de cartons*
+        let emplacmet = 0;
+        let emplacmet_num = tr_children[2].innerText.trim();
+        let total_num = tr_children[4].innerText.trim().split("/")[1];
+
+        if (emplacmet_num.includes(",")) {
+          // Replace the comma with a dot
+          let modifiedStr = emplacmet_num.replace(",", ".");
+
+          // Convert the modified string to a number
+          emplacmet = parseFloat(modifiedStr);
+        } else {
+          emplacmet = emplacmet_num;
+        }
+
+        let cartons_num = parseInt(total_num) - emplacmet;
+
+        let cartons = " <span class='badge bg-light  text-dark'>" + cartons_num + " </span>";
+        // add cartons to dom
+        $("#" + option.html()).append(cartons);
       }
     });
   });
