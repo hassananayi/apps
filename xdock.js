@@ -981,43 +981,10 @@ if (isSMTour) {
 
           <div style="font-size: 12px; font-weight: bold; margin-left: 15px;" class="">Entrée de marchandises:</div>
               <button class="dropdown-item" onclick="afficher_EM_encours()"><span class="fal fa-copy  mr-10"></span> Afficher Tournées EM "En cours"</button>
-              <button class="dropdown-item" onclick="expedition_speciale()"><span class="fal fa-shipping-fast  mr-10"></span> Afficher Palettes en "Status 83" (Expédition spéciale)</button>
       </div>
   </div
 `
   );
 }
 
-//--------------------------------
-// Palettes en "Status 83" (Expédition spéciale)
-//--------------------------------
 
-function expedition_speciale() {
-  let AllPals = $(".xdock-tourlp-paletten-table tbody>tr");
-  let found = 0;
-  // check All SSCC
-  AllPals.each(function (key, value) {
-    // Non SSCC trouve
-
-    let pal = $(value.cells[1]);
-    let pal_status = $(value.cells[0]);
-
-    if (pal[0].innerText.trim() == "Tor T1") {
-      // inject new status
-      pal_status.find(".palettenStatusSmall").html("83").attr("style", "background-color: #08c;color: #ffffff;").attr("data-original-title", "Expédition spéciale");
-      pal.html("Expédition spéciale");
-
-      found += 1;
-    }
-  });
-
-  // Show notfication
-
-  if (found > 0) {
-    toastr.success(`${found} palettes trouvés en "Status 83" (Expédition spéciale).`);
-  } else {
-    toastr.error(`Aucun palettes en "statut 83" (Expédition spéciale).`);
-  }
-
-  $(".palettenTableSelectorClass").removeClass("d-none");
-}
