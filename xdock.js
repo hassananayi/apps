@@ -1,8 +1,8 @@
 //***************************//
 // XDock PRO
-// Dernière mise à jour le 02/06/2024
+// Dernière mise à jour le 10/06/2024
 //***************************//
-$("footer>.text-muted.text-right").prepend("<small>XDock PRO Ver 4.02_2024-06-02- </small>");
+$("footer>.text-muted.text-right").prepend("<small>XDock PRO Ver 4.03_2024-06-10- </small>");
 
 if (window.location.pathname == "/") {
   $("h1").html("XDock PRO");
@@ -630,6 +630,7 @@ LS numérique
 $('.navbar [href="/Artikel/Artikel"]').after(`
 <hr>
 <div style="font-size: 12px; font-weight: bold; margin-left: 15px;" class="">XDock PRO:</div>
+<a class="dropdown-item" href="/#cockpit" target="_blank">SMART Cockpit</a>
 <a class="dropdown-item" href="/#portes" target="_blank">Gestion des portes</a>
 <a class="dropdown-item" href="/#map" target="_blank">Carte de l'entrepôt</a>
 <a class="dropdown-item" href="https://tf-stb.github.io/badge/" target="_blank">Créateur de badge </a>
@@ -986,5 +987,3 @@ if (isSMTour) {
 `
   );
 }
-
-
