@@ -269,7 +269,6 @@ let selected_date = $("#selectedDate").val();
 // Administrateurs & Collaborateur
 //----------------------------------//
 
-let current_user = $(".fa-sign-out").attr("title").replace("Logout ", "");
 // When dom ready call data
 $(document).ready(function () {
   // CALL portes DATA
@@ -282,8 +281,7 @@ $(document).ready(function () {
         let user_last_login = valueOfElement.cells[4].innerText.trim();
         let user_id = valueOfElement.cells[0].innerText.trim();
 
-        //disply user name for current user
-        if (current_user == user_email) {
+        if (document.body.innerHTML.includes(user_email)) {
           $("#username").html(user_full_name);
         }
 
