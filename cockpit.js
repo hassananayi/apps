@@ -1,6 +1,6 @@
 //***************************//
 // SMART Cockpit
-// V 1.00
+// V 1.01
 //***************************//
 
 $("<style>").appendTo("head").html(`
@@ -217,7 +217,12 @@ let page_body = `
 
          <!-- En cours-->
       <div class="section_header pt-5">En cours <small class="text-muted"> <span id="camions_encours">0</span> camions</small> </div>
-        <ul class="list-group list-group-flush" id="encours_list"></ul>  
+        <ul class="list-group list-group-flush" id="encours_list"></ul>
+        
+       <!-- Prêt pour départ-->
+      <div class="section_header pt-5">Prêt pour départ <small class="text-muted"> <span id="camions_pret_depart">0</span> camions</small> </div>
+        <ul class="list-group list-group-flush" id="pret_depart_list"></ul>  
+
     </div>
 
 
@@ -336,11 +341,11 @@ $(document).ready(function () {
             entrepot += 1;
             break;
           case "80":
-          case "81":
             encours += 1;
             break;
-          case "90":
+          case "81":
           case "89":
+          case "90":
             termine += 1;
             break;
         }
@@ -389,7 +394,7 @@ $(document).ready(function () {
       .find("#wa-table tbody>tr")
       .each(function (indexInArray, valueOfElement) {
         let status = valueOfElement.cells[1].innerText.trim();
-        let coll_ID = parseInt($($(valueOfElement.cells[16])[0]).attr("data-selected"));
+        let coll_ID = parseInt($($(valueOfElement.cells[18])[0]).attr("data-selected"));
         switch (status) {
           case "10":
           case "11":
@@ -407,11 +412,11 @@ $(document).ready(function () {
             entrepot += 1;
             break;
           case "80":
-          case "81":
             encours += 1;
             break;
-          case "90":
+          case "81":
           case "89":
+          case "90":
             termine += 1;
             break;
         }
@@ -449,6 +454,7 @@ $(document).ready(function () {
   let parc = 0;
   let entrepot = 0;
   let encours = 0;
+  let pret_depart = 0;
 
   // CALL portes DATA
   $.get("/Taskmanagement/Yardmanagement?sort=Ankunftszeit&AmLager=true&InArbeit=true", function (data, textStatus, jqXHR) {
@@ -538,7 +544,6 @@ $(document).ready(function () {
             entrepot += 1;
             break;
           case "80":
-          case "81":
             $("#encours_list").append(`        
             <li class="list-group-item">
           <div class="container">
@@ -559,12 +564,34 @@ $(document).ready(function () {
 
             encours += 1;
             break;
+          case "81":
+            $("#pret_depart_list").append(`        
+              <li class="list-group-item">
+            <div class="container">
+            <div class="row align-items-center">
+              <div class="col-2">${tour_btn}</div>
+              <div class="col-3">
+                <small class="text-muted mb-1 text-uppercase"> ${transitaire}</small>
+                <p class="mb-1" style="font-size: 19px"> ${fournisseur_destination}</p>
+              </div>
+              <div class="col-4">${getTimeDifference(heure_validation)}</div>
+              
+                <div class="col-3  text-right">
+                    ${niveau_remplis}
+                </div>
+              </div>
+            
+            </li>`);
+
+            pret_depart += 1;
+            break;
         }
 
         //disply count
         $("#camions_parc").html(parc);
         $("#camions_entrepot").html(entrepot);
         $("#camions_encours").html(encours);
+        $("#camions_pret_depart").html(pret_depart);
       });
   });
 });
