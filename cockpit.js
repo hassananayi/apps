@@ -1,6 +1,6 @@
 //***************************//
 // SMART Cockpit
-// V 1.01
+// V 1.02
 //***************************//
 
 $("<style>").appendTo("head").html(`
@@ -87,7 +87,7 @@ font-size: 16px;
     border: none;
 }
 
-i[name="linkedTour"] {
+i.fal.fa-link {
     position: absolute;
     top: 7px;
 }
@@ -221,7 +221,12 @@ let page_body = `
         
        <!-- Prêt pour départ-->
       <div class="section_header pt-5">Prêt pour départ <small class="text-muted"> <span id="camions_pret_depart">0</span> camions</small> </div>
-        <ul class="list-group list-group-flush" id="pret_depart_list"></ul>  
+        <ul class="list-group list-group-flush" id="pret_depart_list"></ul>
+        
+        
+        <!-- Tournées EM Terminé-->
+      <div class="section_header pt-5">Tournées EM Terminé <small class="text-muted"> <span id="camions_termine">0</span> camions</small> </div>
+      <ul class="list-group list-group-flush" id="termine_list"></ul>      
 
     </div>
 
@@ -327,6 +332,14 @@ $(document).ready(function () {
       .each(function (indexInArray, valueOfElement) {
         let status = valueOfElement.cells[1].innerText.trim();
         let coll_ID = parseInt($(valueOfElement.cells[9]).find("select").val());
+
+        let tour_btn = valueOfElement.cells[0].innerHTML;
+        let emplacements = valueOfElement.cells[5].innerText.trim();
+        let fournisseur = valueOfElement.cells[2].innerText.trim();
+        let transitaire = valueOfElement.cells[3].innerText.trim();
+        let heure_darrivee = valueOfElement.cells[4].innerText.trim();
+        let arreter = valueOfElement.cells[8].innerText.trim();
+
         switch (status) {
           case "10":
           case "11":
@@ -346,6 +359,24 @@ $(document).ready(function () {
           case "81":
           case "89":
           case "90":
+            let timeDifference = calculateTimeDifference(heure_darrivee, arreter);
+
+            $("#termine_list").append(`        
+            <li class="list-group-item">
+          <div class="container">
+          <div class="row align-items-center">
+            <div class="col-2">${tour_btn}</div>
+            <div class="col-4">
+              <small class="text-muted mb-1 text-uppercase"> ${transitaire}</small>
+              <p class="mb-1" style="font-size: 19px"> ${fournisseur}</p>
+            </div>
+            <div class="col-6"><strong class="mb-1 text-primary "><i class="far fa-clock" aria-hidden="true"></i> Durée du traitement : ${timeDifference.hours}h ${timeDifference.minutes} min </strong> <p class="mb-1">Emplacements: ${emplacements} </p></div>
+            
+             
+            </div>
+          
+          </li>`);
+
             termine += 1;
             break;
         }
@@ -367,7 +398,7 @@ $(document).ready(function () {
     $("#em_entrepot").html(entrepot);
     $("#em_encours").html(encours);
     $("#em_termine").html(termine);
-
+    $("#camions_termine").html(termine);
     const percentageFinished = (termine / total) * 100;
     let progressbar_width = `width: ${percentageFinished.toFixed(2)}%`;
     $("#em_progressbar").attr("style", progressbar_width);
@@ -640,4 +671,36 @@ function getTimeDifference(specificDateString) {
 
 function getTaskCompletionPercentage(totalTasks, finishedTasks) {
   return ((finishedTasks / totalTasks) * 100).toFixed(2);
+}
+
+function calculateTimeDifference(startDateTimeStr, endTimeStr) {
+  // Parse the start date and time string into a Date object
+  let [startDate, startTime] = startDateTimeStr.split(" ");
+  let [day, month, year] = startDate.split(".").map(Number);
+  let [startHour, startMinute, startSecond] = startTime.split(":").map(Number);
+  let startDateTime = new Date(year, month - 1, day, startHour, startMinute, startSecond);
+
+  // Extract the end time hours and minutes
+  let [endHour, endMinute] = endTimeStr.split(":").map(Number);
+
+  // Create the end date and time based on the start date
+  let endDateTime = new Date(year, month - 1, day, endHour, endMinute, 0);
+
+  // If the end time is earlier in the day than the start time, it must be on the next day
+  if (endDateTime <= startDateTime) {
+    endDateTime.setDate(endDateTime.getDate() + 1);
+  }
+
+  // Calculate the difference in milliseconds
+  let timeDifferenceMs = endDateTime - startDateTime;
+
+  // Convert the difference to hours and minutes
+  let diffHours = Math.floor(timeDifferenceMs / (1000 * 60 * 60));
+  let diffMinutes = Math.floor((timeDifferenceMs % (1000 * 60 * 60)) / (1000 * 60));
+
+  // Return the time difference as an object
+  return {
+    hours: diffHours,
+    minutes: diffMinutes,
+  };
 }
