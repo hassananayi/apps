@@ -1,6 +1,6 @@
 //***************************//
 // SMART Cockpit
-// V 1.02
+// V 1.03
 //***************************//
 
 $("<style>").appendTo("head").html(`
@@ -387,9 +387,7 @@ $(document).ready(function () {
         let last_count = parseInt($(`#camions_coll_${coll_ID}`).html());
         $(`#camions_coll_${coll_ID}`).html(last_count + 1);
 
-        if (last_count > 0) {
-          $(`#coll_${coll_ID}`).html(`<span class="badge bg-secondary  text-light">${$(`#camions_coll_${coll_ID}`).html()} camions</span>`);
-        }
+        $(`#coll_${coll_ID}`).html(`<span class="badge bg-secondary  text-light">${$(`#camions_coll_${coll_ID}`).html()} camions</span>`);
       });
 
     $("#em_total").html(total);
@@ -458,9 +456,8 @@ $(document).ready(function () {
         let last_count = parseInt($(`#camions_coll_${coll_ID}`).html());
         $(`#camions_coll_${coll_ID}`).html(last_count + 1);
 
-        if (last_count > 0) {
-          $(`#coll_${coll_ID}`).html(`<span class="badge bg-secondary  text-light">${$(`#camions_coll_${coll_ID}`).html()} camions</span>`);
-        }
+        // This should check the updated count
+        $(`#coll_${coll_ID}`).html(`<span class="badge bg-secondary text-light">${$(`#camions_coll_${coll_ID}`).html()} camions</span>`);
       });
 
     $("#sm_total").html(total);
