@@ -1,9 +1,14 @@
 //***************************//
 // SMART Cockpit
-// V 1.03
+// V 1.04
 //***************************//
 
 $("<style>").appendTo("head").html(`
+
+  body {
+    background-color: #fff !important;
+}
+
 .card-footer{
 background: #0000FF;
     color: #fff;
@@ -90,6 +95,31 @@ font-size: 16px;
 i.fal.fa-link {
     position: absolute;
     top: 7px;
+}
+   .canvas-container {
+            position: relative;
+        }
+#tooltip{
+  position: absolute;
+  background: rgba(0, 0, 0, 0.75);
+  color: #fff;
+  padding: 5px;
+  border-radius: 3px;
+  pointer-events: none;
+  display: none;
+}
+
+.palette_status_color {
+    height: 15px;
+    width: 15px;
+    border-radius: 50%;
+    margin-right: 10px;
+    background: #000;
+}
+
+.palettes_decharg_bar {
+    background: #3498db;
+    color: #505050;
 }
 `);
 
@@ -200,8 +230,6 @@ let page_body = `
   </div>
 </div>
 
-
-
 <div class="container py-4">
   <div class="row">
     <div class="col-8">
@@ -223,25 +251,41 @@ let page_body = `
       <div class="section_header pt-5">Prêt pour départ <small class="text-muted"> <span id="camions_pret_depart">0</span> camions</small> </div>
         <ul class="list-group list-group-flush" id="pret_depart_list"></ul>
         
-        
         <!-- Tournées EM Terminé-->
       <div class="section_header pt-5">Tournées EM Terminé <small class="text-muted"> <span id="camions_termine">0</span> camions</small> </div>
       <ul class="list-group list-group-flush" id="termine_list"></ul>      
-
     </div>
-
-
-    
 
     <div class="col-4">
       <div class="section_header">Administrateurs & Collaborateur</div>
       <div id="users"></div>
+
+     <!-- Statistiques des palettes-->
+      <div class="section_header mt-3">Statistiques des palettes <small class="text-muted"> <span id="all_palettes">0</span> palettes</small></div>
+      <div class="canvas-container mt-4 mb-4">
+        <canvas id="myPieChart" width="325" height="325"></canvas>
+        <ul class="list-group mt-3">
+          <li class="list-group-item d-flex align-items-center"  data-toggle="tooltip" data-placement="left" data-html="true" title="Nombre de palettes commandées pour ce jour (jour de livraison), mais pas encore affectées à une tournée de sortie de marchandises."><div class="palette_status_color" style="background:#e9ecef"></div> Non affecté <span class="ml-auto" id="palettes_non_affecte">0</span></li>
+          <li class="list-group-item d-flex align-items-center"  data-toggle="tooltip" data-placement="left"  title="Statut 10"><div class="palette_status_color" style="background:#b2c8df"></div> Ouverte <span class="ml-auto" id="palettes_ouverte">0</span></li>
+          <li class="list-group-item d-flex align-items-center"  data-toggle="tooltip" data-placement="left" title="Statut 20"><div class="palette_status_color" style="background: rgb(75, 192, 192);"></div> En attente du déchargement  <span class="ml-auto" id="palettes_parc">0</span></li>
+          <li class="list-group-item d-flex align-items-center"  data-toggle="tooltip" data-placement="left"  title="Statut 50"><div class="palette_status_color" style="background:rgb(255, 205, 86);"></div> EM en cours  <span class="ml-auto" id="palettes_em_encours">0</span></li>
+          <li class="list-group-item d-flex align-items-center"  data-toggle="tooltip" data-placement="left"  title="Statut 41, 42 ou 43"><div class="palette_status_color" style="background: rgb(192 57 43);"></div> Cas particuliers  <span class="ml-auto" id="palettes_cas_particuliers">0</span></li>
+          <li class="list-group-item d-flex align-items-center"  data-toggle="tooltip" data-placement="left"  title="Statut 70"><div class="palette_status_color" style="background: rgb(52 152 219);"></div> En stock  <span class="ml-auto" id="palettes_en_stock">0</span></li>
+          <li class="list-group-item d-flex align-items-center"  data-toggle="tooltip" data-placement="left" title="Statut 80 ou 81"><div class="palette_status_color" style="background: rgb(230 126 34);"></div> SM en cours  <span class="ml-auto" id="palettes_sm_encours">0</small></li>
+          <li class="list-group-item d-flex align-items-center"  data-toggle="tooltip" data-placement="left"  title="Statut 90"><div class="palette_status_color" style="background: rgb(155, 206, 90);"></div> Terminé  <span class="ml-auto" id="palettes_termine">0</span></li>
+          </ul>
+          <div class="progress mt-4"><div class="progress-bar palettes_decharg_bar" role="progressbar" id="palettes_progressbar" style="width: 0%"></div>
+              <div class="progress__txt" id="palettes_text_progressbar">0 / 0</div>
+              </div>
+
+          <p class="mt-4 mb-4" id="rest_decharg"></p>
+          <small class="mt-4 mb-4 text-muted" id="unloading_time"></small>
+    </div>
+      
     </div>
 
   </div>
 </div>
-
-
 
 `;
 
@@ -407,7 +451,6 @@ $(document).ready(function () {
 //-----------------------------------//
 // Tournées Sortie de marchandises
 //----------------------------------//
-
 // When dom ready call data
 $(document).ready(function () {
   let total = 0;
@@ -419,46 +462,46 @@ $(document).ready(function () {
 
   // CALL portes DATA
   $.get("/Warenausgang/Tag?sort=Status&selectedDate=" + selected_date, function (data, textStatus, jqXHR) {
-    $(data)
-      .find("#wa-table tbody>tr")
-      .each(function (indexInArray, valueOfElement) {
-        let status = valueOfElement.cells[1].innerText.trim();
-        let coll_ID = parseInt($($(valueOfElement.cells[18])[0]).attr("data-selected"));
-        switch (status) {
-          case "10":
-          case "11":
-          case "50":
-            ouverte += 1;
-            break;
-          case "70":
-          case "71":
-          case "72":
-            pret += 1;
-            break;
-          case "75":
-          case "44":
-          case "40":
-            entrepot += 1;
-            break;
-          case "80":
-            encours += 1;
-            break;
-          case "81":
-          case "89":
-          case "90":
-            termine += 1;
-            break;
-        }
+    obj_data = $(data);
+    statistiques_des_palettes(obj_data);
+    obj_data.find("#wa-table tbody>tr").each(function (indexInArray, valueOfElement) {
+      let status = valueOfElement.cells[1].innerText.trim();
+      let coll_ID = parseInt($($(valueOfElement.cells[18])[0]).attr("data-selected"));
+      switch (status) {
+        case "10":
+        case "11":
+        case "50":
+          ouverte += 1;
+          break;
+        case "70":
+        case "71":
+        case "72":
+          pret += 1;
+          break;
+        case "75":
+        case "44":
+        case "40":
+          entrepot += 1;
+          break;
+        case "80":
+          encours += 1;
+          break;
+        case "81":
+        case "89":
+        case "90":
+          termine += 1;
+          break;
+      }
 
-        total += 1;
+      total += 1;
 
-        // count coll  camions
-        let last_count = parseInt($(`#camions_coll_${coll_ID}`).html());
-        $(`#camions_coll_${coll_ID}`).html(last_count + 1);
+      // count coll  camions
+      let last_count = parseInt($(`#camions_coll_${coll_ID}`).html());
+      $(`#camions_coll_${coll_ID}`).html(last_count + 1);
 
-        // This should check the updated count
-        $(`#coll_${coll_ID}`).html(`<span class="badge bg-secondary text-light">${$(`#camions_coll_${coll_ID}`).html()} camions</span>`);
-      });
+      // This should check the updated count
+      $(`#coll_${coll_ID}`).html(`<span class="badge bg-secondary text-light">${$(`#camions_coll_${coll_ID}`).html()} camions</span>`);
+    });
 
     $("#sm_total").html(total);
     $("#sm_pret").html(pret);
@@ -701,3 +744,117 @@ function calculateTimeDifference(startDateTimeStr, endTimeStr) {
     minutes: diffMinutes,
   };
 }
+
+//-----------------------------------//
+// Statut des palettes
+//----------------------------------//
+function statistiques_des_palettes(data_sm) {
+  let palettes = [];
+  data_sm
+    .find('[aria-label="PalettenStatusListeTable1"] tbody>tr:not([style="display: none"]),[aria-label="PalettenStatusListeTable2"] tbody>tr:not([style="display: none"])')
+    .each(function (indexInArray, valueOfElement) {
+      let value = valueOfElement.cells[1];
+      if (value) {
+        palettes.push(parseInt(value.innerText.trim()));
+      }
+    });
+
+  let rest_to_unloding = palettes[0] + palettes[1] + palettes[2];
+  // add to dom
+
+  $("#palettes_non_affecte").html(palettes[0]);
+  $("#palettes_ouverte").html(palettes[1]);
+  $("#palettes_parc").html(palettes[2]);
+  $("#palettes_em_encours").html(palettes[3]);
+  $("#palettes_cas_particuliers").html(palettes[4]);
+  $("#palettes_en_stock").html(palettes[5]);
+  $("#palettes_sm_encours").html(palettes[6]);
+  $("#palettes_termine").html(palettes[7]);
+
+  $("#rest_decharg").html(`Il reste à décharger <strong>${rest_to_unloding}</strong> palettes, soit environ <strong>${Math.ceil(rest_to_unloding / 33)}</strong> camions.`);
+
+  const canvas = document.getElementById("myPieChart");
+  const ctx = canvas.getContext("2d");
+
+  // Data for the pie chart
+  const data = [
+    { value: palettes[0], color: "#e9ecef" }, //non efacty
+    { value: palettes[1], color: "#b2c8df" }, //Ouverte
+    { value: palettes[2], color: "rgb(75, 192, 192)" }, // parc
+    { value: palettes[3], color: "rgb(255, 205, 86)" }, // EM en cours
+    { value: palettes[4], color: "rgb(180, 30, 10)" }, // cas particles
+    { value: palettes[5], color: "rgb(52 152 219)" }, // en stock
+    { value: palettes[6], color: "rgb(230 126 34)" }, // SM en cours
+    { value: palettes[7], color: "rgb(46 204 113)" }, // termine
+  ];
+  // Function to draw the pie chart with percentages
+  function drawPieChart(ctx, data) {
+    let total = data.reduce((sum, item) => sum + item.value, 0);
+
+    $("#all_palettes").html(total);
+    let pal_progressbar_width = `width: ${getTaskCompletionPercentage(total, palettes[4] + palettes[5] + palettes[6] + palettes[7])}%`;
+    $("#palettes_progressbar").attr("style", pal_progressbar_width);
+    $("#palettes_text_progressbar").html(
+      `${palettes[4] + palettes[5] + palettes[6] + palettes[7]} / ${total} (${getTaskCompletionPercentage(total, palettes[4] + palettes[5] + palettes[6] + palettes[7])}%)`
+    );
+
+    // time per carist
+
+    $("#unloading_time").html(
+      `Le temps total nécessaire pour que <strong>8 caristes</strong> déchargent toutes les <strong>${rest_to_unloding}</strong> palettes est de <strong>${calculateTotalTime(
+        rest_to_unloding,
+        1.7,
+        8
+      )}</strong>, soit environ <strong>1,7</strong> minute par palette. `
+    );
+
+    let currentAngle = -0.5 * Math.PI;
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const radius = Math.min(centerX, centerY);
+
+    data.forEach((item) => {
+      const sliceAngle = (item.value / total) * 2 * Math.PI;
+      ctx.beginPath();
+      ctx.moveTo(centerX, centerY);
+      ctx.arc(centerX, centerY, radius, currentAngle, currentAngle + sliceAngle);
+      ctx.closePath();
+      ctx.fillStyle = item.color;
+      ctx.fill();
+
+      // Calculate the percentage
+      const percentage = (item.value / total) * 100;
+
+      // Only draw the text if the percentage is greater than or equal to 3%
+      if (percentage >= 4) {
+        const textX = centerX + (radius / 2) * Math.cos(currentAngle + sliceAngle / 2);
+        const textY = centerY + (radius / 2) * Math.sin(currentAngle + sliceAngle / 2);
+        const percentageText = percentage.toFixed(2) + "%";
+
+        // Draw the percentage text
+        ctx.fillStyle = "black";
+        ctx.font = "16px Arial";
+        ctx.fillText(percentageText, textX - ctx.measureText(percentageText).width / 2, textY);
+      }
+
+      currentAngle += sliceAngle;
+    });
+  }
+
+  // Draw the pie chart
+  drawPieChart(ctx, data);
+
+  function formatTime(hours, minutes) {
+    return `${hours} heures et ${minutes} minutes`;
+  }
+
+  function calculateTotalTime(numPalettes, timePerPalette, numPersons) {
+    const totalTimeMinutes = numPalettes * timePerPalette;
+    const totalUnloadTime = totalTimeMinutes / numPersons;
+    const hours = Math.floor(totalUnloadTime / 60);
+    const remainingMinutes = Math.round(totalUnloadTime % 60);
+    return formatTime(hours, remainingMinutes);
+  }
+}
+
+$('[data-toggle="tooltip"]').tooltip();
