@@ -149,7 +149,7 @@ const isEMTour = window.location.href.includes("Wareneingang/Tour") ? true : fal
 
 function task_manger() {
   let tourStatus = $(".tourStatus").html();
-  let tourID = window.location.href.split("TourId=")[1].substr(0, 6);
+  let tourID = window.location.href.split("TourId=")[1].substr(0, 8);
   let iswetour = window.location.href.includes("Wareneingang") ? "True" : "False";
   let collaborateur = $("#mitarbeiterId").val();
   let working = false;
