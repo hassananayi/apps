@@ -1,8 +1,8 @@
 //***************************//
 // XDock PRO
-// Dernière mise à jour le 10/06/2024
+// Dernière mise à jour le 06/08/2024
 //***************************//
-$("footer>.text-muted.text-right").prepend("<small>XDock PRO Ver 4.03_2024-06-10- </small>");
+$("footer>.text-muted.text-right").prepend("<small>XDock PRO Ver 4.04_2024-08-06- </small>");
 
 if (window.location.pathname == "/") {
   $("h1").html("XDock PRO");
@@ -379,6 +379,7 @@ if (window.location.href.includes("Warenausgang/AddLieferpositionen?waTourId")) 
 
         const paletteGTIN = $(palette)[0].cells[5].innerText;
         const paletteEM = $(palette)[0].cells[16].innerText.trim();
+        console.log(paletteEM);
 
         if (clipData.includes(paletteGTIN) || clipData.includes(paletteEM)) {
           $(palette).find('input[name="lieferposCheckboxes"]').trigger("click");
@@ -435,7 +436,7 @@ if (isEMTour) {
 // fucations Entrée de marchandises
 function copy_em_id() {
   let EM_ID = [];
-  let tourID = window.location.href.split("TourId=")[1].substr(0, 6);
+  let tourID = window.location.href.split("TourId=")[1].substr(0, 8);
   EM_ID.push(tourID);
   navigator.clipboard.writeText(JSON.stringify(EM_ID));
   toastr.success(`EM ID ont été copiés.`);
