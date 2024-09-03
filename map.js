@@ -345,6 +345,10 @@ a.url_edit {
 .rlq{
   border: 1px solid #c0392b;
 }
+
+.badge {
+  font-size: 100%;
+}
 `);
 
 let a4 = `
