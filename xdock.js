@@ -1,8 +1,8 @@
 //***************************//
 // XDock PRO
-// Dernière mise à jour le 06/08/2024
+// Dernière mise à jour le 18/09/2024
 //***************************//
-$("footer>.text-muted.text-right").prepend("<small>XDock PRO Ver 4.04_2024-08-06- </small>");
+$("footer>.text-muted.text-right").prepend("<small>XDock PRO Ver 4.05_2024-09-18- </small>");
 
 if (window.location.pathname == "/") {
   $("h1").html("XDock PRO");
@@ -771,27 +771,6 @@ $(document).on("click", "#removeSM", function (e) {
   });
 });
 
-//--------------------------------
-// check palettes zone de pré-livraison
-//--------------------------------
-
-function check_palettes_on_prelivraison() {
-  // check first if ther is zone
-  if (parseInt(document.getElementById("zoneId").value) == 0) return false;
-  if (!document.body.innerHTML.includes("Vorlieferzone")) return false;
-  $("#kommentarIntern").parent()
-    .prepend(`<div class="alert alert-danger" role="alert"><span class="fa fa-exclamation-triangle" style="font-size: 16px; color: red"></span> Attention il reste encore quelques palettes dans la zone de pré-livraison. <a href="#" id="check_palettes_zone_preliv">voir les SSCC</a>
-</div>`);
-
-  // check btn
-  $("#check_palettes_zone_preliv").click(function () {
-    $("tbody tr").each(function (index, val) {
-      if ($(val)[0].innerHTML.includes("Vorlieferzone")) {
-        $(val).removeClass("d-none");
-      }
-    });
-  });
-}
 
 //--------------------------------
 // check if livraison Samedi or lundi
@@ -832,7 +811,7 @@ function check_livraison_day() {
 }
 
 if (window.location.href.includes("waTourId=")) {
-  check_palettes_on_prelivraison();
+ 
   check_livraison_day();
 }
 //--------------------------------
@@ -988,3 +967,19 @@ if (isSMTour) {
 `
   );
 }
+
+
+//--------------------------------
+// Détection automatique
+//--------------------------------
+
+function zones_is_scanned() {
+  // check first if ther is zone
+ 
+  if (!document.body.innerHTML.includes("Tor T")) return false;
+  toastr.warning(`Attention : des palettes ont été trouvées stockées sans que le code-barres de leurs zones soit scanné`);
+}
+
+$(document).ready(function(){
+  zones_is_scanned()
+})
