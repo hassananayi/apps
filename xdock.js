@@ -1,8 +1,8 @@
 //***************************//
 // XDock PRO
-// Dernière mise à jour le 18/09/2024
+// Dernière mise à jour le 19/09/2024
 //***************************//
-$("footer>.text-muted.text-right").prepend("<small>XDock PRO Ver 4.05_2024-09-18- </small>");
+$("footer>.text-muted.text-right").prepend("<small>XDock PRO Ver 4.06_19/09/2024- </small>");
 
 if (window.location.pathname == "/") {
   $("h1").html("XDock PRO");
@@ -127,6 +127,20 @@ button#paste_palettes {
   left: 808px;
   margin-top: 12px;
   font-weight: bold;
+}
+
+.comment{
+    margin-bottom: 10px;
+    border-radius: 8px;
+    background: #fff8b8;
+    border-color: #fff8b8;
+    color: rgb(32, 33, 36);
+}
+
+.comment:hover {
+    box-shadow: 0 1px 2px 0 rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);
+    background: #fff8b8;
+    border-color: #fff8b8;
 }
 
  `);
@@ -496,45 +510,43 @@ function fill_empty_LS() {
 // auto comments
 //--------------------------------
 
-function auto_comments() {
+async function auto_comments() {
+
+  let CHANGEABLE = "Lidl";
+
+  await navigator.clipboard.readText().then((clipText) => {
+    if (clipText.length === 3) {
+        CHANGEABLE = clipText;
+    }
+});
+  let html = `<div class="list-group w-100">
+  <a href="#" onclick="insert_comment(this)" class="list-group-item list-group-item-action comment" data-dismiss="modal">Recharge ${CHANGEABLE}.\nFaire prochaine tâche pour le chargement. </a>
+  <a href="#" onclick="insert_comment(this)" class="list-group-item list-group-item-action comment" data-dismiss="modal">Recharge ${CHANGEABLE}.\nChargement plus tard, envoyer au parking.</a>
+  <a href="#" onclick="insert_comment(this)" class="list-group-item list-group-item-action comment" data-dismiss="modal"> Recharge ${CHANGEABLE}.\nReste à quai, chargement plus tard, laisser porte ouverte."</a>
+  <a href="#" onclick="insert_comment(this)" class="list-group-item list-group-item-action comment" data-dismiss="modal">Garder ${CHANGEABLE}, à compléter.</a>
+  <a href="#" onclick="insert_comment(this)" class="list-group-item list-group-item-action comment" data-dismiss="modal">On ne sait pas où il charge, envoyez-le au parking.</a>
+  <a href="#" onclick="insert_comment(this)" class="list-group-item list-group-item-action comment" data-dismiss="modal">Echange Palettes</a>
+  <a href="#" onclick="insert_comment(this)" class="list-group-item list-group-item-action comment" data-dismiss="modal" >Pas d'échange Palettes</a>
+  <a href="#" onclick="insert_comment(this)" class="list-group-item list-group-item-action comment" data-dismiss="modal">Ne pas indiquer les palettes cassées.</a>
+</div>`;
+
+  // setup the model
+  let barcode_modal = $("#barcode_modal");
+  barcode_modal.find(".modal-dialog").addClass("modal-dialog-scrollable");
+  barcode_modal.find(".modal-title").html("Commentaires");
+  barcode_modal.find(".modal-body").html(html);
+
+  let barcodeModal = new bootstrap.Modal(document.getElementById("barcode_modal"), {});
+  barcodeModal.show(); // you can try comment this code, because bootstrap maybe open modal
+
+}
+
+function insert_comment(comment){
   let kommentarIntern = $("#kommentarIntern");
   let old_value = $("#kommentarIntern").val();
-
-  let comments = [
-    "",
-    "1) Recharge {CHANGEABLE}.\nFaire prochaine tâche pour le chargement.",
-    "2) Recharge {CHANGEABLE}.\nChargement plus tard, envoyer au parking.",
-    "3) Recharge {CHANGEABLE}.\nReste à quai, chargement plus tard, laisser porte ouverte.",
-    "4) Garder {CHANGEABLE}, à compléter.",
-    "5) Coupure à quai, à compléter.",
-    "6) Echange Palettes",
-    "7) Pas d'échange Palettes",
-    "8) ATTENTION CMR A {CHANGEABLE} PALETTES",
-    "9) EN COUPURE A {CHANGEABLE}",
-    "10)FIN DE COUPURE {CHANGEABLE}",
-  ];
-
-  let chois = prompt(comments.slice(1).join("\n\n"));
-
-  let data = chois.split(" ");
-
-  switch (parseInt(data[0])) {
-    case 1:
-    case 2:
-    case 3:
-    case 4:
-    case 8:
-    case 9:
-    case 10:
-      kommentarIntern.val(comments[data[0]].substring(3).replace("{CHANGEABLE}", data[1]) + "\n" + old_value);
-      break;
-    case 5:
-    case 6:
-    case 7:
-      kommentarIntern.val(comments[data[0]].substring(3) + "\n" + old_value);
-      break;
-  }
+  kommentarIntern.val(comment.innerText + "\n \n" + old_value);
 }
+
 
 //--------------------------------
 // Map Add-on
@@ -969,17 +981,3 @@ if (isSMTour) {
 }
 
 
-//--------------------------------
-// Détection automatique
-//--------------------------------
-
-function zones_is_scanned() {
-  // check first if ther is zone
- 
-  if (!document.body.innerHTML.includes("Tor T")) return false;
-  toastr.warning(`Attention : des palettes ont été trouvées stockées sans que le code-barres de leurs zones soit scanné`);
-}
-
-$(document).ready(function(){
-  zones_is_scanned()
-})
