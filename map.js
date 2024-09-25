@@ -1054,6 +1054,9 @@ $("<style>").appendTo("head").html(`
       case "Liffré":
         code_vo = "LIF";
         break;
+      case "Loures":
+        code_vo = "LOU";
+        break;
       case "Lillers":
         code_vo = "LIL";
         break;
