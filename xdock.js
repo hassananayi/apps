@@ -1,8 +1,8 @@
 //***************************//
 // XDock PRO
-// Dernière mise à jour le 19/09/2024
+// Dernière mise à jour le 07/10/2024
 //***************************//
-$("footer>.text-muted.text-right").prepend("<small>XDock PRO Ver 4.06_19/09/2024- </small>");
+$("footer>.text-muted.text-right").prepend("<small>XDock PRO Ver 4.06_07//2024- </small>");
 
 if (window.location.pathname == "/") {
   $("h1").html("XDock PRO");
@@ -647,6 +647,8 @@ $('.navbar [href="/Artikel/Artikel"]').after(`
 <a class="dropdown-item" href="/#portes" target="_blank">Gestion des portes</a>
 <a class="dropdown-item" href="/#map" target="_blank">Carte de l'entrepôt</a>
 <a class="dropdown-item" href="https://tf-stb.github.io/badge/" target="_blank">Créateur de badge </a>
+<a class="dropdown-item" href="https://drive.google.com/drive/folders/1jOkmowdnDTIgohnfkktf483Al9GYijhx?usp=sharing" target="_blank">Planning lidl</a>
+
 `);
 
 //--------------------------------
