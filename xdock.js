@@ -2,7 +2,7 @@
 // XDock PRO
 // Dernière mise à jour le 07/10/2024
 //***************************//
-$("footer>.text-muted.text-right").prepend("<small>XDock PRO Ver 4.06_07//2024- </small>");
+$("footer>.text-muted.text-right").prepend("<small>XDock PRO Ver 4.06_07/10/2024- </small>");
 
 if (window.location.pathname == "/") {
   $("h1").html("XDock PRO");
