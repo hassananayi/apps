@@ -647,7 +647,7 @@ $('.navbar [href="/Artikel/Artikel"]').after(`
 <a class="dropdown-item" href="/#portes" target="_blank">Gestion des portes</a>
 <a class="dropdown-item" href="/#map" target="_blank">Carte de l'entrepôt</a>
 <a class="dropdown-item" href="https://tf-stb.github.io/badge/" target="_blank">Créateur de badge </a>
-<a class="dropdown-item" href="https://drive.google.com/drive/folders/1jOkmowdnDTIgohnfkktf483Al9GYijhx?usp=sharing" target="_blank">Planning LIDL</a>
+<a class="dropdown-item" href="https://drive.google.com/drive/folders/1jOkmowdnDTIgohnfkktf483Al9GYijhx?usp=sharing" target="_blank">Planning Connect</a>
 
 `);
 
