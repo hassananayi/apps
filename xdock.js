@@ -1,8 +1,8 @@
 //***************************//
 // XDock PRO
-// Dernière mise à jour le 07/10/2024
+// Dernière mise à jour le 27/10/2024
 //***************************//
-$("footer>.text-muted.text-right").prepend("<small>XDock PRO Ver 4.06_07/10/2024- </small>");
+$("footer>.text-muted.text-right").prepend("<small>XDock PRO Ver 4.07_27/10/2024- </small>");
 
 if (window.location.pathname == "/") {
   $("h1").html("XDock PRO");
@@ -647,7 +647,6 @@ $('.navbar [href="/Artikel/Artikel"]').after(`
 <a class="dropdown-item" href="/#portes" target="_blank">Gestion des portes</a>
 <a class="dropdown-item" href="/#map" target="_blank">Carte de l'entrepôt</a>
 <a class="dropdown-item" href="https://tf-stb.github.io/badge/" target="_blank">Créateur de badge </a>
-<a class="dropdown-item" href="https://drive.google.com/drive/folders/1jOkmowdnDTIgohnfkktf483Al9GYijhx?usp=sharing" target="_blank">Planning Connect</a>
 
 `);
 
@@ -902,31 +901,6 @@ function palettes_summary() {
 }
 
 //--------------------------------
-// control Delete Btn
-//--------------------------------
-
-// if the EM or SM en status 80,50 block delete btn
-if (isEMTour || isSMTour) {
-  controlDeleteBtn();
-}
-
-function controlDeleteBtn() {
-  if (parseInt($(".tourStatus").html().trim()) == 80) {
-    return $("tr").find(".lieferpositionToDelete").replaceWith("<i class='fas fa-exclamation-triangle' style='font-size:13px;color:red'></i>");
-  }
-
-  $.each($(".lpStatus"), function (indexInArray, valueOfElement) {
-    let platetStatus = $(valueOfElement);
-    switch (parseInt(platetStatus.html().trim())) {
-      case 80:
-      case 50:
-        platetStatus.parent().parent().find(".lieferpositionToDelete").replaceWith("<i class='fas fa-exclamation-triangle' style='font-size:13px;color:red'></i>");
-        break;
-    }
-  });
-}
-
-//--------------------------------
 // Afficher Tournées EM "En cours"
 //--------------------------------
 
@@ -981,5 +955,4 @@ if (isSMTour) {
 `
   );
 }
-
 
