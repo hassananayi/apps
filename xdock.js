@@ -1,8 +1,8 @@
 //***************************//
 // XDock PRO
-// Dernière mise à jour le 27/10/2024
+// Dernière mise à jour le 03/11/2024
 //***************************//
-$("footer>.text-muted.text-right").prepend("<small>XDock PRO Ver 4.07_27/10/2024- </small>");
+$("footer>.text-muted.text-right").prepend("<small>XDock PRO Ver 4.08_03/11/2024- </small>");
 
 if (window.location.pathname == "/") {
   $("h1").html("XDock PRO");
@@ -142,7 +142,6 @@ button#paste_palettes {
     background: #fff8b8;
     border-color: #fff8b8;
 }
-
  `);
 
 //--------------------------
@@ -947,12 +946,130 @@ if (isSMTour) {
           Outils supplémentaires
       </a>
       <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <div style="font-size: 12px; font-weight: bold; margin-left: 15px;" class="">Entrée de marchandises:</div>
+            <button class="dropdown-item" onclick="afficher_EM_encours()"><span class="fal fa-forklift  mr-10"></span> Afficher Tournées EM "En cours"</button>
+            <hr>
+            <div style="font-size: 12px; font-weight: bold; margin-left: 15px;" class="">Données de transitaire:</div>    
+            <button class="dropdown-item" onclick="changer_transporteur()"><span class="fal fa-copy  mr-10"></span> Changer les données du transporteur</button>
 
-          <div style="font-size: 12px; font-weight: bold; margin-left: 15px;" class="">Entrée de marchandises:</div>
-              <button class="dropdown-item" onclick="afficher_EM_encours()"><span class="fal fa-copy  mr-10"></span> Afficher Tournées EM "En cours"</button>
       </div>
   </div
 `
   );
+}
+
+//--------------------------------
+// Changer les données du transporteur
+//--------------------------------
+function changer_transporteur(){
+
+  let la_destination_princpal = $("#zielort").val()
+  let tout_les_camions = [];
+
+  $.get("/Warenausgang/Tag?sort=ZielortLokationNameASC&selectedDate=" + $("#selectedDate").val()+"&search="+la_destination_princpal, function (data, textStatus, jqXHR) {
+    $(data)
+      .find("#table-container tbody>tr")
+      .each(function (key, value) {
+        let destination = value.cells[6];
+
+        if(destination.innerText.trim() == la_destination_princpal){
+        tout_les_camions.push({ sm: value.cells[0].innerHTML,status:value.cells[1].innerHTML, transitaire: value.cells[9].innerText.trim() });
+
+        }
+      });
+
+    // check now
+    let html = `<table class="table">
+    <thead>
+      <tr>
+        <th scope="col">Séle...</th>
+        <th scope="col">Statut</th>
+        <th scope="col">Tournée SM</th>
+        <th scope="col">Transitaire</th>        
+      </tr>
+    </thead>
+    <tbody>{tbody}</tbody>
+  </table>`;
+  
+    let tbody = "";
+
+    $.map(tout_les_camions, function (Value, index) {
+      tbody += `<tr>
+       <th scope="row"><button onclick="save_changes_transporteur(${$(Value.sm)[2].innerText.trim()})" class="btn btn-outline-primary" data-dismiss="modal"><span class="fas fa-exchange-alt"></span></button></th>
+          <td> ${Value.status}</td>
+       <td> ${Value.sm}</td>
+       <td>${Value.transitaire}</td>
+     </tr>`;
+  
+     
+    });
+  
+    let newHTML = html.replace("{tbody}", tbody);
+  
+    // setup the model
+    let barcode_modal = $("#barcode_modal");
+    barcode_modal.find(".modal-dialog").addClass("modal-dialog-scrollable");
+    barcode_modal.find(".modal-title").html("Choisissez une tournée avec lequel changer");
+    barcode_modal.find(".modal-body").html(newHTML);
+  
+    let barcodeModal = new bootstrap.Modal(document.getElementById("barcode_modal"), {});
+    barcodeModal.show(); // you can try comment this code, because bootstrap maybe open modal
+
+  });
+}
+
+
+function save_changes_transporteur(smID) {
+  // Send request to get new data
+  $.get("/Warenausgang/Tour?sort=StatusASC&waTourId=" + smID, function (data_dom, textStatus, jqXHR) {
+      let data = $(data_dom);
+
+      // Extract new values
+      let new_transporteur = data.find("select#spediteurId").val();
+      let new_Sous_traitant = data.find("#subunternehmer").val();
+      let new_tracteur = data.find("#kennzeichenZugmaschine").val();
+      let new_remorque = data.find("#kennzeichenAuflieger").val();
+      let new_tel = data.find("#tel").val();
+
+      // Prepare data to be sent
+      let transportData = {
+          transporteur: $("select#spediteurId").val(),
+          sous_traitant: $("#subunternehmer").val(),
+          tracteur: $("#kennzeichenZugmaschine").val(),
+          remorque: $("#kennzeichenAuflieger").val(),
+          tel: $("#tel").val()
+      };
+
+      // Backup data to clipboard and localStorage
+      navigator.clipboard.writeText(JSON.stringify(transportData));
+      localStorage.setItem('transportData', JSON.stringify(transportData));
+
+      // Open new window
+      window.open("/Warenausgang/Tour?sort=StatusASC&waTourId=" + smID + "&changer_transporteur", "newWindow", "width=800,height=600");
+
+      // Update current camion
+      $("select#spediteurId").val(new_transporteur);
+      $("#subunternehmer").val(new_Sous_traitant);
+      $("#kennzeichenZugmaschine").val(new_tracteur);
+      $("#kennzeichenAuflieger").val(new_remorque);
+      $("#tel").val(new_tel);
+     
+  });
+}
+
+if (window.location.href.includes("changer_transporteur")) {
+
+  if (localStorage.getItem('transportData') !== null) {
+    let transportData = JSON.parse(localStorage.getItem("transportData"))
+    $("select#spediteurId").val(transportData.transporteur);
+    $("#subunternehmer").val(transportData.sous_traitant);
+    $("#kennzeichenZugmaschine").val(transportData.tracteur);
+    $("#kennzeichenAuflieger").val(transportData.remorque);
+    $("#tel").val(transportData.tel);
+
+} else {
+    toastr.error(`transportData does not exist in localStorage.`);
+}
+
 }
 
