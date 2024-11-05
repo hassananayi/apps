@@ -1,8 +1,8 @@
 //***************************//
 // XDock PRO
-// Dernière mise à jour le 03/11/2024
+// Dernière mise à jour le 05/11/2024
 //***************************//
-$("footer>.text-muted.text-right").prepend("<small>XDock PRO Ver 4.08_03/11/2024- </small>");
+$("footer>.text-muted.text-right").prepend("<small>XDock PRO Ver 4.09_05/11/2024- </small>");
 
 if (window.location.pathname == "/") {
   $("h1").html("XDock PRO");
@@ -423,19 +423,21 @@ if (isEMTour) {
       </a>
       <div class="dropdown-menu" aria-labelledby="navbarDropdown">
           <div style="font-size: 12px; font-weight: bold; margin-left: 15px;" class="">Tâches:</div>
-          <button class="dropdown-item" disabled >Passe la tâche "En cours"</button>
-          <button class="dropdown-item" disabled >Terminer automatique</button>
+          <button class="dropdown-item" onclick="passe_encours()" >Passe la tâche "En cours"</button>
           <hr>
           <div style="font-size: 12px; font-weight: bold; margin-left: 15px;" class="">Entrée de marchandises:</div>
               <button class="dropdown-item" onclick="copy_em_id()"><span class="fal fa-copy  mr-10"></span> Copier EM ID</button>
               <button class="dropdown-item" onclick="fill_empty_LS()"><span class="fal fa-file-alt docImage  mr-10"></span>  Remplir tous les "Nº LS" vides avec "X"</button>
+              <button class="dropdown-item" onclick="indiquer_palettes()"><span class="fal fa-edit	  mr-10"></span>  Indiquer les palettes</button>
               <hr>
               <button class="dropdown-item" onclick="check_all_sscc()"><span class="fal fa-barcode  mr-10"></span> Vérifier toutes les SSCC</button>
               <button class="dropdown-item" onclick="check_avance()"><span class="fal fa-calendar-alt  mr-10"></span> Vérifier l'avance</button>
               <hr>
               <button class="dropdown-item" onclick="palettes_summary()"><span class="fal fa-chart-bar  mr-10"></span> Résumé des palettes</button>
-              <hr>
               <button class="dropdown-item" onclick="select_all_positions()"><span class="fal fa-check  mr-10"></span> Sélectionner tout les positions</button>
+              <hr>
+               <div style="font-size: 12px; font-weight: bold; margin-left: 15px;" class="">Sortie de marchandises:</div>
+              <button class="dropdown-item" onclick="Afficher_SM_attribue()"><span class="fal fa-link mr-10"></span>  Afficher SM attribué à ce camion</button> 
               <button class="dropdown-item" id="removeSM"><span class="fal fa-trash  mr-10"></span>  Supprimer SM des positions sélectionnées</button> 
               <hr>
               <div style="font-size: 12px; font-weight: bold; margin-left: 15px;" class="">Autres:</div>
@@ -447,6 +449,11 @@ if (isEMTour) {
 }
 
 // fucations Entrée de marchandises
+
+function passe_encours(){
+  $("#startausgabeEntladeanweisung").trigger("click")
+  $("#saveBtn").trigger("click")
+}
 function copy_em_id() {
   let EM_ID = [];
   let tourID = window.location.href.split("TourId=")[1].substr(0, 8);
@@ -546,7 +553,50 @@ function insert_comment(comment){
   kommentarIntern.val(comment.innerText + "\n \n" + old_value);
 }
 
+//--------------------------------
+// Afficher SM attribué à ce camion
+//--------------------------------
 
+function Afficher_SM_attribue(){
+
+ let Remorque=$("#kennzeichenZugmaschine").val().replace(/[\s-]/g, '').toUpperCase();
+ let Tracteur=$("#kennzeichenAuflieger").val().replace(/[\s-]/g, '').toUpperCase();
+      
+let SM_found =0;
+      
+  $.get("/Warenausgang/Tag?sort=ZielortLokationNameASC&selectedDate=" + $("#selectedDate").val(), function (data, textStatus, jqXHR) {
+    $(data)
+      .find("#table-container tbody>tr")
+      .each(function (key, value) {
+        let info = value.cells[19].innerHTML;
+
+        if(info.includes(Remorque) || info.includes(Tracteur)){
+          window.open("/Warenausgang/Tour?waTourId=" + value.cells[0].innerText.trim(), "_blank");
+          SM_found+=1;
+
+        }
+      });
+
+      if(SM_found == 0){
+        // notfication 
+        toastr.error(
+          `Aucun SM trouvé attribué à ce camion`
+        )
+      }
+
+  });
+
+}
+
+//--------------------------------
+//indiquer_palettes
+//--------------------------------
+function indiquer_palettes(){
+  let kommentar_textarea = $("#kommentar_textarea");
+  let old_value = $("#kommentar_textarea").val();
+  kommentar_textarea.val(`Palettes livrée: ${$('#palettenGeliefert1').val()} EU + ${$('#palettenGeliefert').val()} vides` + "\n \n" + old_value);
+
+}
 //--------------------------------
 // Map Add-on
 //--------------------------------
@@ -950,7 +1000,7 @@ if (isSMTour) {
             <button class="dropdown-item" onclick="afficher_EM_encours()"><span class="fal fa-forklift  mr-10"></span> Afficher Tournées EM "En cours"</button>
             <hr>
             <div style="font-size: 12px; font-weight: bold; margin-left: 15px;" class="">Données de transitaire:</div>    
-            <button class="dropdown-item" onclick="changer_transporteur()"><span class="fal fa-copy  mr-10"></span> Changer les données du transporteur</button>
+            <button class="dropdown-item" onclick="changer_transporteur()"><span class="fal fa-exchange	  mr-10"></span> Changer les données du transporteur</button>
 
       </div>
   </div
@@ -995,7 +1045,7 @@ function changer_transporteur(){
 
     $.map(tout_les_camions, function (Value, index) {
       tbody += `<tr>
-       <th scope="row"><button onclick="save_changes_transporteur(${$(Value.sm)[2].innerText.trim()})" class="btn btn-outline-primary" data-dismiss="modal"><span class="fas fa-exchange-alt"></span></button></th>
+       <th scope="row"><button onclick="save_changes_transporteur(${$(Value.sm)[2].innerText.trim()})" class="btn btn-outline-primary" data-dismiss="modal"><span class="fas fa-exchange"></span></button></th>
           <td> ${Value.status}</td>
        <td> ${Value.sm}</td>
        <td>${Value.transitaire}</td>
@@ -1030,6 +1080,9 @@ function save_changes_transporteur(smID) {
       let new_tracteur = data.find("#kennzeichenZugmaschine").val();
       let new_remorque = data.find("#kennzeichenAuflieger").val();
       let new_tel = data.find("#tel").val();
+      let new_numero_de_reappro = data.find("#disponummer").val();
+      let new_numero_de_periode = data.find("#zeitfensternummer").val();
+
 
       // Prepare data to be sent
       let transportData = {
@@ -1037,11 +1090,12 @@ function save_changes_transporteur(smID) {
           sous_traitant: $("#subunternehmer").val(),
           tracteur: $("#kennzeichenZugmaschine").val(),
           remorque: $("#kennzeichenAuflieger").val(),
-          tel: $("#tel").val()
+          tel: $("#tel").val(),
+          numero_de_reappro: $("#disponummer").val(),
+          numero_de_periode: $("#zeitfensternummer").val()
       };
 
-      // Backup data to clipboard and localStorage
-      navigator.clipboard.writeText(JSON.stringify(transportData));
+      // Save data to localStorage
       localStorage.setItem('transportData', JSON.stringify(transportData));
 
       // Open new window
@@ -1053,6 +1107,8 @@ function save_changes_transporteur(smID) {
       $("#kennzeichenZugmaschine").val(new_tracteur);
       $("#kennzeichenAuflieger").val(new_remorque);
       $("#tel").val(new_tel);
+      $("#disponummer").val(new_numero_de_reappro);
+      $("#zeitfensternummer").val(new_numero_de_periode)
      
   });
 }
@@ -1066,6 +1122,8 @@ if (window.location.href.includes("changer_transporteur")) {
     $("#kennzeichenZugmaschine").val(transportData.tracteur);
     $("#kennzeichenAuflieger").val(transportData.remorque);
     $("#tel").val(transportData.tel);
+    $("#disponummer").val(transportData.numero_de_reappro);
+    $("#zeitfensternummer").val(transportData.numero_de_periode)
 
 } else {
     toastr.error(`transportData does not exist in localStorage.`);
