@@ -1,8 +1,8 @@
 //***************************//
 // XDock PRO
-// Dernière mise à jour le 05/11/2024
+// Dernière mise à jour le 06/11/2024
 //***************************//
-$("footer>.text-muted.text-right").prepend("<small>XDock PRO Ver 4.09_05/11/2024- </small>");
+$("footer>.text-muted.text-right").prepend("<small>XDock PRO Ver 4.10_06/11/2024- </small>");
 
 if (window.location.pathname == "/") {
   $("h1").html("XDock PRO");
@@ -428,7 +428,6 @@ if (isEMTour) {
           <div style="font-size: 12px; font-weight: bold; margin-left: 15px;" class="">Entrée de marchandises:</div>
               <button class="dropdown-item" onclick="copy_em_id()"><span class="fal fa-copy  mr-10"></span> Copier EM ID</button>
               <button class="dropdown-item" onclick="fill_empty_LS()"><span class="fal fa-file-alt docImage  mr-10"></span>  Remplir tous les "Nº LS" vides avec "X"</button>
-              <button class="dropdown-item" onclick="indiquer_palettes()"><span class="fal fa-edit	  mr-10"></span>  Indiquer les palettes</button>
               <hr>
               <button class="dropdown-item" onclick="check_all_sscc()"><span class="fal fa-barcode  mr-10"></span> Vérifier toutes les SSCC</button>
               <button class="dropdown-item" onclick="check_avance()"><span class="fal fa-calendar-alt  mr-10"></span> Vérifier l'avance</button>
@@ -588,15 +587,7 @@ let SM_found =0;
 
 }
 
-//--------------------------------
-//indiquer_palettes
-//--------------------------------
-function indiquer_palettes(){
-  let kommentar_textarea = $("#kommentar_textarea");
-  let old_value = $("#kommentar_textarea").val();
-  kommentar_textarea.val(`Palettes livrée: ${$('#palettenGeliefert1').val()} EU + ${$('#palettenGeliefert').val()} vides` + "\n \n" + old_value);
 
-}
 //--------------------------------
 // Map Add-on
 //--------------------------------
@@ -950,35 +941,15 @@ function palettes_summary() {
 }
 
 //--------------------------------
-// Afficher Tournées EM "En cours"
+// Sélectionners positions "En cours"
 //--------------------------------
 
-function afficher_EM_encours() {
-  let allEM = [];
-  //$('#mitarbeiterId option:contains("Kevin")').val();
-
-  $.each($(".btn-weTour"), function (indexInArray, valueOfElement) {
-    allEM.push(valueOfElement.innerText.trim());
-  });
-
-  let uniqueEM = [...new Set(allEM)];
-
+function Selectionners_positions_encours() {
   $.get("/Taskmanagement/TaskmanagementInArbeit?sort=StartzeitASC", function (data) {
-    let allEMEncours = [];
-    let dataServ = $(data);
-    $.each(dataServ.find(".btn-weTour"), function (indexInArray, valueOfElement) {
-      allEMEncours.push(valueOfElement.innerText.trim());
-    });
-
-    let uniqueEMencours = [...new Set(allEMEncours)];
-
-    // Merge both arrays and convert to Set to get unique values
-    let allUniqueValues = new Set([...allEM, ...uniqueEMencours]);
-
-    // Filter the values that are present in both arrays
-    let newArray = Array.from(allUniqueValues).filter((value) => allEM.includes(value) && uniqueEMencours.includes(value));
-    $.each(newArray, function (indexInArray, valueOfElement) {
-      window.open("/Wareneingang/Tour?sort=LieferantStrASC&weTourId=" + valueOfElement, "_blank");
+    $.each($("#table-WaTourLieferpositionen tr[data-walpid]"), function (indexInArray, valueOfElement) {
+      if(data.includes(valueOfElement.cells[17].innerText.trim())){
+        $(valueOfElement.cells[18]).find(".lieferpositionToDelete").trigger("click");
+      }
     });
   });
 }
@@ -997,15 +968,28 @@ if (isSMTour) {
       </a>
       <div class="dropdown-menu" aria-labelledby="navbarDropdown">
             <div style="font-size: 12px; font-weight: bold; margin-left: 15px;" class="">Entrée de marchandises:</div>
-            <button class="dropdown-item" onclick="afficher_EM_encours()"><span class="fal fa-forklift  mr-10"></span> Afficher Tournées EM "En cours"</button>
+            <button class="dropdown-item" onclick="Selectionners_positions_encours()"><span class="fal fa-forklift  mr-10"></span> Sélectionner tout les positions "En cours"</button>
             <hr>
-            <div style="font-size: 12px; font-weight: bold; margin-left: 15px;" class="">Données de transitaire:</div>    
+            <div style="font-size: 12px; font-weight: bold; margin-left: 15px;" class="">Sortie de marchandises:</div>    
             <button class="dropdown-item" onclick="changer_transporteur()"><span class="fal fa-exchange	  mr-10"></span> Changer les données du transporteur</button>
+            <button class="dropdown-item" onclick="indiquer_palettes()"><span class="fal fa-edit	  mr-10"></span>  Indiquer les palettes</button>
+
 
       </div>
   </div
 `
   );
+}
+
+
+//--------------------------------
+//indiquer_palettes
+//--------------------------------
+function indiquer_palettes(){
+  let kommentar_textarea = $("#kommentar_textarea");
+  let old_value = $("#kommentar_textarea").val();
+  kommentar_textarea.val(`Palettes chargée: ${$('#palettenGeladen1').val()} EURO + ${$('#palettenGeladen').val()} vides` + "\n \n" + old_value);
+
 }
 
 //--------------------------------
