@@ -1,8 +1,8 @@
 //***************************//
 // XDock PRO
-// Dernière mise à jour le 06/11/2024
+// Dernière mise à jour le 013/11/2024
 //***************************//
-$("footer>.text-muted.text-right").prepend("<small>XDock PRO Ver 4.10_06/11/2024- </small>");
+$("footer>.text-muted.text-right").prepend("<small>XDock PRO Ver 4.11_13/11/2024- </small>");
 
 if (window.location.pathname == "/") {
   $("h1").html("XDock PRO");
@@ -640,10 +640,11 @@ if (window.location.href.includes("Wareneingang/Tag")) {
   get_LS();
 }
 function get_LS() {
-  $('a[href="/XDockLieferscheinEditor/lieferscheinbundle/"').before(`<a href="#" id="get_ls" style="padding-right: 15px;">
+$(".col-4.h-100.xdock-head-title").eq(1).prepend(`<a href="#" id="get_ls" style="padding-right: 15px;">
 <i class="fal fa-file-alt docImage" style="font-size: 22px; color: #003278; padding: 0px 3px 0px 3px;"></i> 	
 LS numérique
-</a>`);
+</a>`)
+
   let ls_working = false;
   $("#get_ls").on("click", function (e) {
     if (ls_working) return false;
