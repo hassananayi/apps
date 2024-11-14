@@ -1,8 +1,8 @@
 //***************************//
 // XDock PRO
-// Dernière mise à jour le 013/11/2024
+// Dernière mise à jour le 14/11/2024
 //***************************//
-$("footer>.text-muted.text-right").prepend("<small>XDock PRO Ver 4.11_13/11/2024- </small>");
+$("footer>.text-muted.text-right").prepend("<small>XDock PRO Ver 5.00_14/11/2024- </small>");
 
 if (window.location.pathname == "/") {
   $("h1").html("XDock PRO");
@@ -142,6 +142,73 @@ button#paste_palettes {
     background: #fff8b8;
     border-color: #fff8b8;
 }
+
+  #note-container {
+  width: 680px;
+  height: 400px;
+  margin: 10px;
+  position: relative;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  box-shadow: 0 1px 2px 0 rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);
+  background: #fff8b8;
+  color: rgb(32, 33, 36);
+  position: absolute;
+  left: 1034px;
+  top: 229px;
+
+  }
+  #note {
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+  font-size: 16px;
+  outline: 0;
+  overflow-y: scroll;
+  }
+  #note::-webkit-scrollbar {
+    width: 8px; 
+}
+
+  #note::-webkit-scrollbar-track {
+    background: #fff8b8;
+}
+
+  #note::-webkit-scrollbar-thumb {
+    background: #d2cc96;
+    border-radius: 8px; 
+    cursor: default;
+}
+
+  #note::-webkit-scrollbar-thumb:hover {
+    background: #918d69; 
+}
+    
+  #note-title{
+  padding: 20px 20px 0  20px ;
+  letter-spacing: .00625em;
+  font-size: 21px;
+  font-weight: 500;
+  line-height: 1.5rem;
+  border-bottom: 1px solid #b6b188;
+  padding-bottom: 20px;
+  outline: 0;
+
+  }
+  .note-toolbar {
+  background-color: rgba(255, 255, 255, 0.5); 
+  border-radius: 5px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  }
+
+  .pointer{
+  cursor: pointer;
+  }
  `);
 
 //--------------------------
@@ -1116,3 +1183,93 @@ if (window.location.href.includes("changer_transporteur")) {
 
 }
 
+
+
+//--------------------------------
+// SmrteNote
+//--------------------------------
+let savedToken = ""    
+if (window.location.href.includes("Herkunftsorte")) {
+  $.get("/Tore/EditTor/483", function (data_dom, textStatus, jqXHR) {
+
+    let porte_textarea =$(data_dom).find("#sperrgrundTextArea").val()
+    let note = JSON.parse(porte_textarea)
+    savedToken =  $(data_dom).find('input[name="__RequestVerificationToken"]').val()
+      $(".container-fluid.px-4").append(`
+      <div id="note-container">
+          <div id="note-title" contenteditable="true">${note.nt}</div>
+          <div id="note" contenteditable="true">${note.nc}</div>
+          <div class="note-toolbar">
+              <small>Dernière modification : ${note.le} par ${note.eb} </small>
+              <div>
+                  <span class="fas fa-highlighter mr-10 pointer"  onclick="document.execCommand('hiliteColor', false, 'yellow')"></span>
+                  <span class="fas fa-italic mr-10 pointer" onclick="document.execCommand('italic', false, null)"></span>
+                  <span class="fas fa-bold mr-10 pointer" onclick="document.execCommand('bold', false, null)"></span>
+                  <span class="fas fa-trash mr-10 pointer"  onclick="delete_note()" ></span>
+                  <button class="btn btn-warning btn-sm" onclick="save_Note()">Enregistrer la note</button>
+              </div>
+          </div>
+      </div>`);
+      $('.note-toolbar div span').on('mousedown', function(e) {
+          e.preventDefault();
+      });
+
+    
+  });
+}
+
+function save_Note() {
+  const note_title = document.getElementById('note-title').innerText;
+  const note = document.getElementById('note').innerHTML;
+  const editby =$(".fa-sign-out").attr("data-original-title").replace("Logout STB_","").replace("@xdock.de","")
+  let JSON_data = JSON.stringify({
+      "nt":note_title,
+      "nc":note,
+      "le":last_edit,
+      "eb":editby
+  });
+
+  const data = {
+      TorId: 483,
+      SortNumber: 1010000,
+      TorName: 'T1',
+      IsGesperrt: true, 
+      Sperrgrund: JSON_data,
+      IsFremdgeschaeft: false,
+      __RequestVerificationToken: savedToken
+  };
+
+  $.ajax({
+      url: '/Tore/EditTor/483',
+      type: 'POST',
+      data: data,
+      success: function(response) {
+          toastr.success(`Données envoyées avec succès!`);
+      },
+      error: function(xhr, status, error) {
+          console.error('Error:', xhr.responseText);
+          toastr.error(`Une erreur s'est produite lors de l'envoi des données.`);
+      }
+  });
+}
+  function delete_note() {
+    $("#note-title").html("");
+    $("#note").html("");
+}
+// Function to format the date
+function formatDate(date) {
+  const jours = ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"];
+  const mois = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
+
+  const jourSemaine = jours[date.getDay()];
+  const jour = date.getDate();
+  const moisNom = mois[date.getMonth()];
+  const annee = date.getFullYear();
+  const heures = date.getHours().toString().padStart(2, "0");
+  const minutes = date.getMinutes().toString().padStart(2, "0");
+
+  return `${jourSemaine} ${jour} ${moisNom} ${annee} à ${heures}h${minutes}`;
+}
+
+const date_note = new Date();
+const last_edit = formatDate(date_note);
