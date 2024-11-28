@@ -1,8 +1,8 @@
 //***************************//
 // XDock PRO
-// Dernière mise à jour le 14/11/2024
+// Dernière mise à jour le 28/11/2024
 //***************************//
-$("footer>.text-muted.text-right").prepend("<small>XDock PRO Ver 5.00_14/11/2024- </small>");
+$("footer>.text-muted.text-right").prepend("<small>XDock PRO Ver 5.01_28/11/2024- </small>");
 
 if (window.location.pathname == "/") {
   $("h1").html("XDock PRO");
@@ -185,18 +185,6 @@ button#paste_palettes {
   #note::-webkit-scrollbar-thumb:hover {
     background: #918d69; 
 }
-    
-  #note-title{
-  padding: 20px 20px 0  20px ;
-  letter-spacing: .00625em;
-  font-size: 21px;
-  font-weight: 500;
-  line-height: 1.5rem;
-  border-bottom: 1px solid #b6b188;
-  padding-bottom: 20px;
-  outline: 0;
-
-  }
   .note-toolbar {
   background-color: rgba(255, 255, 255, 0.5); 
   border-radius: 5px;
@@ -1197,14 +1185,10 @@ if (window.location.href.includes("Herkunftsorte")) {
     savedToken =  $(data_dom).find('input[name="__RequestVerificationToken"]').val()
       $(".container-fluid.px-4").append(`
       <div id="note-container">
-          <div id="note-title" contenteditable="true">${note.nt}</div>
           <div id="note" contenteditable="true">${note.nc}</div>
           <div class="note-toolbar">
               <small>Dernière modification : ${note.le} par ${note.eb} </small>
               <div>
-                  <span class="fas fa-highlighter mr-10 pointer"  onclick="document.execCommand('hiliteColor', false, 'yellow')"></span>
-                  <span class="fas fa-italic mr-10 pointer" onclick="document.execCommand('italic', false, null)"></span>
-                  <span class="fas fa-bold mr-10 pointer" onclick="document.execCommand('bold', false, null)"></span>
                   <span class="fas fa-trash mr-10 pointer"  onclick="delete_note()" ></span>
                   <button class="btn btn-warning btn-sm" onclick="save_Note()">Enregistrer la note</button>
               </div>
@@ -1213,17 +1197,14 @@ if (window.location.href.includes("Herkunftsorte")) {
       $('.note-toolbar div span').on('mousedown', function(e) {
           e.preventDefault();
       });
-
-    
   });
 }
 
 function save_Note() {
   const note_title = document.getElementById('note-title').innerText;
   const note = document.getElementById('note').innerHTML;
-  const editby =$(".fa-sign-out").attr("data-original-title").replace("Logout STB_","").replace("@xdock.de","")
+  const editby =$(".fa-sign-out").attr("data-original-title").replace("Logout","").replace("@xdock.de","")
   let JSON_data = JSON.stringify({
-      "nt":note_title,
       "nc":note,
       "le":last_edit,
       "eb":editby
@@ -1253,7 +1234,6 @@ function save_Note() {
   });
 }
   function delete_note() {
-    $("#note-title").html("");
     $("#note").html("");
 }
 // Function to format the date
