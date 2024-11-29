@@ -1201,7 +1201,6 @@ if (window.location.href.includes("Herkunftsorte")) {
 }
 
 function save_Note() {
-  const note_title = document.getElementById('note-title').innerText;
   const note = document.getElementById('note').innerHTML;
   const editby =$(".fa-sign-out").attr("data-original-title").replace("Logout","").replace("@xdock.de","")
   let JSON_data = JSON.stringify({
