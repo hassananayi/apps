@@ -1,8 +1,8 @@
 //***************************//
 // XDock PRO
-// Dernière mise à jour le 28/11/2024
+// Dernière mise à jour le 17/12/2024
 //***************************//
-$("footer>.text-muted.text-right").prepend("<small>XDock PRO Ver 5.01_28/11/2024- </small>");
+$("footer>.text-muted.text-right").prepend("<small>XDock PRO Ver 5.02_17/12/2024- </small>");
 
 if (window.location.pathname == "/") {
   $("h1").html("XDock PRO");
@@ -1236,7 +1236,7 @@ function save_Note() {
     $("#note").html("");
 }
 // Function to format the date
-function formatDate(date) {
+function formatDate_pro(date) {
   const jours = ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"];
   const mois = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
 
@@ -1251,4 +1251,4 @@ function formatDate(date) {
 }
 
 const date_note = new Date();
-const last_edit = formatDate(date_note);
+const last_edit = formatDate_pro(date_note);
