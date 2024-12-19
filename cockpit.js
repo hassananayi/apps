@@ -1,6 +1,6 @@
 //***************************//
 // SMART Cockpit
-// V 1.04
+// V 1.05
 //***************************//
 
 $("<style>").appendTo("head").html(`
@@ -128,7 +128,7 @@ let page_body = `
 <div class="container">
   <!-- Welcome -->
   <p class="fs-5 font-weight-bold mb-0">SMART Cockpit</p>
-  <p class="mb-1" style="font-size: 31px">Bonjour, <span id="username">...</span></p>
+  <p class="mb-1" style="font-size: 31px">Bonjour <span id="username">...</span>,</p>
   <p id="date_tody" class="text-muted" style="font-size: 18px">Performance du lundi 10 juin 2024 à 13h45</p>
 </div>
 
@@ -257,7 +257,7 @@ let page_body = `
     </div>
 
     <div class="col-4">
-      <div class="section_header">Administrateurs & Collaborateur</div>
+      <div class="section_header">Administrateurs & Collaborateurs</div>
       <div id="users"></div>
 
      <!-- Statistiques des palettes-->
@@ -301,7 +301,7 @@ $("h1").parent().replaceWith(`<div class="row d-flex align-items-center h-100 xd
 </div>
 </div>`);
 
-function formatDate(date) {
+function formatDateX(date) {
   const jours = ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"];
   const mois = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
 
@@ -316,9 +316,25 @@ function formatDate(date) {
 }
 
 const date = new Date();
-document.getElementById("date_tody").textContent = formatDate(date);
+document.getElementById("date_tody").textContent = formatDateX(date);
 
-let selected_date = $("#selectedDate").val();
+let selected_date;
+if (window.location.href.includes("?selectedDate")) {
+  selected_date = window.location.href.split("?selectedDate=")[1];
+  $("#selectedDate").val(selected_date)
+   const date2 = new Date(selected_date);
+   document.getElementById("date_tody").textContent = formatDateX(date2);
+} else {
+  selected_date = $("#selectedDate").val();
+}
+
+$("#selectedDate").on("change", function (e) {
+  // update url
+  window.location.href = "/#cockpit" + "?selectedDate=" + $("#selectedDate").val();
+
+  window.location.reload()
+});
+
 //-----------------------------------//
 // Administrateurs & Collaborateur
 //----------------------------------//
@@ -696,11 +712,11 @@ function getTimeDifference(specificDateString) {
   // Determine the color based on the time difference
   let colorClass = "";
   if (diffInMinutes <= 60) {
-    colorClass = "text-success"; // green
+    colorClass = "text-successx text-primary"; // green
   } else if (diffInMinutes <= 120) {
-    colorClass = "text-warning"; // orange
+    colorClass = "text-warningx text-primary"; // orange
   } else {
-    colorClass = "text-danger"; // red
+    colorClass = "text-dangerx text-primary"; // red
   }
 
   // Format the output string
