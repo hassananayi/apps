@@ -1,6 +1,6 @@
 //***************************//
 // SMART Cockpit
-// V 1.05
+// V 1.06
 //***************************//
 
 $("<style>").appendTo("head").html(`
@@ -281,6 +281,8 @@ let page_body = `
           <p class="mt-4 mb-4" id="rest_decharg"></p>
           <small class="mt-4 mb-4 text-muted" id="unloading_time"></small>
     </div>
+
+
       
     </div>
 
@@ -293,13 +295,22 @@ $("head>title").html("SMART Cockpit :: XDock PRO");
 // inject page body to dom
 $("#img-zonenuebersicht").parent().replaceWith(page_body);
 
-$("h1").parent().replaceWith(`<div class="row d-flex align-items-center h-100 xdock-head-row">
-<div class="col-6 h-100 xdock-head-title">
-    <h1>
-       XDock PRO <span class="fa fa-caret-right navArrow"></span> SMART Cockpit
-    </h1>
-</div>
-</div>`);
+
+  // Set page header
+  $("h1").parent().replaceWith(`<div id="xdock_pro_page_header" class="row d-flex align-items-center h-100 xdock-head-row">
+    <div class="col-6 h-100 xdock-head-title">
+        <h1>
+           XDock PRO <span class="fa fa-caret-right navArrow"></span> SMART Cockpit   
+        </h1>
+    </div>
+    <div class="col-6 text-right">
+      <a href="https://tf-stb.github.io/rapport-collaborateurs/" target="_blank" class="btn btn-sm btn-outline-primary"  id="zones_preliv"><span class="fal fa-file-alt mr-10"></span>Rapport d'activité des collaborateurs (démo)</a>
+    
+     
+    </div>
+    </div>`);
+
+ 
 
 function formatDateX(date) {
   const jours = ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"];
