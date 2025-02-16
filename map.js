@@ -1,7 +1,7 @@
 //***************************//
 // Map add-on for XDock PRO
-// V 2.06
-// Dernière mise à jour le  20/05/2024
+// V 2.07
+// Dernière mise à jour le  16/02/2025
 //***************************//
 
 $("<style>").appendTo("head").html(`
@@ -996,6 +996,9 @@ $("<style>").appendTo("head").html(`
   function get_ref_code(ref) {
     let code_vo;
     switch (ref) {
+      case "Ablis":
+        code_vo = "ABL";
+        break;
       case "Alcalá":
         code_vo = "ALC";
         break;
