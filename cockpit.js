@@ -304,7 +304,7 @@ $("#img-zonenuebersicht").parent().replaceWith(page_body);
         </h1>
     </div>
     <div class="col-6 text-right">
-      <a href="https://tf-stb.github.io/rapport-collaborateurs/" target="_blank" class="btn btn-sm btn-outline-primary"  id="zones_preliv"><span class="fal fa-file-alt mr-10"></span>Rapport d'activité des collaborateurs (démo)</a>
+      <a href="https://tf-stb.github.io/rapport-collaborateurs/" target="_blank" class="btn btn-sm btn-outline-primary"  id="zones_preliv"><span class="fal fa-file-alt mr-10"></span>Rapport d'activité des collaborateurs</a>
     
      
     </div>
