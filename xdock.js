@@ -1,8 +1,8 @@
 //***************************//
 // XDock PRO
-// Dernière mise à jour le 17/12/2024
+// Dernière mise à jour le 10/03/2025
 //***************************//
-$("footer>.text-muted.text-right").prepend("<small>XDock PRO Ver 5.02_17/12/2024- </small>");
+$("footer>.text-muted.text-right").prepend("<small>XDock PRO Ver 5.03_10/03/2024- </small>");
 
 if (window.location.pathname == "/") {
   $("h1").html("XDock PRO");
@@ -742,7 +742,7 @@ $('.navbar [href="/Artikel/Artikel"]').after(`
 <a class="dropdown-item" href="/#cockpit" target="_blank">SMART Cockpit</a>
 <a class="dropdown-item" href="/#portes" target="_blank">Gestion des portes</a>
 <a class="dropdown-item" href="/#map" target="_blank">Carte de l'entrepôt</a>
-<a class="dropdown-item" href="https://tf-stb.github.io/badge/" target="_blank">Créateur de badge </a>
+<a class="dropdown-item" href="https://tf-stb.github.io/outils/" target="_blank">Liste des Outils </a>
 
 `);
 
