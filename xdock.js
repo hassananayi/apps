@@ -1,8 +1,8 @@
 //***************************//
 // XDock PRO
-// Dernière mise à jour le 10/03/2025
+// Dernière mise à jour le 12/03/2025
 //***************************//
-$("footer>.text-muted.text-right").prepend("<small>XDock PRO Ver 5.03_10/03/2024- </small>");
+$("footer>.text-muted.text-right").prepend("<small>XDock PRO Ver 5.04_12/03/2024- </small>");
 
 if (window.location.pathname == "/") {
   $("h1").html("XDock PRO");
@@ -145,15 +145,14 @@ button#paste_palettes {
 
   #note-container {
   width: 680px;
-  height: 400px;
+  height: 700px;
   margin: 10px;
   position: relative;
   border-radius: 8px;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
-  box-shadow: 0 1px 2px 0 rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);
-  background: #fff8b8;
+  background: #fafafa;
   color: rgb(32, 33, 36);
   position: absolute;
   left: 1034px;
@@ -186,9 +185,8 @@ button#paste_palettes {
     background: #918d69; 
 }
   .note-toolbar {
-  background-color: rgba(255, 255, 255, 0.5); 
   border-radius: 5px;
-  padding: 10px;
+  padding-top: 10px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -197,6 +195,55 @@ button#paste_palettes {
   .pointer{
   cursor: pointer;
   }
+
+  /* Style for the note container */
+#note-container {
+  padding: 20px;
+
+ 
+}
+
+/* Style for the textarea elements */
+.note-textarea {
+    width: 100%;
+    height: 300px;
+    padding: 10px;
+    border: none;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    resize: vertical;
+    box-sizing: border-box;
+    max-width: 100% !important;
+}
+
+/* Style for the divider */
+.divider {
+  display: block;
+  height: 1px;
+  background-color: #ccc;
+  margin: 20px 0;
+}
+
+/* Style for the toolbar */
+.note-toolbar {
+  margin-top: 20px;
+  text-align: right;
+}
+
+#note-notfaction {
+    font-size: 16px;
+    color: rgb(32, 33, 36);
+    background: #fff8b8;
+    padding: 15px 20px;
+    border-radius: 8px;
+    position: absolute;
+    bottom: 35px;
+    
+}
+a#note-notfaction:hover {
+    text-decoration: none;
+    background: #fbf191;
+}
  `);
 
 //--------------------------
@@ -1176,65 +1223,82 @@ if (window.location.href.includes("changer_transporteur")) {
 //--------------------------------
 // SmrteNote
 //--------------------------------
-let savedToken = ""    
-if (window.location.href.includes("Herkunftsorte")) {
-  $.get("/Tore/EditTor/483", function (data_dom, textStatus, jqXHR) {
+let savedToken = "";
 
-    let porte_textarea =$(data_dom).find("#sperrgrundTextArea").val()
-    let note = JSON.parse(porte_textarea)
-    savedToken =  $(data_dom).find('input[name="__RequestVerificationToken"]').val()
-      $(".container-fluid.px-4").append(`
+if (window.location.href.includes("Herkunftsorte")) {
+  $.get("/Spediteure/EditSpediteur/46770", function (data_dom, textStatus, jqXHR) {
+    let data_textarea = $(data_dom).find("#SpediteurKommentar").val();
+    let note = JSON.parse(data_textarea);
+    savedToken = $(data_dom).find('input[name="__RequestVerificationToken"]').val();
+
+    $(".container-fluid.px-4").append(`
       <div id="note-container">
-          <div id="note" contenteditable="true">${note.nc}</div>
-          <div class="note-toolbar">
-              <small>Dernière modification : ${note.le} par ${note.eb} </small>
-              <div>
-                  <span class="fas fa-trash mr-10 pointer"  onclick="delete_note()" ></span>
-                  <button class="btn btn-warning btn-sm" onclick="save_Note()">Enregistrer la note</button>
-              </div>
+        <h1 class="p-3">Transporteur:</h1>
+        <textarea id="note-transport" class="note-textarea" style="background-color: #fff8b8;">${note.transport || ''}</textarea>
+        <span class="divider"></span>
+        <h1 class="p-3">Logistique:</h1>
+        <textarea id="note-logistique" class="note-textarea" style="background-color: #e2f6d3;">${note.logistique || ''}</textarea>
+        <div class="note-toolbar">
+          <small>Dernière modification : ${note.last_edit} par ${note.editby}</small>
+          <div>
+            <span class="fas fa-trash mr-10 pointer" onclick="delete_note()"></span>
+            <button class="btn btn-primary  btn-sm" onclick="save_Note()">Enregistrer les notes</button>
           </div>
+        </div>
       </div>`);
-      $('.note-toolbar div span').on('mousedown', function(e) {
-          e.preventDefault();
-      });
+
+    $('.note-toolbar div span').on('mousedown', function (e) {
+      e.preventDefault();
+    });
   });
 }
 
 function save_Note() {
-  const note = document.getElementById('note').innerHTML;
-  const editby =$(".fa-sign-out").attr("data-original-title").replace("Logout","").replace("@xdock.de","")
+  const transportNote = document.getElementById('note-transport').value;
+  const logistiqueNote = document.getElementById('note-logistique').value;
+  const editby = $(".fa-sign-out").attr("data-original-title").replace("Logout", "").replace("@xdock.de", "");
+
   let JSON_data = JSON.stringify({
-      "nc":note,
-      "le":last_edit,
-      "eb":editby
+    transport: transportNote,
+    logistique: logistiqueNote,
+    last_edit: last_edit,
+    editby: editby
   });
 
   const data = {
-      TorId: 483,
-      SortNumber: 1010000,
-      TorName: 'T1',
-      IsGesperrt: true, 
-      Sperrgrund: JSON_data,
-      IsFremdgeschaeft: false,
-      __RequestVerificationToken: savedToken
+    SpediteurId: 46770,
+    SpediteurName: 'note',
+    SpediteurStrasseUndHausnummer: "",
+    SpediteurPlz: "",
+    SpediteurOrt: "",
+    SpediteurTelefon: "",
+    SpediteurUstId: "",
+    SpediteurLizenznummer: "",
+    LandId: "",
+    IsInactive: true,
+    SpediteurKommentar: JSON_data,
+    __RequestVerificationToken: savedToken
   };
 
   $.ajax({
-      url: '/Tore/EditTor/483',
-      type: 'POST',
-      data: data,
-      success: function(response) {
-          toastr.success(`Données envoyées avec succès!`);
-      },
-      error: function(xhr, status, error) {
-          console.error('Error:', xhr.responseText);
-          toastr.error(`Une erreur s'est produite lors de l'envoi des données.`);
-      }
+    url: '/Spediteure/EditSpediteur/46770',
+    type: 'POST',
+    data: data,
+    success: function (response) {
+      toastr.success(`Données envoyées avec succès!`);
+    },
+    error: function (xhr, status, error) {
+      console.error('Error:', xhr.responseText);
+      toastr.error(`Une erreur s'est produite lors de l'envoi des données.`);
+    }
   });
 }
-  function delete_note() {
-    $("#note").html("");
+
+function delete_note() {
+  document.getElementById('note-transport').value = "";
+  document.getElementById('note-logistique').value = "";
 }
+
 // Function to format the date
 function formatDate_pro(date) {
   const jours = ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"];
@@ -1252,3 +1316,21 @@ function formatDate_pro(date) {
 
 const date_note = new Date();
 const last_edit = formatDate_pro(date_note);
+
+// show note notfaction
+if(window.location.href === "https://tf-stb.xdock.de/"){
+  $.get("/Spediteure/EditSpediteur/46770", function (data_dom, textStatus, jqXHR) {
+    let data_textarea = $(data_dom).find("#SpediteurKommentar").val();
+    let note = JSON.parse(data_textarea);
+  
+   if (note.transport.trim().length > 0 || note.logistique.trim().length > 0) {
+    $(".container-fluid.px-4").append(
+      `<a id="note-notfaction" href="/Wareneingang/Herkunftsorte">
+        <i class="far fa-comments" aria-hidden="true"></i> Nouvelles informations disponibles 
+      
+      </a>`
+    );
+  }
+   
+  });
+}
