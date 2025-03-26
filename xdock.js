@@ -1,8 +1,8 @@
 //***************************//
 // XDock PRO
-// Dernière mise à jour le 12/03/2025
+// Dernière mise à jour le 25/03/2025
 //***************************//
-$("footer>.text-muted.text-right").prepend("<small>XDock PRO Ver 5.04_12/03/2024- </small>");
+$("footer>.text-muted.text-right").prepend("<small>XDock PRO Ver 5.06_12/03/2025- </small>");
 
 if (window.location.pathname == "/") {
   $("h1").html("XDock PRO");
@@ -1333,4 +1333,44 @@ if(window.location.href === "https://tf-stb.xdock.de/"){
   }
    
   });
+}
+
+//--------------------------------
+// Fix JERMI Kaesetheke
+//--------------------------------
+
+function fixJERMI(){
+  if (!document.body.innerHTML.includes("Kaesetheke")) return false;
+
+  let kommentar_textarea = $("#kommentar_textarea");
+  let old_value = $("#kommentar_textarea").val();
+
+  if(!old_value.includes("JERMI:")){
+    $('#kommentar_textarea').parent().prepend(`
+      <div class="alert alert-danger" role="alert">Ce camion contient des palettes en plastique (JERMI) .<a href="#" onclick=IndiquerJERMI()> Indiquer les palettes</a></div>
+    `)
+  }
+  
+}
+
+function IndiquerJERMI(){
+  let kommentar_textarea = $("#kommentar_textarea");
+  let old_value = $("#kommentar_textarea").val();
+  let all_palletes =0;
+  $("#table-WaTourLieferpositionen tbody>tr[data-walpid]").each(function (key, value) {
+    let article = value.cells[4].innerText;
+    let palettes_unm = parseInt(value.cells[14].innerText);
+    
+    if(article.includes("Kaesetheke")){
+      all_palletes += palettes_unm;
+    }
+  });
+  
+  kommentar_textarea.val(`JERMI: ${all_palletes} Palettes en plastique sur ${all_palletes / 2} EURO` + "\n \n" + old_value);
+  $("#palettenGeladen").val( parseInt($("#palettenGeladen").val()) + all_palletes / 2)
+  $("#saveBtn").trigger("click");
+}
+
+if (isSMTour) {
+  fixJERMI()
 }
