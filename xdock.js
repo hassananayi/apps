@@ -1317,23 +1317,6 @@ function formatDate_pro(date) {
 const date_note = new Date();
 const last_edit = formatDate_pro(date_note);
 
-// show note notfaction
-if(window.location.href === "https://tf-stb.xdock.de/"){
-  $.get("/Spediteure/EditSpediteur/46770", function (data_dom, textStatus, jqXHR) {
-    let data_textarea = $(data_dom).find("#SpediteurKommentar").val();
-    let note = JSON.parse(data_textarea);
-  
-   if (note.transport.trim().length > 0 || note.logistique.trim().length > 0) {
-    $(".container-fluid.px-4").append(
-      `<a id="note-notfaction" href="/Wareneingang/Herkunftsorte">
-        <i class="far fa-comments" aria-hidden="true"></i> Nouvelles informations disponibles 
-      
-      </a>`
-    );
-  }
-   
-  });
-}
 
 //--------------------------------
 // Fix JERMI Kaesetheke
